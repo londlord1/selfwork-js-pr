@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Собирает сайт «одна страница на одну ПР» из страниц отдельных задач.
 
-Каждая страница ПР — самостоятельный HTML: список заданий и iframe,
-в который через srcdoc встроена очищенная страница задачи.
+На каждой странице ПР все задания показаны сразу, друг под другом.
+Каждое задание встроено через iframe srcdoc, поэтому стили, id и
+глобальные переменные заданий не конфликтуют, а работают они вместе
+на одной странице.
 """
 import argparse
 import glob
@@ -46,8 +48,9 @@ PR_TITLES = {
 
 RESIZE_SCRIPT = """<script>
 (function () {
+  var index = __INDEX__;
   function send() {
-    parent.postMessage({ type: 'ph-height', height: document.documentElement.scrollHeight }, '*');
+    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');
   }
   window.addEventListener('load', send);
   if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);
@@ -71,21 +74,24 @@ h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
 .desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
 .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
 .card h2{font-size:17px;color:#333;margin-bottom:10px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
-.tab{background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
-.tab:hover{background:#eef6ff}
-.tab.active{background:#1a73e8;border-color:#1a73e8;color:#fff}
-iframe{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
+.toc{position:sticky;top:0;z-index:5;background:#f0f2f5;padding:8px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #e2e8f0;margin-bottom:6px}
+.toc b{font-size:13px;color:#475569;margin-right:4px}
+.toc a{display:inline-flex;min-width:30px;justify-content:center;background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:3px 9px;text-decoration:none;font-size:13px;color:#0b57d0}
+.toc a:hover{background:#eef6ff;border-color:#93c5fd}
+.task{margin:20px 0}
+.task-head{display:flex;gap:9px;align-items:center;font-weight:600;color:#334155;margin-bottom:8px;font-size:15px}
+.task-num{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;background:#1a73e8;color:#fff;border-radius:50%;font-size:13px;flex:none}
+.task-frame{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
 footer{margin-top:24px;font-size:12px;color:#999;text-align:center}
 a{color:#0b57d0}
 """
 
 
-def clean_task(source):
+def clean_task(source, index):
     source = re.sub(r'<div class="topnav">.*?</div>\s*</div>', '', source, flags=re.S)
     source = re.sub(r'<div class="navbtns[^"]*"[^>]*>.*?</div>', '', source, flags=re.S)
     source = re.sub(r'<footer>.*?</footer>', '', source, flags=re.S)
-    source = source.replace('</body>', RESIZE_SCRIPT + '</body>')
+    source = source.replace('</body>', RESIZE_SCRIPT.replace('__INDEX__', str(index)) + '</body>')
     return source
 
 
@@ -114,11 +120,11 @@ def build(src_dir, out_dir):
 
     for pr in prs:
         tasks = []
-        for num, path in sorted(grouped[pr]):
+        for index, (num, path) in enumerate(sorted(grouped[pr])):
             raw = open(path, encoding='utf-8').read()
             tasks.append({
                 'title': task_title(raw, 'Задание %d' % num),
-                'html': clean_task(raw),
+                'html': clean_task(raw, index),
             })
 
         title = 'ПР%02d — %s' % (pr, PR_TITLES.get(pr, ''))
@@ -146,41 +152,68 @@ def build(src_dir, out_dir):
 </div>
 <span class="pr-tag">ПР__PR__</span>
 <h1>__TITLE__</h1>
-<div class="desc">Все самостоятельные задания этой практической на одной странице. Выберите задание — оно откроется ниже.</div>
-<div class="tabs" id="tabs"></div>
-<iframe id="frame" src="about:blank" title="Задание"></iframe>
+<div class="desc">Все самостоятельные задания этой практической на одной странице — выполняются вместе. Задания идут по порядку, ниже.</div>
+<nav class="toc" id="toc"><b>Задания:</b></nav>
+<div id="tasks"></div>
 <footer>ПР__PR__ · заданий: __COUNT__ · <a href="index.html">все практические</a></footer>
 </div>
 <script>
 const TASKS = __DATA__;
-const frame = document.getElementById('frame');
-const tabs = document.getElementById('tabs');
-let current = -1;
+const container = document.getElementById('tasks');
+const toc = document.getElementById('toc');
+const frames = [];
 
 TASKS.forEach(function (task, i) {
-  const button = document.createElement('button');
-  button.className = 'tab';
-  button.textContent = (i + 1) + '. ' + task.title;
-  button.addEventListener('click', function () { select(i); });
-  tabs.appendChild(button);
+  const section = document.createElement('section');
+  section.className = 'task';
+  section.id = 'task-' + (i + 1);
+
+  const head = document.createElement('div');
+  head.className = 'task-head';
+  const num = document.createElement('span');
+  num.className = 'task-num';
+  num.textContent = i + 1;
+  const title = document.createElement('span');
+  title.textContent = task.title;
+  head.appendChild(num);
+  head.appendChild(title);
+
+  const frame = document.createElement('iframe');
+  frame.className = 'task-frame';
+  frame.dataset.index = i;
+  frame.title = 'Задание ' + (i + 1) + ': ' + task.title;
+  frame.src = 'about:blank';
+
+  section.appendChild(head);
+  section.appendChild(frame);
+  container.appendChild(section);
+  frames.push(frame);
+
+  const link = document.createElement('a');
+  link.href = '#task-' + (i + 1);
+  link.textContent = i + 1;
+  link.title = task.title;
+  toc.appendChild(link);
 });
 
-function select(i) {
-  current = i;
-  Array.prototype.forEach.call(tabs.children, function (button, index) {
-    button.classList.toggle('active', index === i);
+const observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (!entry.isIntersecting) return;
+    const frame = entry.target;
+    if (frame.dataset.loaded) return;
+    frame.dataset.loaded = '1';
+    frame.srcdoc = TASKS[Number(frame.dataset.index)].html;
+    observer.unobserve(frame);
   });
-  frame.style.height = '620px';
-  frame.srcdoc = TASKS[i].html;
-}
+}, { rootMargin: '600px' });
+
+frames.forEach(function (frame) { observer.observe(frame); });
 
 window.addEventListener('message', function (event) {
-  if (event.data && event.data.type === 'ph-height') {
-    frame.style.height = Math.max(420, event.data.height + 6) + 'px';
-  }
+  if (!event.data || event.data.type !== 'ph-height') return;
+  const frame = frames[event.data.index];
+  if (frame) frame.style.height = Math.max(420, event.data.height + 6) + 'px';
 });
-
-select(0);
 </script>
 </body>
 </html>
@@ -200,7 +233,7 @@ select(0);
     for pr, title, count in index_cards:
         cards.append(
             '<a class="card link" href="pr%02d.html"><h2>%s</h2>'
-            '<p>%d заданий →</p></a>' % (pr, html_mod.escape(title), count)
+            '<p>%d заданий на одной странице →</p></a>' % (pr, html_mod.escape(title), count)
         )
 
     index = """<!DOCTYPE html>
@@ -220,7 +253,7 @@ select(0);
 <body>
 <div class="wrap">
 <h1>Самостоятельные работы по JavaScript</h1>
-<p class="desc">Одна страница на одну практическую работу: ПР03–ПР32. Внутри страницы — переключатель заданий.</p>
+<p class="desc">Одна страница на одну практическую работу: ПР03–ПР32. На странице сразу все задания этой ПР.</p>
 <div class="grid">
 __CARDS__
 </div>
