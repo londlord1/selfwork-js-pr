@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самостоятельные работы — одна страница на ПР</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.topnav a:hover{text-decoration:underline}
+.navbtns{display:flex;gap:8px;flex-wrap:wrap}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+.navbtns .btn:hover{background:#eef6ff}
+.navbtns .btn:disabled{opacity:.4;cursor:default}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
+.card h2{font-size:17px;color:#333;margin-bottom:10px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.tab{background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+.tab:hover{background:#eef6ff}
+.tab.active{background:#1a73e8;border-color:#1a73e8;color:#fff}
+iframe{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
+footer{margin-top:24px;font-size:12px;color:#999;text-align:center}
+a{color:#0b57d0}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:14px}
+.link{display:block;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.link:hover{border-color:#1a73e8;transform:translateY(-2px)}
+.link h2{color:#1a73e8}
+.link p{color:#64748b;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Самостоятельные работы по JavaScript</h1>
+<p class="desc">Одна страница на одну практическую работу: ПР03–ПР32. Внутри страницы — переключатель заданий.</p>
+<div class="grid">
+<a class="card link" href="pr03.html"><h2>ПР03 — Массивы и операции с ними</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr04.html"><h2>ПР04 — Функции</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr05.html"><h2>ПР05 — DOM и события</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr06.html"><h2>ПР06 — To-Do и localStorage</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr07.html"><h2>ПР07 — Валидация форм</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr08.html"><h2>ПР08 — Navigator и производительность</h2><p>3 заданий →</p></a>
+<a class="card link" href="pr09.html"><h2>ПР09 — События и взаимодействие</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr10.html"><h2>ПР10 — Списки и DOM</h2><p>5 заданий →</p></a>
+<a class="card link" href="pr11.html"><h2>ПР11 — Окно, сеть и история</h2><p>6 заданий →</p></a>
+<a class="card link" href="pr12.html"><h2>ПР12 — Строки и регулярные выражения</h2><p>1 заданий →</p></a>
+<a class="card link" href="pr13.html"><h2>ПР13 — Методы массивов</h2><p>3 заданий →</p></a>
+<a class="card link" href="pr14.html"><h2>ПР14 — Объекты и деструктуризация</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr15.html"><h2>ПР15 — Set, Map и Array</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr16.html"><h2>ПР16 — JSON и структуры данных</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr17.html"><h2>ПР17 — Инкапсуляция</h2><p>1 заданий →</p></a>
+<a class="card link" href="pr18.html"><h2>ПР18 — Расширение браузера</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr19.html"><h2>ПР19 — Чат-бот</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr20.html"><h2>ПР20 — Форма кредитной карты</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr21.html"><h2>ПР21 — API Госуслуг</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr22.html"><h2>ПР22 — Основы классов</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr23.html"><h2>ПР23 — Наследование и полиморфизм</h2><p>3 заданий →</p></a>
+<a class="card link" href="pr24.html"><h2>ПР24 — DOM: рендеринг и события</h2><p>3 заданий →</p></a>
+<a class="card link" href="pr25.html"><h2>ПР25 — LocalStorage</h2><p>4 заданий →</p></a>
+<a class="card link" href="pr26.html"><h2>ПР26 — React: счётчик</h2><p>5 заданий →</p></a>
+<a class="card link" href="pr27.html"><h2>ПР27 — React: списки</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr28.html"><h2>ПР28 — React: props и темы</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr29.html"><h2>ПР29 — React: таймеры</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr30.html"><h2>ПР30 — React: API</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr31.html"><h2>ПР31 — React: калькулятор</h2><p>7 заданий →</p></a>
+<a class="card link" href="pr32.html"><h2>ПР32 — React: фильтрация</h2><p>7 заданий →</p></a>
+</div>
+<footer>Всего практических: 30 · отдельные страницы по задачам — в репозитории <a href="https://github.com/londlord1/selfwork-js">selfwork-js</a></footer>
+</div>
+</body>
+</html>
