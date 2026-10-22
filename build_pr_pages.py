@@ -118,7 +118,18 @@ def build(src_dir, out_dir):
     prs = sorted(grouped)
     index_cards = []
 
+    apps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+
     for pr in prs:
+        app_path = os.path.join(apps_dir, 'pr%02d.html' % pr)
+        if os.path.exists(app_path):
+            open(os.path.join(out_dir, 'pr%02d.html' % pr), 'w', encoding='utf-8').write(
+                open(app_path, encoding='utf-8').read()
+            )
+            count = len(sorted(grouped[pr]))
+            index_cards.append((pr, 'ПР%02d — %s' % (pr, PR_TITLES.get(pr, '')), count))
+            continue
+
         tasks = []
         for index, (num, path) in enumerate(sorted(grouped[pr])):
             raw = open(path, encoding='utf-8').read()

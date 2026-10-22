@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР20 — Форма кредитной карты: все задания</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:1000px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.card h2{font-size:17px;color:#333;margin-bottom:12px}
+.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:4px 6px 0 0}
+.btn:hover{background:#0b5bc0}
+.btn.gray{background:#64748b}.btn.green{background:#28a745}.btn.red{background:#dc3545}
+input,select{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 0;width:100%;font-family:inherit}
+input:focus,select:focus{border-color:#1a73e8;outline:none}
+label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:44px}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
+@media(max-width:780px){.layout{grid-template-columns:1fr}}
+.card3d{width:100%;aspect-ratio:1.586;border-radius:16px;padding:20px;color:#fff;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);box-shadow:0 12px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;justify-content:space-between;transition:transform .6s,background .3s;transform-style:preserve-3d;perspective:1000px}
+.card3d.visa{background:linear-gradient(135deg,#1a1a2e,#0f3460)}
+.card3d.mastercard{background:linear-gradient(135deg,#3a1c1c,#8e2de2)}
+.card3d.mir{background:linear-gradient(135deg,#0f5132,#1e7e34)}
+.card3d.unionpay{background:linear-gradient(135deg,#d52b1e,#b71c1c)}
+.card3d:hover{transform:rotateY(12deg) rotateX(6deg) scale(1.02)}
+.card3d.flip{transform:rotateY(180deg)}
+.card3d .num{font:600 30px/1.4 Consolas,monospace;letter-spacing:2px}
+.card3d .lbl{font-size:11px;letter-spacing:2px;opacity:.7;text-transform:uppercase}
+.card3d .brand{font-size:30px;font-weight:700;text-align:right}
+.card3d .row{display:flex;justify-content:space-between;gap:8px;margin:0}
+.card3d .holder{font-size:15px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.form-grid .wide{grid-column:1/-1}
+#form-wrap{border-radius:12px;padding:14px;background:#f8fafc;transition:background .35s,color .35s}
+#form-wrap.dark{background:#151a26;color:#e2e8f0}
+#form-wrap.dark input,#form-wrap.dark select{background:#1f2937;color:#fff;border-color:#374151}
+#form-wrap.dark label{color:#94a3b8}
+.status{margin-top:10px;font-size:13px;color:#475569}
+.status.ok{color:#166534}.status.err{color:#991b1b}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns">
+    <button class="btn" onclick="location.href='pr19.html'">← Пред. ПР</button>
+    <button class="btn" onclick="location.href='pr21.html'">След. ПР →</button>
+  </div>
+</div>
+<span class="pr-tag">ПР20</span>
+<h1>ПР20 — Форма кредитной карты: все задания</h1>
+<div class="desc">Одна форма, в которой одновременно работают все задания: UnionPay, маска CVV, автопереход между полями, тёмная тема, сохранение в localStorage, валюты и 3D-переворот.</div>
+
+<div class="card">
+  <div class="layout">
+    <div class="card3d" id="card">
+      <div class="row">
+        <span class="brand" id="brand">CARD</span>
+        <span class="brand" id="currency-badge">₽</span>
+      </div>
+      <div>
+        <div class="lbl">Номер карты</div>
+        <div class="num" id="num">•••• •••• •••• ••••</div>
+      </div>
+      <div class="row">
+        <div><div class="lbl">Владелец</div><div class="holder" id="holder">ИМЯ ФАМИЛИЯ</div></div>
+        <div><div class="lbl">Срок</div><div id="expiry">MM/YY</div></div>
+        <div><div class="lbl">CVV</div><div id="cvv">•••</div></div>
+      </div>
+    </div>
+
+    <div id="form-wrap">
+      <div class="form-grid">
+        <div class="wide"><label>Номер карты</label><input id="number" inputmode="numeric" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="off"></div>
+        <div class="wide"><label>Владелец</label><input id="holder-input" placeholder="IVAN IVANOV" autocomplete="off"></div>
+        <div><label>Срок</label><input id="expiry-input" placeholder="MM/YY" maxlength="5" inputmode="numeric" autocomplete="off"></div>
+        <div><label>CVV</label><input id="cvv-input" type="password" inputmode="numeric" placeholder="CVV" maxlength="4" autocomplete="off"></div>
+        <div><label>Валюта</label><select id="currency"><option value="₽">RUB</option><option value="$">USD</option><option value="€">EUR</option></select></div>
+        <div><label>Тема</label><button class="btn gray" id="theme-toggle" onclick="toggleTheme()">🌙 Тёмная тема</button></div>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn" id="flip-btn" onclick="flipCard()">🔄 Перевернуть 3D</button>
+        <button class="btn green" id="save-btn" onclick="saveCardData()">💾 Сохранить</button>
+        <button class="btn red" id="clear-btn" onclick="clearCardData()">Удалить сохранённое</button>
+      </div>
+      <div class="status" id="status">Введите номер карты. Начинается с 62 — UnionPay.</div>
+    </div>
+  </div>
+  <div class="out" id="out">Здесь отображаются результаты: тип карты, маска CVV, автопереход, сохранение.</div>
+</div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let actualCvv = '';
+let flipped = false;
+let localStorageKey = 'pr20_cardData';
+
+function getCardType(digits) {
+  if (!digits) return 'unknown';
+  if (digits.startsWith('62')) return 'unionpay';
+  if (digits[0] === '4') return 'visa';
+  if (/^5[1-5]/.test(digits)) return 'mastercard';
+  if (/^220[0-4]/.test(digits)) return 'mir';
+  return 'unknown';
+}
+
+const CARD_INFO = {
+  visa: 'VISA',
+  mastercard: 'MasterCard',
+  mir: 'МИР',
+  unionpay: 'UnionPay',
+  unknown: 'CARD'
+};
+
+function maskNumber(value) {
+  const digits = String(value).replace(/\D/g, '');
+  let out = '';
+  for (let i = 0; i < 16; i++) {
+    out += digits[i] || '•';
+    if (i % 4 === 3 && i < 15) out += ' ';
+  }
+  return out;
+}
+
+function setStatus(text, ok) {
+  const el = $('status');
+  el.textContent = text;
+  el.className = 'status' + (ok === true ? ' ok' : ok === false ? ' err' : '');
+}
+
+function updateCard() {
+  const digits = $('number').value.replace(/\D/g, '');
+  const type = getCardType(digits);
+  $('num').textContent = maskNumber(digits);
+  $('brand').textContent = CARD_INFO[type];
+  $('card').className = 'card3d ' + (type === 'unknown' ? '' : type) + (flipped ? ' flip' : '');
+  $('holder').textContent = ($('holder-input').value || 'ИМЯ ФАМИЛИЯ').toUpperCase();
+  $('expiry').textContent = $('expiry-input').value || 'MM/YY';
+  $('cvv').textContent = '•'.repeat(actualCvv.length) || '•••';
+  $('currency-badge').textContent = $('currency').value;
+  out('Тип карты: <span class="hl">' + CARD_INFO[type] + '</span> (префикс ' + (digits.slice(0, 2) || '—') + ')\nCVV: ' + ('•'.repeat(actualCvv.length) || '—') + ', сохранено цифр: ' + actualCvv.length);
+}
+
+function out(html) {
+  $('out').innerHTML = html;
+}
+
+$('number').addEventListener('input', function () {
+  const digits = this.value.replace(/\D/g, '').slice(0, 19);
+  this.value = digits.replace(/(.{4})/g, '$1 ').trim();
+  updateCard();
+  if (this.value.length === 19) {
+    $('holder-input').focus();
+    setStatus('Номер заполнен — фокус перешёл на «Владелец»', true);
+  }
+});
+
+$('holder-input').addEventListener('input', updateCard);
+
+$('expiry-input').addEventListener('input', function () {
+  const d = this.value.replace(/\D/g, '').slice(0, 4);
+  this.value = d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d;
+  updateCard();
+});
+
+$('cvv-input').addEventListener('input', function () {
+  actualCvv = this.value.replace(/\D/g, '').slice(0, 4);
+  this.value = actualCvv;
+  updateCard();
+  if (actualCvv.length === 4) {
+    setStatus('CVV заполнен — фокус перешёл на номер карты', true);
+    $('number').focus();
+  }
+});
+
+$('currency').addEventListener('change', function () {
+  updateCard();
+  setStatus('Валюта: ' + this.value + ' (' + this.selectedOptions[0].textContent + ')', true);
+});
+
+function toggleTheme() {
+  const wrap = $('form-wrap');
+  wrap.classList.toggle('dark');
+  const dark = wrap.classList.contains('dark');
+  $('theme-toggle').textContent = dark ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+  setStatus('Тема: ' + (dark ? 'тёмная' : 'светлая'), true);
+}
+
+function flipCard() {
+  flipped = !flipped;
+  updateCard();
+  setStatus('Карточка перевёрнута: ' + (flipped ? 'да' : 'нет'), true);
+}
+
+function saveCardData() {
+  const data = {
+    number: $('number').value,
+    holder: $('holder-input').value,
+    expiry: $('expiry-input').value,
+    currency: $('currency').value
+  };
+  localStorage.setItem(localStorageKey, JSON.stringify(data));
+  setStatus('Данные сохранены в localStorage (CVV не сохраняется)', true);
+}
+
+function loadCardData() {
+  try {
+    const data = JSON.parse(localStorage.getItem(localStorageKey) || 'null');
+    if (!data) return;
+    $('number').value = data.number || '';
+    $('holder-input').value = data.holder || '';
+    $('expiry-input').value = data.expiry || '';
+    if (data.currency) $('currency').value = data.currency;
+    setStatus('Данные восстановлены из localStorage', true);
+  } catch (e) {
+    localStorage.removeItem(localStorageKey);
+  }
+}
+
+function clearCardData() {
+  localStorage.removeItem(localStorageKey);
+  ['number', 'holder-input', 'expiry-input', 'cvv-input'].forEach((id) => { $(id).value = ''; });
+  actualCvv = '';
+  updateCard();
+  setStatus('Сохранённые данные удалены', true);
+}
+
+loadCardData();
+updateCard();
+</script>
+</body>
+</html>
