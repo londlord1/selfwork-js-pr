@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР12 — Генератор хештегов</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:640px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}textarea{width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;min-height:80px;font-family:inherit}textarea:focus{border-color:#1a73e8;outline:none}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:14px;cursor:pointer}.tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:999px;padding:5px 14px;font-size:14px;margin:4px;cursor:pointer}.tag:hover{background:#0b5bc0}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:50px;margin-top:12px}.muted{color:#64748b;font-size:12px;margin-top:6px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr11.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr13.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР12</span><h1>ПР12 — Генератор хештегов</h1>
+<div class="desc">По введённому тексту генерируются хештеги: каждое слово превращается в #метку (убраны знаки препинания, регистр нормализован). Клик по хештегу копирует его.</div>
+<div class="card">
+  <div class="row"><textarea id="text" placeholder="Введите текст статьи...">Сегодня отличная погода для прогулки в парке</textarea></div>
+  <button class="rbtn" onclick="generate()">Сгенерировать</button>
+  <div class="muted">Кликните по хештегу, чтобы скопировать.</div>
+  <div id="tags" class="row" style="margin-top:10px"></div>
+  <div class="out" id="out"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function generate(){
+  const words=$('text').value.match(/[А-Яа-яЁёA-Za-z0-9]+/g)||[];
+  const tags=[...new Set(words.map(w=>'#'+w.toLowerCase()))];
+  $('tags').innerHTML=tags.map(t=>'<span class="tag" onclick="copyTag(this)">'+t+'</span>').join('');
+  $('out').textContent='Хештегов: '+tags.length+'\n'+tags.join(' ');
+}
+function copyTag(el){
+  const t=el.textContent;
+  try{ if(navigator.clipboard){navigator.clipboard.writeText(t);} }
+  catch(e){}
+  $('out').textContent='Скопировано: '+t;
+}
+generate();
+</script>
+</body></html>

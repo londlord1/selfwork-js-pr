@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР21 — Госуслуги: все задания</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;margin:4px 6px 4px 0}
+.btn:hover{background:#0b5bc0}
+.btn.green{background:#28a745}.btn.red{background:#dc3545}.btn.gray{background:#64748b}
+input{padding:8px 10px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%;font-family:inherit}
+input:focus{border-color:#1a73e8;outline:none}
+.muted{color:#64748b;font-size:12px}
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:#e0f2fe;color:#075985}
+.badge.ok{background:#dcfce7;color:#166534}
+.service{display:flex;justify-content:space-between;align-items:center;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;gap:10px}
+.service:hover{border-color:#1a73e8;background:#eef6ff}
+.service.active{border-color:#1a73e8;box-shadow:0 0 0 2px #c7d2fe}
+.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:40px;margin-top:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.item{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px dotted #e2e8f0}
+.notif{border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px}
+.notif .t{font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns">
+    <button class="btn" onclick="location.href='pr20.html'">← Пред. ПР</button>
+    <button class="btn" onclick="location.href='pr22.html'">След. ПР →</button>
+  </div>
+</div>
+<span class="pr-tag">ПР21</span>
+<h1>ПР21 — Имитация API Госуслуг: все задания</h1>
+<div class="desc">Одно приложение, где работают все задания: новые услуги, статусы заявок, подача заявления, вход по СНИЛС, личный кабинет, система оповещений и виджет для встраивания.</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>Вход</h2>
+    <div class="row">
+      <input id="login" value="user123" placeholder="Логин" style="flex:1">
+      <input id="password" type="password" value="password" placeholder="Пароль" style="flex:1">
+    </div>
+    <div class="row">
+      <button class="btn" onclick="login()">Войти через Госуслуги</button>
+      <button class="btn gray" onclick="loginSnils()">Войти по СНИЛС</button>
+      <input id="snils" value="123-456-789 00" placeholder="СНИЛС" style="flex:2">
+    </div>
+    <p class="muted" id="authstatus">не авторизован</p>
+
+    <h2 style="margin-top:14px">Услуги</h2>
+    <div id="services"></div>
+    <div class="out" id="out"></div>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Уведомления <span class="badge" id="unread">0</span></h2>
+      <div class="row">
+        <button class="btn green" onclick="pushNotif('new')">Новая заявка</button>
+        <button class="btn" onclick="pushNotif('status')">Изменение статуса</button>
+        <button class="btn gray" onclick="readAll()">Прочитать все</button>
+      </div>
+      <div id="notifs" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h2>Личный кабинет</h2>
+      <div id="cabinet"><span class="muted">Войдите, чтобы увидеть данные.</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Виджет для встраивания (ПОС)</h2>
+  <div id="widget" style="background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px;font-size:13px">
+    <b>Платформа обратной связи</b>
+    <div class="row" style="margin-top:8px">
+      <input id="fb" placeholder="Текст обращения" style="flex:1">
+      <button class="btn green" onclick="sendFb()">Отправить</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let authorized = false;
+let selected = null;
+let seq = 1000;
+
+const servicesDB = {
+  passport: { name: 'Замена паспорта', desc: 'Замена паспорта гражданина РФ', status: 'доступно' },
+  doctor: { name: 'Запись к врачу', desc: 'Запись через электронную регистратуру', status: 'доступно', clinics: ['Поликлиника №1', 'Поликлиника №2'], slots: 15 },
+  benefits: { name: 'Детские выплаты', desc: 'Ежемесячная выплата на ребёнка', status: 'доступно' }
+};
+
+const historyDB = [
+  { id: 900, service: 'Детские выплаты', date: '01.10.2026', status: 'исполнено' }
+];
+
+const userDB = {
+  fio: 'Иванов Иван Иванович', birth: '15.03.1990', email: 'ivanov@example.ru',
+  phone: '+7 (900) 123-45-67', snils: '123-456-789 00', passport: '45 12 № 345678'
+};
+
+let notifs = [];
+let fbCount = 0;
+
+function out(html) { $('out').innerHTML = html; }
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function login() {
+  authorized = $('login').value === 'user123' && $('password').value === 'password' ||
+    $('snils').value.trim() === '123-456-789 00';
+  $('authstatus').className = 'muted ' + (authorized ? 'badge ok' : 'badge');
+  $('authstatus').textContent = authorized ? 'авторизован' : 'не авторизован';
+  if (authorized) renderCabinet();
+  else out('<span class="err" style="color:#ff6b6b">Неверный логин/пароль или СНИЛС (для демо: user123/password или 123-456-789 00)</span>');
+}
+
+function loginSnils() { login(); }
+
+function renderServices() {
+  $('services').innerHTML = Object.entries(servicesDB).map(([id, s]) => {
+    const app = historyDB.find((h) => h.service === s.name);
+    return '<div class="service" id="svc-' + id + '" onclick="selectService(\'' + id + '\')">'
+      + '<div><b>' + esc(s.name) + '</b><div class="muted">' + esc(s.desc) + '</div></div>'
+      + (app ? '<span class="badge ' + (app.status === 'исполнено' ? 'ok' : '') + '">' + esc(app.status) + '</span>' : '<span class="muted">заявок нет</span>')
+      + '</div>';
+  }).join('');
+}
+
+function selectService(id) {
+  selected = id;
+  document.querySelectorAll('.service').forEach((el) => el.classList.remove('active'));
+  $('svc-' + id).classList.add('active');
+  const s = servicesDB[id];
+  const app = historyDB.find((h) => h.service === s.name);
+  const extra = s.clinics ? '\nКлиники: ' + s.clinics.join(', ') + '\nСвободных слотов: ' + s.slots : '';
+  out('<b>' + esc(s.name) + '</b>\n' + esc(s.desc) + '\nСтатус: ' + esc(s.status) + extra
+    + (app ? '\n\nЗаявка: №' + app.id + ' от ' + app.date + ' — ' + app.status : '\n\nЗаявок ещё нет.'));
+}
+
+function submitApplication() {
+  if (!selected) { out('Сначала выберите услугу'); return; }
+  if (!authorized) { out('<span style="color:#ff6b6b">Сначала авторизуйтесь</span>'); return; }
+  const s = servicesDB[selected];
+  const app = { id: ++seq, service: s.name, date: new Date().toLocaleDateString('ru-RU'), status: 'подано' };
+  historyDB.unshift(app);
+  renderServices();
+  out('✅ Заявление подано!\n' + app.service + ' · №' + app.id + ' · ' + app.date + ' · статус: ' + app.status);
+}
+
+function renderCabinet() {
+  $('cabinet').innerHTML = Object.entries(userDB).map(([k, v]) => '<div class="item"><span class="muted">' + k + '</span><b>' + esc(v) + '</b></div>').join('')
+    + '<div class="muted" style="margin-top:8px">История обращений: ' + historyDB.map((h) => '№' + h.id + ' ' + h.service + ' — ' + h.status).join('; ') + '</div>';
+}
+
+function pushNotif(kind) {
+  const n = kind === 'new'
+    ? { title: 'Новая заявка', text: 'Заявление №' + (++seq) + ' зарегистрировано', read: false }
+    : { title: 'Статус изменён', text: 'Заявление №' + (++seq) + ' в обработке', read: false };
+  notifs.unshift(n);
+  renderNotifs();
+}
+
+function renderNotifs() {
+  const unread = notifs.filter((n) => !n.read).length;
+  $('unread').textContent = unread;
+  $('unread').className = 'badge ' + (unread ? '' : 'ok');
+  $('notifs').innerHTML = notifs.length
+    ? notifs.map((n, i) => '<div class="notif"><div class="t">' + esc(n.title) + '</div>' + esc(n.text)
+      + (n.read ? ' <span class="badge ok">прочитано</span>' : ' <button class="btn gray" style="margin:0" onclick="markRead(' + i + ')">Прочитать</button>') + '</div>').join('')
+    : '<span class="muted">Уведомлений нет.</span>';
+}
+
+function markRead(i) { notifs[i].read = true; renderNotifs(); }
+function readAll() { notifs.forEach((n) => { n.read = true; }); renderNotifs(); }
+
+function sendFb() {
+  const text = $('fb').value.trim();
+  if (!text) return;
+  fbCount++;
+  $('fb').value = '';
+  const fb = document.createElement('div');
+  fb.className = 'item';
+  fb.innerHTML = '<span>ПОС-' + String(fbCount).padStart(4, '0') + '</span><span>' + esc(text) + '</span>';
+  $('widget').appendChild(fb);
+}
+
+renderServices();
+renderNotifs();
+</script>
+</body>
+</html>

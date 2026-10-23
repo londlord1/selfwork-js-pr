@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР29 — React: таймеры (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:680px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:8px}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+input{width:64px;padding:7px;border:2px solid #e0e0e0;border-radius:8px;text-align:center;font-size:14px}
+input:focus{border-color:#1a73e8;outline:none}
+.time{font-size:44px;font-weight:700;color:#1a73e8;font-variant-numeric:tabular-nums}
+.muted{color:#64748b;font-size:12px}
+.mt{border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin:8px 0}
+.phase{display:inline-block;padding:3px 12px;border-radius:999px;font-weight:600;font-size:13px}
+.phase.work{background:#dcfce7;color:#166534}
+.phase.rest{background:#e0f2fe;color:#075985}
+</style>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr28.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr30.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР29</span>
+<h1>ПР29 — React: асинхронные операции и таймеры (все задания)</h1>
+<div class="desc">Одно приложение таймеров со всеми заданиями: звук по завершении, быстрые кнопки, минуты/секунды, круговой прогресс, несколько таймеров, сохранение в localStorage и интервальная тренировка.</div>
+<div id="root"></div>
+</div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 800; o.type = 'sine'; g.gain.value = 0.3;
+    o.start(); setTimeout(() => { o.stop(); ctx.close(); }, 500);
+  } catch (e) {}
+}
+
+function fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+
+function SingleTimer({ id }) {
+  const [initial, setInitial] = useState(30);
+  const [time, setTime] = useState(() => { try { const d = JSON.parse(localStorage.getItem('pr29_t' + id) || 'null'); return d ? d.time : 30; } catch (e) { return 30; } });
+  const [active, setActive] = useState(false);
+  const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('pr29_t' + id, JSON.stringify({ time }));
+  }, [time]);
+
+  useEffect(() => {
+    if (!active) return;
+    const iv = setInterval(() => setTime((t) => { if (t <= 1) { setActive(false); setFinished(true); beep(); return 0; } return t - 1; }), 1000);
+    return () => clearInterval(iv);
+  }, [active]);
+
+  const radius = 80, circ = 2 * Math.PI * radius;
+  const p = initial ? time / initial : 0;
+  const col = p > .5 ? '#4CAF50' : p > .2 ? '#FF9800' : '#f44336';
+
+  return (
+    <div className="card">
+      <h2>Таймер #{id} (круговой прогресс + звук + шаги)</h2>
+      <div className="row" style={{ justifyContent: 'center' }}>
+        <svg width="200" height="200">
+          <circle cx="100" cy="100" r={radius} fill="none" stroke="#e0e0e0" strokeWidth="10" />
+          <circle cx="100" cy="100" r={radius} fill="none" stroke={col} strokeWidth="10" strokeLinecap="round"
+            strokeDasharray={circ} strokeDashoffset={circ * (1 - p)}
+            style={{ transition: 'stroke-dashoffset .5s, stroke .3s', transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }} />
+          <text x="100" y="108" textAnchor="middle" fontSize="26" fontWeight="700" fill="#1a73e8">{fmt(time)}</text>
+        </svg>
+      </div>
+      <div className="row" style={{ justifyContent: 'center' }}>
+        {[5, 10, 30, 60].map((s) => <button key={s} className="rbtn gray" onClick={() => { setInitial(s); if (!active && finished) { setTime(s); setFinished(false); } }}>{s}с</button>)}
+      </div>
+      <div className="row" style={{ justifyContent: 'center' }}>
+        <input type="number" value={Math.floor(time / 60)} onChange={(e) => { const m = Math.max(0, Math.min(99, Number(e.target.value) || 0)); if (!active) setTime(m * 60 + (time % 60)); }} /> <b>:</b>
+        <input type="number" value={time % 60} onChange={(e) => { const s = Math.max(0, Math.min(59, Number(e.target.value) || 0)); if (!active) setTime(Math.floor(time / 60) * 60 + s); }} />
+        <span style={{ fontSize: 13 }}>MM:SS</span>
+      </div>
+      <div className="row" style={{ justifyContent: 'center' }}>
+        <button className="rbtn green" onClick={() => { if (finished) { setTime(initial); setFinished(false); } setActive(!active); }}>{active ? 'Пауза' : 'Старт'}</button>
+        <button className="rbtn red" onClick={() => { setActive(false); setTime(initial); setFinished(false); }}>Сброс</button>
+      </div>
+      <p className="muted">{finished ? '⏰ Время вышло — звук проигран' : 'Осталось: ' + time + ' сек'}</p>
+    </div>
+  );
+}
+
+function Interval() {
+  const [work, setWork] = useState(30);
+  const [rest, setRest] = useState(10);
+  const [phase, setPhase] = useState('work');
+  const [time, setTime] = useState(30);
+  const [active, setActive] = useState(false);
+  const [round, setRound] = useState(1);
+
+  useEffect(() => {
+    if (!active) return;
+    const iv = setInterval(() => setTime((t) => {
+      if (t <= 1) {
+        if (phase === 'work') { setPhase('rest'); return rest; }
+        setPhase('work'); setRound((r) => r + 1); return work;
+      }
+      return t - 1;
+    }), 1000);
+    return () => clearInterval(iv);
+  }, [active, phase, work, rest]);
+
+  return (
+    <div className="card">
+      <h2>Интервальная тренировка</h2>
+      <div className="row"><span className={'phase ' + phase}>{phase === 'work' ? '🏋️ Работа' : '😌 Отдых'}</span><span className="time" style={{ fontSize: 34 }}>{fmt(time)}</span><span className="muted">Круг: {round}</span></div>
+      <div className="row">
+        <label style={{ fontSize: 13 }}>Работа <input type="number" value={work} min="5" onChange={(e) => setWork(Math.max(5, Number(e.target.value) || 5))} /></label>
+        <label style={{ fontSize: 13 }}>Отдых <input type="number" value={rest} min="5" onChange={(e) => setRest(Math.max(5, Number(e.target.value) || 5))} /></label>
+        <button className="rbtn green" onClick={() => setActive(!active)}>{active ? 'Пауза' : 'Старт'}</button>
+        <button className="rbtn red" onClick={() => { setActive(false); setPhase('work'); setTime(work); setRound(1); }}>Сброс</button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [timers, setTimers] = useState([1]);
+  const nextId = useRef(2);
+  return (
+    <div>
+      <div className="row">
+        <button className="rbtn" onClick={() => setTimers([...timers, nextId.current++])}>+ Добавить таймер</button>
+        <button className="rbtn gray" onClick={() => setTimers([1])}>Один таймер</button>
+      </div>
+      {timers.map((id) => <SingleTimer key={id} id={id} />)}
+      <Interval />
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

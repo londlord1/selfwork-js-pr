@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР28 — React: props и темы (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:680px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.switch{position:relative;display:inline-block;width:52px;height:28px;vertical-align:middle}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:.3s}
+.slider:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.switch input:checked + .slider{background:#1a73e8}
+.switch input:checked + .slider:before{transform:translateX(24px)}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+.pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.swatch.active{border-color:#0f172a}
+.muted{color:#64748b;font-size:13px;margin-top:8px}
+</style>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr27.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr29.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР28</span>
+<h1>ПР28 — React: props, динамические стили, темы (все задания)</h1>
+<div class="desc">Одно приложение тем со всеми заданиями: четыре карточки, ползунок и кнопка, сохранение в localStorage, анимация, акцентный цвет, три темы и авто-режим по времени суток.</div>
+<div id="root"></div>
+</div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+const KEY = 'pr28_theme';
+
+const THEMES = {
+  light: { bg: '#f0f2f5', text: '#111827', card: '#ffffff' },
+  dark: { bg: '#1a1a1a', text: '#f9fafb', card: '#2d2d2d' },
+  blue: { bg: '#e3f2fd', text: '#0d47a1', card: '#ffffff' }
+};
+
+function isNight() { const h = new Date().getHours(); return h < 6 || h >= 18; }
+
+const CARDS = [
+  ['Карточка 1', 'Первая карточка с описанием.'],
+  ['Карточка 2', 'Вторая карточка использует те же пропсы.'],
+  ['Карточка 3', 'Третья карточка — ещё один экземпляр компонента.'],
+  ['Карточка 4', 'Четвёртая добавлена в задании 1.']
+];
+
+function App() {
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem(KEY) || 'light'; } catch (e) { return 'light'; } });
+  const [auto, setAuto] = useState(true);
+  const [accent, setAccent] = useState('#4CAF50');
+
+  useEffect(() => {
+    if (auto) setTheme(isNight() ? 'dark' : 'light');
+  }, [auto]);
+
+  useEffect(() => { if (!auto) localStorage.setItem(KEY, theme); }, [theme, auto]);
+
+  const t = THEMES[theme];
+
+  return (
+    <div style={{ background: t.bg, color: t.text, borderRadius: 14, padding: 20, transition: 'all .4s' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 14 }}>
+        {Object.keys(THEMES).map((k) => (
+          <button key={k} className={theme === k ? 'pill active' : 'pill'} onClick={() => { setTheme(k); setAuto(false); }}>{k}</button>
+        ))}
+        <button className={auto ? 'pill active' : 'pill'} onClick={() => setAuto(!auto)}>Авто</button>
+        <span style={{ fontSize: 12, color: '#999' }}>{new Date().toLocaleTimeString('ru-RU')}</span>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <p className="muted">Акцентный цвет:</p>
+        <div className="swatches" style={{ marginTop: 6 }}>
+          {['#4CAF50', '#2196F3', '#f44336', '#FF9800', '#9C27B0'].map((c) => (
+            <button key={c} className={accent === c ? 'swatch active' : 'swatch'} style={{ background: c }} onClick={() => setAccent(c)} />
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14 }}>
+        <label className="switch"><input type="checkbox" checked={theme !== 'light'} onChange={(e) => { setAuto(false); setTheme(e.target.checked ? 'dark' : 'light'); }} /><span className="slider"></span></label>
+        <button style={{ padding: '9px 16px', border: 'none', borderRadius: 8, background: accent, color: '#fff', cursor: 'pointer' }} onClick={() => { setAuto(false); setTheme(theme === 'dark' ? 'light' : 'dark'); }}>Переключить</button>
+      </div>
+
+      {CARDS.map((c, i) => (
+        <div key={i} style={{ background: t.card, color: t.text, borderRadius: 12, padding: 14, margin: '10px 0', boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}>
+          <h3 style={{ color: accent }}>{c[0]}</h3>
+          <p style={{ fontSize: 14, marginTop: 4 }}>{c[1]}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

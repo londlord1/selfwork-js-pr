@@ -92,11 +92,25 @@ label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
         <button class="btn" id="flip-btn" onclick="flipCard()">🔄 Перевернуть 3D</button>
         <button class="btn green" id="save-btn" onclick="saveCardData()">💾 Сохранить</button>
         <button class="btn red" id="clear-btn" onclick="clearCardData()">Удалить сохранённое</button>
+        <button class="btn gray" id="reset-btn" onclick="resetAll()">Сбросить всё</button>
       </div>
       <div class="status" id="status">Введите номер карты. Начинается с 62 — UnionPay.</div>
     </div>
   </div>
   <div class="out" id="out">Здесь отображаются результаты: тип карты, маска CVV, автопереход, сохранение.</div>
+</div>
+
+<div class="card">
+  <h2>Все задания ПР20</h2>
+  <div class="tasks" id="tasks">
+    <div class="task-item" data-task="unionpay"><span class="mark">✓</span><span>1. Поддержка UnionPay — определена по префиксу 62</span></div>
+    <div class="task-item" data-task="cvv"><span class="mark">✓</span><span>2. Маска CVV — точки в поле и на карточке</span></div>
+    <div class="task-item" data-task="focus"><span class="mark">✓</span><span>3. Автопереход: номер → владелец, CVV → номер</span></div>
+    <div class="task-item" data-task="theme"><span class="mark">✓</span><span>4. Тёмная тема формы</span></div>
+    <div class="task-item" data-task="storage"><span class="mark">✓</span><span>5. Сохранение данных в localStorage</span></div>
+    <div class="task-item" data-task="currency"><span class="mark">✓</span><span>6. Валюты RUB / USD / EUR</span></div>
+    <div class="task-item" data-task="flip"><span class="mark">✓</span><span>7. 3D-переворот карточки</span></div>
+  </div>
 </div>
 </div>
 
@@ -133,6 +147,24 @@ function maskNumber(value) {
   return out;
 }
 
+function markDone(name) {
+  const el = document.querySelector('[data-task="' + name + '"]');
+  if (el) el.classList.add('done');
+}
+
+function luhn(digits) {
+  if (digits.length < 13) return false;
+  let sum = 0;
+  let alt = false;
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let n = Number(digits[i]);
+    if (alt) { n *= 2; if (n > 9) n -= 9; }
+    sum += n;
+    alt = !alt;
+  }
+  return sum % 10 === 0;
+}
+
 function setStatus(text, ok) {
   const el = $('status');
   el.textContent = text;
@@ -149,7 +181,9 @@ function updateCard() {
   $('expiry').textContent = $('expiry-input').value || 'MM/YY';
   $('cvv').textContent = '•'.repeat(actualCvv.length) || '•••';
   $('currency-badge').textContent = $('currency').value;
-  out('Тип карты: <span class="hl">' + CARD_INFO[type] + '</span> (префикс ' + (digits.slice(0, 2) || '—') + ')\nCVV: ' + ('•'.repeat(actualCvv.length) || '—') + ', сохранено цифр: ' + actualCvv.length);
+  if (type === 'unionpay') markDone('unionpay');
+  const valid = luhn(digits);
+  out('Тип карты: <span class="hl">' + CARD_INFO[type] + '</span> (префикс ' + (digits.slice(0, 2) || '—') + ')\nCVV: ' + ('•'.repeat(actualCvv.length) || '—') + ', сохранено цифр: ' + actualCvv.length + '\nLuhn: ' + (digits.length ? (valid ? '<span class="ok">верно</span>' : '<span class="err">неверно</span>') : '—'));
 }
 
 function out(html) {
@@ -162,6 +196,7 @@ $('number').addEventListener('input', function () {
   updateCard();
   if (this.value.length === 19) {
     $('holder-input').focus();
+    markDone('focus');
     setStatus('Номер заполнен — фокус перешёл на «Владелец»', true);
   }
 });
@@ -179,26 +214,36 @@ $('cvv-input').addEventListener('input', function () {
   this.value = actualCvv;
   updateCard();
   if (actualCvv.length === 4) {
+    markDone('cvv');
+    markDone('focus');
     setStatus('CVV заполнен — фокус перешёл на номер карты', true);
     $('number').focus();
   }
 });
 
 $('currency').addEventListener('change', function () {
+  markDone('currency');
   updateCard();
   setStatus('Валюта: ' + this.value + ' (' + this.selectedOptions[0].textContent + ')', true);
 });
 
-function toggleTheme() {
+function applyTheme(dark) {
   const wrap = $('form-wrap');
-  wrap.classList.toggle('dark');
-  const dark = wrap.classList.contains('dark');
+  wrap.classList.toggle('dark', dark);
   $('theme-toggle').textContent = dark ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+}
+
+function toggleTheme() {
+  const dark = !$('form-wrap').classList.contains('dark');
+  applyTheme(dark);
+  localStorage.setItem('pr20_theme', dark ? 'dark' : 'light');
+  markDone('theme');
   setStatus('Тема: ' + (dark ? 'тёмная' : 'светлая'), true);
 }
 
 function flipCard() {
   flipped = !flipped;
+  markDone('flip');
   updateCard();
   setStatus('Карточка перевёрнута: ' + (flipped ? 'да' : 'нет'), true);
 }
@@ -211,6 +256,7 @@ function saveCardData() {
     currency: $('currency').value
   };
   localStorage.setItem(localStorageKey, JSON.stringify(data));
+  markDone('storage');
   setStatus('Данные сохранены в localStorage (CVV не сохраняется)', true);
 }
 
@@ -222,6 +268,7 @@ function loadCardData() {
     $('holder-input').value = data.holder || '';
     $('expiry-input').value = data.expiry || '';
     if (data.currency) $('currency').value = data.currency;
+    markDone('storage');
     setStatus('Данные восстановлены из localStorage', true);
   } catch (e) {
     localStorage.removeItem(localStorageKey);
@@ -234,6 +281,23 @@ function clearCardData() {
   actualCvv = '';
   updateCard();
   setStatus('Сохранённые данные удалены', true);
+}
+
+function resetAll() {
+  localStorage.removeItem(localStorageKey);
+  localStorage.removeItem('pr20_theme');
+  ['number', 'holder-input', 'expiry-input', 'cvv-input'].forEach((id) => { $(id).value = ''; });
+  actualCvv = '';
+  flipped = false;
+  applyTheme(false);
+  document.querySelectorAll('.task-item').forEach((el) => el.classList.remove('done'));
+  updateCard();
+  setStatus('Всё сброшено', true);
+}
+
+if (localStorage.getItem('pr20_theme') === 'dark') {
+  applyTheme(true);
+  markDone('theme');
 }
 
 loadCardData();

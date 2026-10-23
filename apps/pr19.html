@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР19 — Чат-бот: все задания</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+.pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.chat{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:14px;font-size:14px;min-height:260px;max-height:360px;overflow:auto;font-family:inherit;white-space:pre-wrap}
+.msg{margin:6px 0}
+.msg .who{display:inline-block;font-weight:700;margin-right:8px}
+.msg.user .who{color:#f1c40f}
+.msg.bot .who{color:#2ecc71}
+.chat-row{display:flex;gap:8px;margin-top:10px}
+.chat-row input{flex:1;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px}
+.chat-row input:focus{border-color:#1a73e8;outline:none}
+.chat-row button{padding:10px 18px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:14px;cursor:pointer}
+.muted{color:#64748b;font-size:13px;margin-top:6px}
+.hint-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.hint{border:1px solid #cbd5e1;background:#f8fafc;border-radius:999px;padding:4px 12px;font-size:12px;cursor:pointer}
+.hint:hover{background:#eef6ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns">
+    <button class="btn" onclick="location.href='pr18.html'">← Пред. ПР</button>
+    <button class="btn" onclick="location.href='pr20.html'">След. ПР →</button>
+  </div>
+</div>
+<span class="pr-tag">ПР19</span>
+<h1>ПР19 — Чат-бот: все задания</h1>
+<div class="desc">Один бот, в котором одновременно работают все задания: команды «имя» и «возраст», поздравление с днём рождения, счётчик сообщений, обработка фразы «как тебя зовут», калькулятор, сохранение истории в localStorage и выбор языка.</div>
+
+<div class="card">
+  <h2>Параметры</h2>
+  <div class="hint-row">
+    <button class="pill" id="btn-ru" onclick="switchLanguage('ru')">🇷🇺 Русский</button>
+    <button class="pill" id="btn-en" onclick="switchLanguage('en')">🇬🇧 English</button>
+  </div>
+  <div class="hint-row">
+    <button class="hint" onclick="quick(':')"></button>
+    <span class="hint" onclick="sendText('привет')">привет</span>
+    <span class="hint" onclick="sendText('имя')">имя</span>
+    <span class="hint" onclick="sendText('возраст')">возраст</span>
+    <span class="hint" onclick="sendText('с днём рождения')">день рождения</span>
+    <span class="hint" onclick="sendText('как тебя зовут')">как тебя зовут</span>
+    <span class="hint" onclick="sendText('2+2')">2+2</span>
+    <span class="hint" onclick="sendText('пока')">пока</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Чат</h2>
+  <div class="chat" id="chat"></div>
+  <div class="chat-row">
+    <input id="msg" placeholder="Введите сообщение..." onkeydown="if(event.key==='Enter')sendCurrent()">
+    <button onclick="sendCurrent()">➤</button>
+  </div>
+  <p class="muted" id="counter">Сообщений: 0</p>
+  <p class="muted"><button style="border:none;background:none;color:#0b57d0;cursor:pointer;padding:0" onclick="clearHistory()">Очистить историю</button></p>
+</div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const HISTORY_KEY = 'pr19_chatHistory';
+
+let currentLanguage = 'ru';
+let userMessages = 0;
+
+const responses = {
+  ru: {
+    'с днём рождения': ['С днём рождения! 🎉🎂🎁', 'Поздравляю! Желаю счастья и здоровья! 🌟'],
+    'день рождения': ['С днём рождения! 🎉🎂🎁', 'Поздравляю! Желаю счастья и здоровья! 🌟'],
+    'как тебя зовут': ['Меня зовут ЧатБот-2000 🤖', 'Я бот, можешь придумать мне имя! 😊'],
+    'зовут': ['Меня зовут Бот 🙂', 'Зови меня просто Бот.'],
+    'имя': ['Меня зовут Бот! А тебя? 😊', 'Я безымянный бот — придумай мне имя! 🤖'],
+    'возраст': ['Мне ровно 1 день, я родился вместе с этим чатом 🎂', 'Возраст бота — понятие относительное 🙂'],
+    'привет': ['Привет! 😊', 'Здравствуй! 👋', 'Приветствую! 🤖'],
+    'как дела': ['Отлично! 🌟', 'Прекрасно! 💫'],
+    'пока': ['Пока! 👋', 'До встречи! 😊']
+  },
+  en: {
+    'hello': ['Hello! 😊', 'Hi there! 👋'],
+    'bye': ['Bye! 👋', 'See you! 😊'],
+    'how are you': ['Great! 🌟', 'Wonderful! 💫']
+  }
+};
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getBotResponse(text) {
+  let expr = text.replace(/,/g, '.').trim();
+  if (/^[0-9+\-*/().\s]+$/.test(expr) && /[0-9]/.test(expr)) {
+    try {
+      const result = Function('"use strict"; return (' + expr + ')')();
+      if (typeof result === 'number' && Number.isFinite(result)) {
+        return 'Результат: ' + result + ' 🧮';
+      }
+      throw new Error('bad');
+    } catch (e) {
+      return currentLanguage === 'ru' ? 'Не могу вычислить выражение 🤔' : "Can't compute this 🤔";
+    }
+  }
+
+  const lower = text.toLowerCase();
+  const dict = responses[currentLanguage];
+  const keys = Object.keys(dict).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    if (lower.includes(key)) return pick(dict[key]);
+  }
+  return currentLanguage === 'ru' ? 'Я не совсем понял. 🤔' : "I don't quite understand. 🤔";
+}
+
+function addMessage(text, who) {
+  let counter = userMessages;
+  if (who === 'bot') counter = userMessages;
+  const chat = $('chat');
+  const line = document.createElement('div');
+  line.className = 'msg ' + who;
+  const name = (who === 'user')
+    ? (currentLanguage === 'ru' ? 'Вы' : 'You')
+    : (currentLanguage === 'ru' ? 'Бот' : 'Bot');
+  const countLabel = (who === 'bot' && counter > 0) ? ' (Сообщение #' + counter + ')' : '';
+  line.innerHTML = '<span class="who">' + name + ':</span>' + escapeHtml(text) + countLabel;
+  chat.appendChild(line);
+  chat.scrollTop = chat.scrollHeight;
+  $('counter').textContent = 'Сообщений: ' + userMessages;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+
+function saveHistory() {
+  const history = [];
+  document.querySelectorAll('#chat .msg').forEach((el) => {
+    history.push({ text: el.lastChild.textContent || '', who: el.classList.contains('user') ? 'user' : 'bot' });
+  });
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+function renderHistory() {
+  const history = loadHistory();
+  $('chat').innerHTML = '';
+  history.forEach((m) => {
+    const line = document.createElement('div');
+    line.className = 'msg ' + m.who;
+    const name = (m.who === 'user')
+      ? (currentLanguage === 'ru' ? 'Вы' : 'You')
+      : (currentLanguage === 'ru' ? 'Бот' : 'Bot');
+    line.innerHTML = '<span class="who">' + name + ':</span>' + escapeHtml(m.text);
+    $('chat').appendChild(line);
+  });
+  userMessages = history.filter((m) => m.who === 'user').length;
+  $('counter').textContent = 'Сообщений: ' + userMessages;
+  $('chat').scrollTop = $('chat').scrollHeight;
+}
+
+function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+  $('chat').innerHTML = '';
+  userMessages = 0;
+  $('counter').textContent = 'Сообщений: 0';
+}
+
+function sendText(text) {
+  $('msg').value = text;
+  sendCurrent();
+}
+
+function sendCurrent() {
+  const input = $('msg');
+  const text = input.value.trim();
+  if (!text) return;
+  userMessages++;
+  addMessage(text, 'user');
+  input.value = '';
+  setTimeout(() => {
+    addMessage(getBotResponse(text), 'bot');
+    saveHistory();
+  }, 300);
+}
+
+function switchLanguage(lang) {
+  currentLanguage = lang;
+  $('btn-ru').classList.toggle('active', lang === 'ru');
+  $('btn-en').classList.toggle('active', lang === 'en');
+  const notice = lang === 'ru' ? 'Язык переключен на русский' : 'Language switched to English';
+  $('msg').placeholder = lang === 'ru' ? 'Введите сообщение...' : 'Type a message...';
+  setTimeout(() => addMessage(notice, 'bot'), 0);
+}
+
+renderHistory();
+</script>
+</body>
+</html>

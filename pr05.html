@@ -3,107 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР05 — DOM и события</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}
+<title>ПР05 — DOM и события (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
-.wrap{max-width:1000px;margin:0 auto}
+.wrap{max-width:840px;margin:0 auto}
 .topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
-.topnav a:hover{text-decoration:underline}
-.navbtns{display:flex;gap:8px;flex-wrap:wrap}
+.navbtns{display:flex;gap:8px}
 .navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
-.navbtns .btn:hover{background:#eef6ff}
-.navbtns .btn:disabled{opacity:.4;cursor:default}
 h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
 .pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
 .desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
-.card h2{font-size:17px;color:#333;margin-bottom:10px}
-.toc{position:sticky;top:0;z-index:5;background:#f0f2f5;padding:8px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #e2e8f0;margin-bottom:6px}
-.toc b{font-size:13px;color:#475569;margin-right:4px}
-.toc a{display:inline-flex;min-width:30px;justify-content:center;background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:3px 9px;text-decoration:none;font-size:13px;color:#0b57d0}
-.toc a:hover{background:#eef6ff;border-color:#93c5fd}
-.task{margin:20px 0}
-.task-head{display:flex;gap:9px;align-items:center;font-weight:600;color:#334155;margin-bottom:8px;font-size:15px}
-.task-num{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;background:#1a73e8;color:#fff;border-radius:50%;font-size:13px;flex:none}
-.task-frame{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
-footer{margin-top:24px;font-size:12px;color:#999;text-align:center}
-a{color:#0b57d0}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:150px}
+input:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.orange{background:#f39c12}
+.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin:10px 0}
+.demo{height:130px;border:1px dashed #cbd5e1;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:15px;background:#fff;transition:background .3s;padding:12px}
+.gallery{display:flex;gap:10px;flex-wrap:wrap}
+.gallery img{width:120px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;cursor:pointer}
+.gallery img.lit{border-color:#1a73e8;box-shadow:0 0 0 3px #c7d2fe}
+.err{color:#dc3545;font-size:12px}
+.ok{color:#28a745;font-size:12px}
+.switch{position:relative;display:inline-block;width:46px;height:24px;vertical-align:middle}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+.slider{background:#1a73e8}
+.switch input:checked+.slider:before{transform:translateX(22px)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="topnav">
   <a href="index.html">« Все практические</a>
-  <div class="navbtns">
-    <button class="btn" onclick="location.href='pr04.html'">← Пред. ПР</button>
-    <button class="btn" onclick="location.href='pr06.html'">След. ПР →</button>
-  </div>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr04.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr06.html'">След. ПР →</button></div>
 </div>
 <span class="pr-tag">ПР05</span>
-<h1>ПР05 — DOM и события</h1>
-<div class="desc">Все самостоятельные задания этой практической на одной странице — выполняются вместе. Задания идут по порядку, ниже.</div>
-<nav class="toc" id="toc"><b>Задания:</b></nav>
-<div id="tasks"></div>
-<footer>ПР05 · заданий: 4 · <a href="index.html">все практические</a></footer>
+<h1>ПР05 — DOM и события (все задания)</h1>
+<div class="desc">Одна страница с интерактивными виджетами: счётчик (1), смена темы (2), валидация формы (3) и галерея изображений (4).</div>
+
+<div class="card"><h2>1. Счётчик</h2>
+  <div class="demo"><span style="font-size:34px;color:#1a73e8;font-weight:700" id="cnt">0</span>
+  <div><button class="rbtn green" onclick="cnt++ ; show()">+1</button><button class="rbtn red" onclick="cnt--; show()">−1</button></div></div>
 </div>
+
+<div class="card"><h2>2. Смена темы</h2>
+  <div class="row"><label class="switch"><input id="dark" onchange="theme()"><span class="slider"></span></label> Тёмная тема для блока ниже</div>
+  <div class="demo" id="theme-box"><b>Блок демонстрации темы</b><span>Текст для проверки цветов</span></div>
+</div>
+
+<div class="card"><h2>3. Валидация формы</h2>
+  <div class="row"><input id="fname" placeholder="Имя (мин. 2 симв.)"><input id="femail" placeholder="E-mail"></div>
+  <button class="rbtn" onclick="validate()">Проверить</button>
+  <div id="fres" class="out" style="min-height:20px"></div>
+</div>
+
+<div class="card"><h2>4. Галерея изображений</h2>
+  <div class="gallery" id="gal"></div>
+  <div id="galinfo" class="muted"></div>
+</div>
+
 <script>
-const TASKS = [{"title": "Счётчик (+1 / −1)", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР05 • Зад.1 • Счётчик (+1 / −1)<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР05<\/span>\n<h1>ПР05 • Зад.1 • Счётчик (+1 / −1)<\/h1>\n<div class=\"desc\">Создайте страницу с кнопками «+1», «−1» и полем для отображения текущего значения.<\/div>\n\n<div class=\"card\">\n<p style=\"font-size:15px;margin-bottom:8px\">Интерактивный счётчик. Нажимайте кнопки.<\/p>\n<h2 style=\"text-align:center;font-size:40px\" id=\"counter\">0<\/h2>\n<div style=\"text-align:center\">\n<button class=\"btn green\" onclick=\"inc()\">+1<\/button>\n<button class=\"btn red\" onclick=\"dec()\">−1<\/button>\n<button class=\"btn orange\" onclick=\"resetC()\">Сброс<\/button>\n<\/div>\n<\/div>\n<script>\nlet val=0;\nconst c=document.getElementById('counter');\nfunction paint(){c.style.color=val>0?'#28a745':val<0?'#dc3545':'#333';}\nfunction inc(){val++;c.textContent=val;paint();}\nfunction dec(){val--;c.textContent=val;paint();}\nfunction resetC(){val=0;c.textContent=0;paint();}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 0;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "Смена темы (светлая/тёмная)", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР05 • Зад.2 • Смена темы (светлая/тёмная)<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР05<\/span>\n<h1>ПР05 • Зад.2 • Смена темы (светлая/тёмная)<\/h1>\n<div class=\"desc\">Кнопка переключает светлую/тёмную тему (background-color и color у body).<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"toggleTheme()\">Сменить тему 🌗<\/button>\n<\/div>\n<script>\nfunction toggleTheme(){\n const b=document.body;\n if(b.getAttribute('data-theme')==='dark'){\n   b.removeAttribute('data-theme');\n } else {\n   b.setAttribute('data-theme','dark');\n }\n}\nconst style=document.createElement('style');\nstyle.textContent='body[data-theme=\"dark\"]{background:#1a1a2e;color:#eee} body[data-theme=\"dark\"] .card{background:#16213e;border-color:#324} body{transition:background .3s,color .3s}';\ndocument.head.appendChild(style);\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 1;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "Валидация формы (Имя и Email)", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР05 • Зад.3 • Валидация формы (Имя и Email)<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР05<\/span>\n<h1>ПР05 • Зад.3 • Валидация формы (Имя и Email)<\/h1>\n<div class=\"desc\">Форма с полями «Имя» и «Email». При нажатии проверяйте, что поля не пустые, и выводите результат.<\/div>\n\n<div class=\"card\">\n<label>Имя:<\/label><input id=\"fname\" value=\"\">\n<label>Email:<\/label><input id=\"fmail\" value=\"\"><br>\n<button class=\"btn\" onclick=\"check()\">Отправить<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Заполните форму и нажмите «Отправить».<\/div>\n<script>\nfunction check(){\n const n=document.getElementById('fname').value.trim();\n const e=document.getElementById('fmail').value.trim();\n const o=document.getElementById('out');\n const errs=[];\n if(!n)errs.push('Имя обязательно');\n if(!e)errs.push('Email обязателен');\n else if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(e))errs.push('Некорректный email');\n if(errs.length){o.innerHTML='<span class=\"err\">'+errs.join('; ')+'<\/span>';}\n else{o.innerHTML=`<span class=\"ok\">✅ Форма валидна!<\/span>\n\nИмя: ${n}\nEmail: ${e}`;}\n}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 2;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "Галерея изображений", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР05 • Зад.4 • Галерея изображений<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР05<\/span>\n<h1>ПР05 • Зад.4 • Галерея изображений<\/h1>\n<div class=\"desc\">Несколько миниатюр; по клику в большом блоке отображается соответствующее изображение.<\/div>\n\n<div class=\"card\">\n<div id=\"big\" style=\"height:180px;border:2px dashed #cbd5e1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#999;margin-bottom:14px\">Выберите миниатюру<\/div>\n<div style=\"display:flex;gap:10px\" id=\"thumbs\"><\/div>\n<\/div>\n<script>\nconst items=[\n {label:'Красный',color:'#e74c3c'},\n {label:'Зелёный',color:'#27ae60'},\n {label:'Синий',color:'#3498db'},\n {label:'Жёлтый',color:'#f1c40f'}\n];\nconst th=document.getElementById('thumbs');\nitems.forEach((it,i)=>{\n const b=document.createElement('div');\n b.style.cssText='width:60px;height:60px;border-radius:10px;background:'+it.color+';cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)';\n b.title=it.label;\n b.onclick=()=>{const big=document.getElementById('big');big.innerHTML='<span style=\"font-weight:bold\">'+it.label+'<\/span>';big.style.background=it.color;big.style.color='#fff';};\n th.appendChild(b);\n});\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 3;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}];
-const container = document.getElementById('tasks');
-const toc = document.getElementById('toc');
-const frames = [];
-
-TASKS.forEach(function (task, i) {
-  const section = document.createElement('section');
-  section.className = 'task';
-  section.id = 'task-' + (i + 1);
-
-  const head = document.createElement('div');
-  head.className = 'task-head';
-  const num = document.createElement('span');
-  num.className = 'task-num';
-  num.textContent = i + 1;
-  const title = document.createElement('span');
-  title.textContent = task.title;
-  head.appendChild(num);
-  head.appendChild(title);
-
-  const frame = document.createElement('iframe');
-  frame.className = 'task-frame';
-  frame.dataset.index = i;
-  frame.title = 'Задание ' + (i + 1) + ': ' + task.title;
-  frame.src = 'about:blank';
-
-  section.appendChild(head);
-  section.appendChild(frame);
-  container.appendChild(section);
-  frames.push(frame);
-
-  const link = document.createElement('a');
-  link.href = '#task-' + (i + 1);
-  link.textContent = i + 1;
-  link.title = task.title;
-  toc.appendChild(link);
+const $=(id)=>document.getElementById(id);
+// 1
+let cnt=0;
+function show(){$('cnt').textContent=cnt;}
+// 2
+function theme(){document.body.classList?null:null; const on=$('dark').checked; const box=$('theme-box'); box.style.background=on?'#1a1a1a':''; box.style.color=on?'#fff':'';}
+// 3
+function validate(){
+  const n=$('fname').value.trim(), e=$('femail').value.trim();
+  const okN=n.length>=2, okE=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  $('fres').innerHTML=(okN?'<span class="ok">✔ имя</span>':'<span class="err">✖ имя (мин. 2)</span>')+' '
+    +(okE?'<span class="ok">✔ e-mail</span>':'<span class="err">✖ e-mail</span>')
+    +'<br>'+(okN&&okE?'Валидация пройдена ✓':'Есть ошибки');
+}
+// 4
+const cols=['#e05d5d','#e0a95d','#e0d85d','#8ee05d','#5dd4e0','#8a5de0'];
+const g=$('gal');
+cols.forEach((c,i)=>{
+  const im=document.createElement('div');
+  im.style.cssText='width:120px;height:80px;border-radius:8px;border:2px solid #e2e8f0;cursor:pointer;background:'+c+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px';
+  im.textContent='Картинка '+(i+1);
+  im.onclick=()=>{document.querySelectorAll('#gal > div').forEach(x=>x.style.borderColor='#e2e8f0');im.style.borderColor='#1a73e8';im.style.boxShadow='0 0 0 3px #c7d2fe';$('galinfo').textContent='Выбрана картинка '+(i+1);};
+  g.appendChild(im);
 });
-
-const observer = new IntersectionObserver(function (entries) {
-  entries.forEach(function (entry) {
-    if (!entry.isIntersecting) return;
-    const frame = entry.target;
-    if (frame.dataset.loaded) return;
-    frame.dataset.loaded = '1';
-    frame.srcdoc = TASKS[Number(frame.dataset.index)].html;
-    observer.unobserve(frame);
-  });
-}, { rootMargin: '600px' });
-
-frames.forEach(function (frame) { observer.observe(frame); });
-
-window.addEventListener('message', function (event) {
-  if (!event.data || event.data.type !== 'ph-height') return;
-  const frame = frames[event.data.index];
-  if (frame) frame.style.height = Math.max(420, event.data.height + 6) + 'px';
-});
+show();
 </script>
 </body>
 </html>

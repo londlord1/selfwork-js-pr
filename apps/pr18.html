@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР18 — Расширение браузера: все задания</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;margin:4px 6px 4px 0}
+.btn:hover{background:#0b5bc0}
+.btn.gray{background:#64748b}.btn.green{background:#28a745}.btn.red{background:#dc3545}.btn.orange{background:#f39c12}
+input{padding:8px 10px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%;font-family:inherit}
+input:focus{border-color:#1a73e8;outline:none}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+.preview{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:16px;transition:background .3s,color .3s;font-size:14px}
+.preview.dark{background:#1a1a1a;color:#f1f5f9}
+.preview.dark input{background:#2d2d2d;color:#fff;border-color:#555}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.swatch{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1;cursor:pointer}
+.switch{position:relative;display:inline-block;width:44px;height:22px;vertical-align:middle}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:#1a73e8}
+.switch input:checked + .slider:before{transform:translateX(22px)}
+.muted{color:#64748b;font-size:12px;margin-top:4px}
+.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:40px;margin-top:10px}
+.note{display:flex;gap:8px;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:6px 8px;margin-bottom:6px}
+.note .t{font-size:13px}
+.note button{border:none;background:none;color:#dc3545;font-size:15px;cursor:pointer}
+.group{margin-bottom:12px}
+.group label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+[data-hl]{background:#fff59d;color:#111}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns">
+    <button class="btn" onclick="location.href='pr17.html'">← Пред. ПР</button>
+    <button class="btn" onclick="location.href='pr19.html'">След. ПР →</button>
+  </div>
+</div>
+<span class="pr-tag">ПР18</span>
+<h1>ПР18 — Расширение браузера: все задания</h1>
+<div class="desc">Одно расширение-демо, где одновременно работают все задания: приветствие, фон, размер шрифта, счётчик кликов, тёмный режим, контент-скрипт и заметки к странице. Слева popup расширения, справа активная страница.</div>
+
+<div class="card">
+  <div class="layout">
+    <div class="preview" id="page">
+      <h3>Демо-страница сайта</h3>
+      <p>Это обычная страница, на которую расширение применяет действия.</p>
+      <h4>Заголовок второго уровня</h4>
+      <p>Здесь проверяется размер шрифта, фон и подсветка заголовков.</p>
+      <ul><li>Пункт списка</li><li>Ещё пункт</li></ul>
+    </div>
+
+    <div>
+      <div class="group">
+        <label>1. Приветствие и счётчик</label>
+        <input id="name" value="студент" placeholder="Имя">
+        <button class="btn green" onclick="sayHello()" style="margin-top:6px">👋 Приветствие</button>
+        <div class="muted">Нажатий: <b id="count">0</b></div>
+      </div>
+
+      <div class="group">
+        <label>2. Фон страницы</label>
+        <div class="swatches">
+          <button class="swatch" style="background:#ffebee" onclick="setBg('#ffebee')" title="красный"></button>
+          <button class="swatch" style="background:#e8f5e9" onclick="setBg('#e8f5e9')" title="зелёный"></button>
+          <button class="swatch" style="background:#fff3e0" onclick="setBg('#fff3e0')" title="оранжевый"></button>
+          <button class="swatch" style="background:#2196F3" onclick="setBg('#2196F3')" title="синий"></button>
+          <button class="btn gray" onclick="resetBg()" style="margin:0">Сброс</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <label>3. Размер шрифта</label>
+        <button class="btn" onclick="changeFont(2)">A+</button>
+        <button class="btn" onclick="changeFont(-2)">A−</button>
+        <button class="btn gray" onclick="resetFont()">Сброс</button>
+        <span class="muted"> текущий: <b id="fontsize">16 px</b></span>
+      </div>
+
+      <div class="group">
+        <label>5. Тёмный режим</label>
+        <label class="switch"><input type="checkbox" id="dark" onchange="toggleDark(this.checked)"><span class="slider"></span></label>
+        <span class="muted" id="darklabel">выключен</span>
+      </div>
+
+      <div class="group">
+        <label>6. Контент-скрипт</label>
+        <button class="btn" onclick="highlight()">Выделить заголовки</button>
+        <button class="btn orange" onclick="addBanner()">Баннер</button>
+        <button class="btn red" onclick="clearEffects()">Убрать эффекты</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>7. Заметки к странице</h2>
+  <div class="group">
+    <input id="note-text" placeholder="Текст заметки...">
+  </div>
+  <button class="btn green" onclick="saveNote()">💾 Сохранить</button>
+  <button class="btn red" onclick="clearNotes()">Очистить</button>
+  <div id="notes" style="margin-top:10px"></div>
+</div>
+
+<div class="out" id="out"></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const URL_KEY = 'pr18_notes_' + location.pathname;
+const COUNT_KEY = 'pr18_clicks';
+let fontLevel = 16;
+let clicks = Number(localStorage.getItem(COUNT_KEY) || 0);
+
+function out(msg) { $('out').textContent = msg; }
+function logStatus(msg) { out(msg); }
+
+function setBg(color) {
+  $('page').style.background = color;
+  $('page').style.transition = 'background-color .3s';
+  logStatus('Фон страницы: ' + color);
+}
+function resetBg() {
+  $('page').style.background = '';
+  logStatus('Фон сброшен');
+}
+
+function changeFont(delta) {
+  fontLevel = Math.min(32, Math.max(8, fontLevel + delta));
+  const page = $('page');
+  if (CSS.supports('zoom', '1.25')) {
+    page.style.zoom = (fontLevel / 16 === 1) ? '' : String(fontLevel / 16);
+  } else {
+    page.style.fontSize = fontLevel + 'px';
+  }
+  $('fontsize').textContent = fontLevel + ' px';
+  logStatus('Размер шрифта: ' + fontLevel + ' px');
+}
+function resetFont() {
+  fontLevel = 16;
+  $('page').style.zoom = '';
+  $('page').style.fontSize = '';
+  $('fontsize').textContent = '16 px';
+  logStatus('Шрифт сброшен');
+}
+
+function sayHello() {
+  const name = $('name').value.trim() || 'студент';
+  clicks++;
+  localStorage.setItem(COUNT_KEY, String(clicks));
+  $('count').textContent = clicks;
+  showToast('Привет, ' + name + '! 👋');
+  logStatus('Нажатий: ' + clicks);
+}
+
+function toggleDark(on) {
+  $('page').classList.toggle('dark', on);
+  $('darklabel').textContent = on ? 'включён' : 'выключен';
+  logStatus('Тёмный режим: ' + (on ? 'включён' : 'выключен'));
+}
+
+function highlight() {
+  const page = $('page');
+  const nodes = page.querySelectorAll('h3, h4');
+  let n = 0;
+  nodes.forEach((h) => {
+    if (h.hasAttribute('data-hl')) return;
+    h.setAttribute('data-hl', '1');
+    h.style.padding = '2px 6px';
+    h.style.borderRadius = '3px';
+    h.style.outline = '1px solid #f59e0b';
+    n++;
+  });
+  logStatus('Выделено заголовков: ' + n);
+}
+
+function addBanner() {
+  let banner = document.getElementById('pr18-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'pr18-banner';
+    banner.textContent = '📢 Баннер добавлен контент-скриптом';
+    banner.style.cssText = 'background:#1a73e8;color:#fff;padding:6px 10px;border-radius:6px;margin-bottom:10px;font-size:13px';
+    $('page').prepend(banner);
+  }
+  logStatus('Баннер добавлен');
+}
+
+function clearEffects() {
+  resetBg();
+  resetFont();
+  $('page').classList.remove('dark');
+  $('dark').checked = false;
+  $('darklabel').textContent = 'выключен';
+  $('page').querySelectorAll('[data-hl]').forEach((h) => {
+    h.removeAttribute('data-hl');
+    h.style.padding = '';
+    h.style.borderRadius = '';
+    h.style.outline = '';
+  });
+  const banner = document.getElementById('pr18-banner');
+  if (banner) banner.remove();
+  logStatus('Эффекты убраны');
+}
+
+function showToast(text) {
+  let toast = document.getElementById('pr18-toast');
+  if (toast) toast.remove();
+  toast = document.createElement('div');
+  toast.id = 'pr18-toast';
+  toast.textContent = text;
+  toast.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 18px;border-radius:10px;z-index:9999;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.35)';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(URL_KEY) || '[]'); }
+  catch (e) { return []; }
+}
+function renderNotes() {
+  const notes = loadNotes();
+  const box = $('notes');
+  if (!notes.length) { box.innerHTML = '<span class="muted">Заметок нет.</span>'; return; }
+  box.innerHTML = notes.map((n, i) =>
+    '<div class="note"><span class="t">' + n.text.replace(/</g, '&lt;') + '</span><button onclick="removeNote(' + i + ')">×</button></div>'
+  ).join('');
+}
+function saveNote() {
+  const text = $('note-text').value.trim();
+  if (!text) { out('Введите текст заметки'); return; }
+  const notes = loadNotes();
+  notes.push({ text: text, date: new Date().toISOString() });
+  localStorage.setItem(URL_KEY, JSON.stringify(notes));
+  $('note-text').value = '';
+  renderNotes();
+  out('Заметка сохранена');
+}
+function removeNote(i) {
+  const notes = loadNotes();
+  notes.splice(i, 1);
+  localStorage.setItem(URL_KEY, JSON.stringify(notes));
+  renderNotes();
+  out('Заметка удалена');
+}
+function clearNotes() {
+  localStorage.removeItem(URL_KEY);
+  renderNotes();
+  out('Заметки очищены');
+}
+
+$('count').textContent = clicks;
+renderNotes();
+</script>
+</body>
+</html>

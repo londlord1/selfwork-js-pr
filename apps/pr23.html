@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР23 — Наследование и полиморфизм (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+select,input{padding:8px 10px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}
+input:focus,select:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.orange{background:#f39c12}
+.item{display:flex;justify-content:space-between;align-items:center;border-left:4px solid #1a73e8;background:#f8fafc;border-radius:8px;padding:9px 12px;margin-bottom:6px}
+.item .t{font-weight:600}
+.item .m{font-size:12px;color:#64748b}
+.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:40px;margin-top:10px}
+.muted{color:#64748b;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr22.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr24.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР23</span>
+<h1>ПР23 — Наследование и полиморфизм (все задания)</h1>
+<div class="desc">Одно приложение коллекции: EducationalBook с переопределённым getInfo(), AudioBook.skipTo() и класс Collection с getByType() и фильтром по типу.</div>
+
+<div class="card">
+  <h2>Коллекция</h2>
+  <div class="row">
+    <button class="rbtn" onclick="add('book')">+ Обычная книга</button>
+    <button class="rbtn green" onclick="add('ebook')">+ Электронная</button>
+    <button class="rbtn orange" onclick="add('audiobook')">+ Аудиокнига</button>
+    <button class="rbtn gray" onclick="add('edu')">+ Учебник</button>
+  </div>
+  <div class="row">
+    <button class="rbtn gray" onclick="show('all')">Все</button>
+    <button class="rbtn gray" onclick="show('book')">Книги</button>
+    <button class="rbtn gray" onclick="show('ebook')">Электронные</button>
+    <button class="rbtn gray" onclick="show('audiobook')">Аудиокниги</button>
+    <button class="rbtn gray" onclick="show('edu')">Учебники</button>
+  </div>
+  <div id="list"></div>
+  <div class="out" id="out"></div>
+</div>
+
+<div class="card">
+  <h2>Плеер аудиокниги: skipTo(time)</h2>
+  <div class="row">
+    <input id="time" type="number" value="30" min="0">
+    <button class="rbtn" onclick="skip(0)">skipTo(0)</button>
+    <button class="rbtn" onclick="skip(prompt('Минута:')*1)">skipTo(ввод)</button>
+    <button class="rbtn gray" onclick="skip(-10)">отрицательное</button>
+    <button class="rbtn gray" onclick="skip(999)">больше длительности</button>
+    <span class="muted" id="playback"></span>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let counter = 0;
+
+class Book {
+  constructor(title, author, year) { this.title = title; this.author = author; this.year = year; this.type = 'book'; }
+  getInfo() { return this.title + ' — ' + this.author + ' (' + this.year + ')'; }
+}
+class EBook extends Book {
+  constructor(title, author, year, size) { super(title, author, year); this.type = 'ebook'; this.size = size; }
+  getInfo() { return super.getInfo() + ' [эл., ' + this.size + ' МБ]'; }
+}
+class AudioBook extends Book {
+  constructor(title, author, year, duration) { super(title, author, year); this.type = 'audiobook'; this.duration = duration; this.currentTime = 0; }
+  getInfo() { return super.getInfo() + ' [аудио, ' + this.duration + ' мин]'; }
+  skipTo(time) {
+    if (time < 0) time = 0;
+    if (time > this.duration) time = this.duration;
+    this.currentTime = time;
+    return time;
+  }
+}
+class EducationalBook extends Book {
+  constructor(title, author, year, subject, level) { super(title, author, year); this.type = 'edu'; this.subject = subject; this.level = level || 'beginner'; }
+  getInfo() {
+    const map = { beginner: 'Начальный', intermediate: 'Средний', advanced: 'Продвинутый' };
+    return super.getInfo() + ' (Учебник по ' + this.subject + ', ' + (map[this.level] || this.level) + ')';
+  }
+}
+class Collection {
+  constructor() { this.books = []; }
+  addBook(b) { this.books.push(b); }
+  getAllBooks() { return this.books; }
+  getByType(t) { return this.books.filter((b) => t === 'all' || b.type === t); }
+}
+
+const collection = new Collection();
+const player = new AudioBook('Дюна (аудиокнига)', 'Ф. Герберт', 1965, 720);
+
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function out(html) { $('out').innerHTML = html; }
+
+function add(type) {
+  counter++;
+  if (type === 'ebook') collection.addBook(new EBook('Электронная книга ' + counter, 'Автор', 2024, 3 + counter));
+  else if (type === 'audiobook') collection.addBook(new AudioBook('Аудиокнига ' + counter, 'Автор', 2023, 120 + counter * 10));
+  else if (type === 'edu') collection.addBook(new EducationalBook('Учебник по JavaScript', 'Д. Флэнаган', 2020, 'JavaScript', 'advanced'));
+  else collection.addBook(new Book('Печатная книга ' + counter, 'Автор', 2010));
+  show('all');
+}
+
+function show(type) {
+  const list = type === 'all' ? collection.getAllBooks() : collection.getByType(type);
+  $('list').innerHTML = list.length
+    ? list.map((b) => '<div class="item"><div><span class="t">' + esc(b.title) + '</span><div class="m">' + esc(b.getInfo()) + '</div></div><span class="muted">' + b.type + '</span></div>').join('')
+    : '<span class="muted">Пусто.</span>';
+  out("getByType('" + type + "') → " + list.length + ' книг(и)');
+}
+
+function skip(time) {
+  const result = player.skipTo(time);
+  const p = Math.round(player.currentTime / player.duration * 100);
+  $('playback').textContent = '⏩ Текущее: ' + player.currentTime + ' / ' + player.duration + ' мин (' + p + '%)';
+  out('skipTo(' + time + ') → ' + result + ' мин');
+}
+
+collection.addBook(new Book('Война и мир', 'Л. Н. Толстой', 1869));
+collection.addBook(new EBook('Дюна', 'Ф. Герберт', 1965, 4));
+collection.addBook(new AudioBook('Пикник на обочине', 'А. и Б. Стругацкие', 1972, 320));
+collection.addBook(new EducationalBook('JavaScript для профи', 'Д. Флэнаган', 2020, 'JavaScript', 'advanced'));
+show('all');
+skip(0);
+</script>
+</body>
+</html>

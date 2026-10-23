@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР30 — React: API и цитаты (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:680px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:8px}
+.quote{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:12px 14px;margin:8px 0}
+.quote .text{font-style:italic;line-height:1.5}
+.quote .author{text-align:right;color:#64748b;font-size:13px;margin-top:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}
+input,select{padding:8px 10px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}
+input:focus,select:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}
+.rel{position:relative}
+.sugg{position:absolute;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.12);z-index:5;min-width:240px;max-height:200px;overflow:auto}
+.sugg div{padding:8px 12px;cursor:pointer;font-size:13px}
+.sugg div:hover{background:#eef6ff}
+.small{font-size:12px;color:#94a3b8}
+</style>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr29.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr31.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР30</span>
+<h1>ПР30 — React: обмен данными через API (все задания)</h1>
+<div class="desc">Одно приложение цитат: локальная имитация API. Здесь есть кнопка «Поделиться», выбор количества, автодополнение авторов, избранное в localStorage, пагинация, кэширование и эффект печатной машинки.</div>
+<div id="root"></div>
+</div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+const FAV_KEY = 'pr30_fav';
+
+const DB = [
+  { _id: '1', content: 'Мы то, что мы делаем постоянно. Совершенство — привычка.', author: 'Аристотель' },
+  { _id: '2', content: 'Счастье зависит от нас самих.', author: 'Аристотель' },
+  { _id: '3', content: 'Единственный способ сделать великую работу — любить то, что делаешь.', author: 'Стив Джобс' },
+  { _id: '4', content: 'Жизнь — это то, что происходит с тобой, пока ты строишь планы.', author: 'Джон Леннон' },
+  { _id: '5', content: 'Воображение важнее знания.', author: 'Альберт Эйнштейн' },
+  { _id: '6', content: 'Успех — это путь от неудачи к неудаче без потери энтузиазма.', author: 'Уинстон Черчилль' },
+  { _id: '7', content: 'Знание — сила.', author: 'Фрэнсис Бэкон' },
+  { _id: '8', content: 'Будь тем изменением, которое хочешь видеть в мире.', author: 'Махатма Ганди' },
+  { _id: '9', content: 'Сложнее всего начать действовать.', author: 'Амелия Эрхарт' },
+  { _id: '10', content: 'Всё, что мы видим, — лишь точка зрения.', author: 'Анаис Нин' },
+  { _id: '11', content: 'Не нужно быть великим, чтобы начать.', author: 'Джим Рон' },
+  { _id: '12', content: 'Оптимист видит возможность в каждой трудности.', author: 'Уинстон Черчилль' }
+];
+const AUTHS = [...new Set(DB.map(q => q.author))].map((name) => ({ name, count: DB.filter(q => q.author === name).length }));
+const PER = 3;
+
+function apiSearchAuthors(q) { const l = q.toLowerCase(); return AUTHS.filter(a => a.name.toLowerCase().includes(l)); }
+
+function QuoteCard({ q, fav, onFav }) {
+  const [shown, setShown] = useState('');
+  useEffect(() => {
+    let i = 0; setShown('');
+    const iv = setInterval(() => { i += 1; setShown(q.content.slice(0, i)); if (i >= q.content.length) clearInterval(iv); }, 20);
+    return () => clearInterval(iv);
+  }, [q._id]);
+  const copy = () => { const t = q.content + ' — ' + q.author; if (navigator.clipboard) navigator.clipboard.writeText(t); else alert(t); };
+  return (
+    <div className="quote">
+      <div className="text">«{shown}»</div>
+      <div className="author">— {q.author}</div>
+      <div className="row">
+        <button className="rbtn gray" onClick={copy}>📋 Поделиться / копировать</button>
+        <button className={fav ? 'rbtn' : 'rbtn gray'} onClick={onFav}>{fav ? '⭐ В избранном' : '☆ В избранное'}</button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [favs, setFavs] = useState(() => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch (e) { return []; } });
+  const [count, setCountLocal] = useState(1);
+  const [list, setList] = useState([]);
+  const [author, setAuthor] = useState('');
+  const [sugg, setSugg] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(Math.ceil(DB.length / PER));
+  const [q, setQ] = useState(DB[0]);
+  const cache = useRef({});
+  const [log, setLog] = useState([]);
+
+  useEffect(() => { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); }, [favs]);
+
+  const toggleFav = (item) => setFavs((f) => f.some(x => x._id === item._id) ? f.filter(x => x._id !== item._id) : [...f, item]);
+  const isFav = (id) => favs.some(f => f._id === id);
+
+  const loadPage = (p) => { setList(DB.slice((p - 1) * PER, p * PER)); setPage(p); };
+  useEffect(() => { loadPage(1); }, []);
+
+  const loadAuthor = (name) => {
+    let item;
+    if (cache.current[name]) { item = cache.current[name]; setLog((l) => [name + ': из кэша', ...l].slice(0, 5)); }
+    else { item = DB.find(x => x.author === name); cache.current[name] = item; setLog((l) => [name + ': запрос к API', ...l].slice(0, 5)); }
+    setQ(item);
+  };
+
+  const onChangeAuthor = (v) => { setAuthor(v); setSugg(v.trim().length >= 2 ? apiSearchAuthors(v.trim()) : []); };
+
+  return (
+    <div>
+      <div className="card">
+        <h2>Разделы заданий</h2>
+        <div className="row">
+          <label className="small">Цитаты подряд (задание 2):</label>
+          <select value={count} onChange={(e) => setCountLocal(Number(e.target.value))}>
+            {[1, 3, 5, 10].map(n => <option key={n} value={n}>{n}</option>)}
+          </select>
+          <button className="rbtn gray" onClick={() => setList(DB.slice(0, Math.min(count, DB.length)))}>Показать {count}</button>
+        </div>
+        <div className="row">
+          <label className="small">Пагинация (задание 5):</label>
+          <button className="rbtn gray" disabled={page <= 1} onClick={() => loadPage(page - 1)}>← Назад</button>
+          <span className="small">Страница {page} из {pages}</span>
+          <button className="rbtn gray" disabled={page >= pages} onClick={() => loadPage(page + 1)}>Вперёд →</button>
+        </div>
+        <div className="rel">
+          <input value={author} onChange={(e) => onChangeAuthor(e.target.value)} placeholder="Автор (автодополнение, ≥2 симв.)" style={{ width: '100%' }} />
+          {sugg.length > 0 && <div className="sugg">{sugg.map(s => <div key={s.name} onClick={() => { setAuthor(s.name); setSugg([]); loadAuthor(s.name); }}>{s.name} ({s.count})</div>)}</div>}
+        </div>
+        <div className="small" style={{ marginTop: 6 }}>{log.join(' · ')}</div>
+      </div>
+
+      <div className="card">
+        <h2>Цитата дня (задания 1, 3, 4, 6, 7)</h2>
+        {q && <QuoteCard q={q} fav={isFav(q._id)} onFav={() => toggleFav(q)} />}
+        <button className="rbtn" onClick={() => setQ(DB[Math.floor(Math.random() * DB.length)])}>Другая цитата</button>
+      </div>
+
+      <div className="card">
+        <h2>Список</h2>
+        {list.map(x => <QuoteCard key={x._id} q={x} fav={isFav(x._id)} onFav={() => toggleFav(x)} />)}
+      </div>
+
+      <div className="card">
+        <h2>Избранное ({favs.length})</h2>
+        {favs.length === 0 && <span className="small">Пока пусто.</span>}
+        {favs.map(x => <div key={x._id} className="quote"><div className="text">«{x.content}»</div><div className="author">— {x.author}</div><button className="rbtn gray" onClick={() => toggleFav(x)}>Убрать</button></div>)}
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

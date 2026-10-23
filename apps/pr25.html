@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР25 — Сохранение данных в LocalStorage (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.saved{font-size:13px;color:#166534;background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:5px 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:160px}
+input:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.rbtn.orange{background:#f39c12}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}
+.pill.active{background:#1a73e8;color:#fff}
+.item{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px}
+.item .t{font-weight:600}
+.muted{color:#64748b;font-size:12px;margin-top:8px}
+.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:40px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr24.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr26.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР25</span>
+<h1>ПР25 — Сохранение данных в LocalStorage (все задания)</h1>
+<div class="desc">Одна библиотека с автосохранением: индикатор сохранения, отмена последнего действия (Undo), синхронизация между вкладками и фильтр «Избранное».</div>
+
+<div class="card">
+  <div class="topline">
+    <b>Моя библиотека</b>
+    <span class="saved" id="saved">ещё не сохранено</span>
+  </div>
+  <div class="row">
+    <input id="title" placeholder="Название книги">
+    <button class="rbtn green" onclick="addBook()">Сохранить и добавить</button>
+    <button class="rbtn orange" onclick="undo()">↩ Отменить</button>
+    <button class="rbtn red" onclick="resetAll()">Сброс</button>
+    <button class="rbtn gray" onclick="openSecond()">Вторая вкладка</button>
+  </div>
+  <div class="row">
+    <span class="pill" id="f-all" onclick="setFilter('all')">Все</span>
+    <span class="pill" id="f-fav" onclick="setFilter('fav')">⭐ Избранное</span>
+  </div>
+  <div id="books"></div>
+  <div class="out" id="out"></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const KEY = 'pr25_library';
+
+let state = load();
+let filter = 'all';
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (d && Array.isArray(d.books)) return d;
+  } catch (e) {}
+  return { books: [], history: [[]], index: 0, lastSaved: null };
+}
+
+function persist(snapshotBook) {
+  state.books = snapshotBook || [];
+  state.lastSaved = new Date();
+  state.history = state.history.slice(0, state.index + 1);
+  state.history.push(JSON.parse(JSON.stringify(state.books)));
+  state.index = state.history.length - 1;
+  localStorage.setItem(KEY, JSON.stringify(state));
+  updateSaved();
+}
+
+function updateSaved() {
+  $('saved').textContent = 'Сохранено в ' + (state.lastSaved ? state.lastSaved.toLocaleTimeString('ru-RU') : '—');
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function out(html) { $('out').innerHTML = html; }
+
+function render() {
+  const list = filter === 'fav' ? state.books.filter((b) => b.fav) : state.books;
+  $('books').innerHTML = list.length
+    ? list.map((b, i) => {
+        const idx = state.books.indexOf(b);
+        return '<div class="item"><span class="t">' + esc(b.title) + ' ' + (b.fav ? '⭐' : '') + '</span>'
+          + '<span><button class="rbtn" style="padding:4px 10px" onclick="toggleFav(' + idx + ')">' + (b.fav ? '⭐' : '☆') + '</button>'
+          + '<button class="rbtn red" style="padding:4px 10px" onclick="removeBook(' + idx + ')">×</button></span></div>';
+      }).join('')
+    : '<span class="muted">Список пуст.</span>';
+  $('f-all').classList.toggle('active', filter === 'all');
+  $('f-fav').classList.toggle('active', filter === 'fav');
+  out('Книг: ' + state.books.length + (state.books.length ? ', средний рейтинг: ' + avg() : '') + '<br>История: ' + state.history.length + ' состояний, шаг ' + (state.index + 1) + ' из ' + state.history.length + '<br>Синхронизация: изменения в другой вкладке применяются автоматически');
+}
+
+function avg() { return Number((state.books.reduce((s, b) => s + (b.r || 0), 0) / state.books.length).toFixed(2)); }
+
+function addBook() {
+  const t = $('title').value.trim();
+  if (!t) { out('Введите название'); return; }
+  persist([{ title: t, r: Number((Math.random() * 1 + 4).toFixed(1)), fav: false }, ...state.books]);
+  $('title').value = '';
+  render();
+  out('Книга добавлена и сохранена');
+}
+
+function removeBook(i) {
+  const copy = [...state.books];
+  copy.splice(i, 1);
+  persist(copy);
+  render();
+}
+
+function toggleFav(i) {
+  const copy = JSON.parse(JSON.stringify(state.books));
+  copy[i] = { ...copy[i], fav: !copy[i].fav };
+  persist(copy);
+  render();
+}
+
+function undo() {
+  if (state.index > 0) {
+    state.index--;
+    state.books = JSON.parse(JSON.stringify(state.history[state.index]));
+    localStorage.setItem(KEY, JSON.stringify(state));
+    render();
+    out('Последнее действие отменено');
+  } else {
+    out('Отменять нечего');
+  }
+}
+
+function resetAll() {
+  state = { books: [], history: [[]], index: 0, lastSaved: null };
+  persist([]);
+  render();
+}
+
+function setFilter(f) { filter = f; render(); }
+
+function openSecond() {
+  window.open(location.href, '_blank');
+  out('Вторая вкладка открыта — добавляйте книги в любой; здесь они появятся после обновления');
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === KEY) {
+    state = load();
+    render();
+    out('🔄 Данные синхронизированы с другой вкладки');
+  }
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР05 — DOM и события (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:840px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:150px}
+input:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.orange{background:#f39c12}
+.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin:10px 0}
+.demo{height:130px;border:1px dashed #cbd5e1;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;font-size:15px;background:#fff;transition:background .3s;padding:12px}
+.gallery{display:flex;gap:10px;flex-wrap:wrap}
+.gallery img{width:120px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #e2e8f0;cursor:pointer}
+.gallery img.lit{border-color:#1a73e8;box-shadow:0 0 0 3px #c7d2fe}
+.err{color:#dc3545;font-size:12px}
+.ok{color:#28a745;font-size:12px}
+.switch{position:relative;display:inline-block;width:46px;height:24px;vertical-align:middle}
+.switch input{display:none}
+.slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;cursor:pointer;transition:.2s}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+.slider{background:#1a73e8}
+.switch input:checked+.slider:before{transform:translateX(22px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr04.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr06.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР05</span>
+<h1>ПР05 — DOM и события (все задания)</h1>
+<div class="desc">Одна страница с интерактивными виджетами: счётчик (1), смена темы (2), валидация формы (3) и галерея изображений (4).</div>
+
+<div class="card"><h2>1. Счётчик</h2>
+  <div class="demo"><span style="font-size:34px;color:#1a73e8;font-weight:700" id="cnt">0</span>
+  <div><button class="rbtn green" onclick="cnt++ ; show()">+1</button><button class="rbtn red" onclick="cnt--; show()">−1</button></div></div>
+</div>
+
+<div class="card"><h2>2. Смена темы</h2>
+  <div class="row"><label class="switch"><input id="dark" onchange="theme()"><span class="slider"></span></label> Тёмная тема для блока ниже</div>
+  <div class="demo" id="theme-box"><b>Блок демонстрации темы</b><span>Текст для проверки цветов</span></div>
+</div>
+
+<div class="card"><h2>3. Валидация формы</h2>
+  <div class="row"><input id="fname" placeholder="Имя (мин. 2 симв.)"><input id="femail" placeholder="E-mail"></div>
+  <button class="rbtn" onclick="validate()">Проверить</button>
+  <div id="fres" class="out" style="min-height:20px"></div>
+</div>
+
+<div class="card"><h2>4. Галерея изображений</h2>
+  <div class="gallery" id="gal"></div>
+  <div id="galinfo" class="muted"></div>
+</div>
+
+<script>
+const $=(id)=>document.getElementById(id);
+// 1
+let cnt=0;
+function show(){$('cnt').textContent=cnt;}
+// 2
+function theme(){document.body.classList?null:null; const on=$('dark').checked; const box=$('theme-box'); box.style.background=on?'#1a1a1a':''; box.style.color=on?'#fff':'';}
+// 3
+function validate(){
+  const n=$('fname').value.trim(), e=$('femail').value.trim();
+  const okN=n.length>=2, okE=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  $('fres').innerHTML=(okN?'<span class="ok">✔ имя</span>':'<span class="err">✖ имя (мин. 2)</span>')+' '
+    +(okE?'<span class="ok">✔ e-mail</span>':'<span class="err">✖ e-mail</span>')
+    +'<br>'+(okN&&okE?'Валидация пройдена ✓':'Есть ошибки');
+}
+// 4
+const cols=['#e05d5d','#e0a95d','#e0d85d','#8ee05d','#5dd4e0','#8a5de0'];
+const g=$('gal');
+cols.forEach((c,i)=>{
+  const im=document.createElement('div');
+  im.style.cssText='width:120px;height:80px;border-radius:8px;border:2px solid #e2e8f0;cursor:pointer;background:'+c+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px';
+  im.textContent='Картинка '+(i+1);
+  im.onclick=()=>{document.querySelectorAll('#gal > div').forEach(x=>x.style.borderColor='#e2e8f0');im.style.borderColor='#1a73e8';im.style.boxShadow='0 0 0 3px #c7d2fe';$('galinfo').textContent='Выбрана картинка '+(i+1);};
+  g.appendChild(im);
+});
+show();
+</script>
+</body>
+</html>

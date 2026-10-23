@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР08 — Navigator и производительность: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:720px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin-top:10px}.stat{display:flex;justify-content:space-between;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:13px}.stat b{color:#1a73e8}.bar{height:14px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar>div{height:100%;background:#28a745}.muted{color:#64748b;font-size:12px;margin-top:6px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr07.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr09.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР08</span><h1>ПР08 — Navigator и производительность (все задания)</h1>
+<div class="desc">Одна страница с данными браузера: автоопределение скорости соединения (1), глубина цвета экрана (2) и «умный» кэш страниц A4 в ОЗУ (3).</div>
+
+<div class="card"><h2>Соединение (задание 1)</h2>
+  <div class="row"><b id="conn">—</b><button class="rbtn gray" onclick="checkConn()">Обновить</button></div>
+  <div class="bar"><div id="connbar" style="width:0%"></div></div>
+</div>
+
+<div class="card"><h2>Экран (задание 2)</h2>
+  <div class="stat"><span>Глубина цвета экрана</span><b id="depth">—</b></div>
+  <div class="stat"><span>Разрешение (devicePixelRatio)</span><b id="scale">—</b></div>
+</div>
+
+<div class="card"><h2>Умный кэш страниц A4 в ОЗУ (задание 3)</h2>
+  <div class="muted">Симуляция книги: страницы добавляются в кэш (perf/memory API), удаляется самая старая при переполнении 5 страниц.</div>
+  <div class="row"><button class="rbtn" onclick="addPage()">Добавить страницу</button><span class="muted">В кэше: <b id="cachesize">0</b>/5</span></div>
+  <div class="out" id="cacheout"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+// 1
+function checkConn(){
+  const c=navigator.connection||{effectiveType:'unknown',downlink:0};
+  const map={'4g':['4G',90],'3g':['3G',50],'2g':['2G',20],slow:['Slow-2G',8],unknown:['Нет данных',0]};
+  const [label,val]=map[c.effectiveType]||[c.effectiveType,50];
+  $('conn').textContent=navigator.onLine?'Онлайн · '+label+' · '+(c.downlink||1.4)+' Мбит/с':'Офлайн';
+  $('connbar').style.width=val+'%';
+}
+// 2
+function checkScreen(){
+  $('depth').textContent=screen.colorDepth+' бит'+(screen.pixelDepth===screen.colorDepth?'':' (pixelDepth '+screen.pixelDepth+')');
+  $('scale').textContent=window.devicePixelRatio+' · '+screen.width+'×'+screen.height;
+}
+// 3
+const cache=[];
+function bytes(s){return new Blob([s]).size;}
+function addPage(){
+  const n=cache.length+1;
+  const text='Страница №'+n+' — текст для демонстрации кэша. '+'x'.repeat(600);
+  cache.push({n,text,size:bytes(text)});
+  if(cache.length>5)cache.shift();
+  const used=cache.reduce((s,p)=>s+p.size,0);
+  $('cachesize').textContent=cache.length;
+  const perf=window.performance&&performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576)+' МБ':'н/д';
+  $('cacheout').innerHTML='Кэш: '+cache.map(p=>'#'+p.n).join(', ')+'<br>Всего в кэше: '+used+' байт'+'<br>Используемая JS-память: '+perf;
+  if(performance.mark)requestAnimationFrame(()=>performance.mark('cache-'+n));
+}
+checkConn();checkScreen();addPage();
+</script>
+</body></html>

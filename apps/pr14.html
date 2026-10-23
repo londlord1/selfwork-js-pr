@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР14 — Объекты и деструктуризация: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:680px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.field{display:flex;gap:8px;align-items:center;margin-bottom:6px}.field label{width:130px;font-size:13px;color:#64748b}.field input{flex:1}.muted{color:#64748b;font-size:12px;margin-top:6px}.exp{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;font-size:13px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr13.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr15.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР14</span><h1>ПР14 — Объекты и деструктуризация (все задания)</h1>
+<div class="desc">Одно приложение резюме: добавление опыта работы (1), иммутабельное обновление объекта (2), значения по умолчанию при деструктуризации (3) и сохранение резюме в localStorage (4).</div>
+
+<div class="card"><h2>Резюме</h2>
+  <div class="field"><label>Имя</label><input id="fname" value="Иван"></div>
+  <div class="field"><label>Должность</label><input id="role" value="Разработчик"></div>
+  <div class="field"><label>Город</label><input id="city" value="Москва"></div>
+  <div class="row"><button class="rbtn green" onclick="addExp()">+ Опыт работы</button><button class="rbtn" onclick="save()">💾 Сохранить</button><button class="rbtn red" onclick="reset()">Сброс</button></div>
+  <div id="exp"></div>
+  <div class="out" id="out"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY='pr14_resume';
+
+// резюме с деструктуризацией и значениями по умолчанию (задание 3)
+function createResume({ name='Аноним', role='Без должности', city='Не указан', experience=[] }={}){
+  return { name, role, city, experience: experience.map(e=>({...e})) };
+}
+
+let resume=loadResume();
+
+function loadResume(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d)return createResume(d);}catch(e){}
+  return createResume({name:'Иван',role:'Разработчик',city:'Москва',experience:[]
+    // стартовый опыт через иммутабельное добавление:
+  });
+}
+
+function renderExp(){
+  $('exp').innerHTML=resume.experience.map((e,i)=>
+    '<div class="exp"><span><b>'+e.title+'</b> — '+e.company+' ('+e.years+')</span><button class="rbtn red" onclick="delExp('+i+')">×</button></div>'
+  ).join('')||'<span class="muted">Опыта пока нет.</span>';
+}
+
+function addExp(){
+  // иммутабельное обновление: создаём новый массив, не мутируя исходный (задание 2)
+  const newExp=[
+    ...resume.experience,
+    { title:'Новая позиция '+(resume.experience.length+1), company: $('role').value||'Компания', years: new Date().getFullYear() }
+  ];
+  resume={ ...resume, experience: newExp }; // иммутабельно
+  renderExp();
+  $('out').textContent='Опыт добавлен иммутабельно: experience.length = '+resume.experience.length+'\nupdateResume (новый объект) → '+JSON.stringify({name:resume.name,role:resume.role});
+}
+
+function delExp(i){
+  resume={ ...resume, experience: resume.experience.filter((_,idx)=>idx!==i) };
+  renderExp();
+}
+
+function save(){
+  resume={ ...resume, name:$('fname').value||'Аноним', role:$('role').value||'Без должности', city:$('city').value||'Не указан' };
+  localStorage.setItem(KEY, JSON.stringify(resume));
+  renderExp();
+  $('out').textContent='Сохранено в localStorage.\nПример деструктуризации с умолчаниями:';
+  $('out').textContent+='\nconst {name, city} = resume → '+resume.name+' ('+resume.city+')';
+}
+
+function reset(){
+  localStorage.removeItem(KEY);
+  resume=createResume({name:'Иван',role:'Разработчик',city:'Москва'});
+  $('fname').value='Иван';$('role').value='Разработчик';$('city').value='Москва';
+  renderExp();
+}
+
+$('fname').value=resume.name;$('role').value=resume.role;$('city').value=resume.city;
+renderExp();
+</script>
+</body></html>

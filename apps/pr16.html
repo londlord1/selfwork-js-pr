@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР16 — JSON и структуры данных: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:760px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.post{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:10px 12px;margin-bottom:8px}.post.dim{opacity:.5}.post h3{font-size:14px}.post .m{font-size:12px;color:#64748b}.post .tags{font-size:12px;color:#1a73e8}.post .star{cursor:pointer;border:none;background:none;font-size:16px;float:right}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 11px;margin-bottom:5px;font-size:13px}.bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;display:inline-block;width:90px}.bar>div{height:100%;background:#1a73e8}.muted{color:#64748b;font-size:12px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr15.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr17.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР16</span><h1>ПР16 — Комплексная работа с JSON (все задания)</h1>
+<div class="desc">Одно приложение блога: статистика тегов Map + топ-5 (1), полнотекстовый поиск (2), рекомендации по избранному (3) и экспорт данных в JSON (4).</div>
+
+<div class="card"><h2>Блог</h2>
+  <div class="row"><input id="search" placeholder="Поиск по заголовку или превью..." oninput="render()"></div>
+  <div id="posts"></div>
+</div>
+
+<div class="card"><h2>1. Топ-5 тегов</h2>
+  <div id="top"></div>
+  <div class="row"><button class="rbtn" onclick="showTop()">Пересчитать</button></div>
+</div>
+
+<div class="card"><h2>3. Рекомендации по избранному</h2>
+  <div class="row"><button class="rbtn green" onclick="recommend()">Рекомендовать</button></div>
+  <div class="out" id="rec"></div>
+</div>
+
+<div class="card"><h2>4. Экспорт в JSON</h2>
+  <div class="row"><button class="rbtn" onclick="exportJson()">Скачать JSON</button><span class="muted">+ показать ниже</span></div>
+  <div class="out" id="json"><em>Нажмите «Скачать JSON»</em></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const posts=[
+  {id:1,title:'Основы React',preview:'Компоненты, props и состояние',tags:['react','jsx','hooks'],fav:true},
+  {id:2,title:'Замыкания в JS',preview:'Как работают замыкания и модули',tags:['js','closure'],fav:false},
+  {id:3,title:'Массивы',preview:'map, filter, reduce на практике',tags:['js','array'],fav:true},
+  {id:4,title:'Hooks: useState',preview:'Состояние и side-эффекты',tags:['react','hooks'],fav:false},
+  {id:5,title:'JSON API',preview:'Работа с fetch и сериализацией',tags:['js','json','api'],fav:false},
+  {id:6,title:'Компоненты и ключи',preview:'Списки и key в React',tags:['react','jsx','key'],fav:true}
+];
+let display=posts;
+
+function avg(p){const sum=p.reduce((a,o)=>a+o.tags.length,0);return sum/p.length;}
+
+function render(){
+  const q=$('search').value.trim().toLowerCase();
+  display=posts.filter(p=>!q||p.title.toLowerCase().includes(q)||p.preview.toLowerCase().includes(q));
+  $('posts').innerHTML=display.map(p=>
+    '<div class="post"><button class="star" onclick="toggleFav('+p.id+')">'+(p.fav?'⭐':'☆')+'</button><h3>'+p.title+'</h3><div class="m">'+p.preview+'</div><div class="tags">'+p.tags.join(' · ')+'</div></div>'
+  ).join('');
+}
+function toggleFav(id){const p=posts.find(x=>x.id===id);p.fav=!p.fav;render();}
+
+function showTop(){
+  const counts=new Map();
+  posts.forEach(p=>p.tags.forEach(t=>counts.set(t,(counts.get(t)||0)+1)));
+  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max=top[0]?top[0][1]:1;
+  $('top').innerHTML=top.map(([t,c])=>
+    '<div class="stat"><span>'+t+'</span><span><div class="bar"><div style="width:'+(c/max*100)+'%"></div></div> '+c+'</span></div>'
+  ).join('')||'Нет тегов';
+}
+
+function recommend(){
+  const favTags=new Set(posts.filter(p=>p.fav).flatMap(p=>p.tags));
+  const recs=posts.filter(p=>!p.fav&&p.tags.some(t=>favTags.has(t)));
+  $('rec').textContent=recs.length
+    ? 'Похоже на ваше избранное:\n'+recs.map(p=>'· '+p.title+' ('+p.tags.join(', ')+')').join('\n')
+    : 'Ничего похожего не найдено';
+}
+
+function exportJson(){
+  const data=JSON.stringify(posts,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='posts.json';a.click();URL.revokeObjectURL(url);
+  $('json').textContent=data;
+}
+
+render();showTop();
+</script>
+</body></html>

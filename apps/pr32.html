@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР32 — React: фильтрация и сортировка (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input,select{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}
+input:focus,select:focus{border-color:#1a73e8;outline:none}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}
+.pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.letters{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+.letters button{width:30px;height:30px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;cursor:pointer;font-size:13px}
+.letters button.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:10px}
+.person{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;animation:in .3s ease both}
+.person b{display:block}
+.person span{font-size:12px;color:#64748b}
+@keyframes in{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.muted{color:#64748b;font-size:12px;margin-top:8px}
+</style>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr31.html'">← Пред. ПР</button><button class="btn" onclick="location.href='index.html'">Все ПР →</button></div>
+</div>
+<span class="pr-tag">ПР32</span>
+<h1>ПР32 — React: фильтрация и сортировка (все задания)</h1>
+<div class="desc">Одно приложение списка людей со всеми заданиями: больше данных, фильтр по длине и первой букве, поиск по полям, множественные фильтры, экспорт CSV/JSON и анимация при фильтрации.</div>
+<div id="root"></div>
+</div>
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+const LETTERS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'.split('');
+
+const PEOPLE = [
+  { first: 'Анна', last: 'Иванова', age: 25, city: 'Москва' },
+  { first: 'Борис', last: 'Петров', age: 30, city: 'Санкт-Петербург' },
+  { first: 'Мария', last: 'Федорова', age: 22, city: 'Москва' },
+  { first: 'Алексей', last: 'Смирнов', age: 41, city: 'Новосибирск' },
+  { first: 'Ирина', last: 'Соколова', age: 35, city: 'Казань' },
+  { first: 'John', last: 'Smith', age: 28, city: 'London' },
+  { first: 'Наталья', last: 'Волкова', age: 27, city: 'Москва' },
+  { first: 'Максим', last: 'Алексеев', age: 33, city: 'Екатеринбург' },
+  { first: 'Юлия', last: 'Лебедева', age: 29, city: 'Санкт-Петербург' },
+  { first: 'Константин', last: 'Козлов', age: 44, city: 'Минск' }
+];
+const full = (p) => p.first + ' ' + p.last;
+
+function App() {
+  const [query, setQuery] = useState('');
+  const [field, setField] = useState('all');
+  const [lengthF, setLengthF] = useState('all');
+  const [letter, setLetter] = useState('');
+  const [filters, setFilters] = useState([]);
+
+  const toggleFilter = (id) => setFilters((f) => f.includes(id) ? f.filter(x => x !== id) : [...f, id]);
+
+  let result = PEOPLE;
+  const q = query.trim().toLowerCase();
+  if (q) result = result.filter(p => {
+    const obj = field === 'all' ? p : { [field]: p[field] };
+    return Object.values(obj).some(v => String(v).toLowerCase().includes(q));
+  });
+  if (lengthF === 'short') result = result.filter(p => full(p).replace(/\s/g, '').length <= 10);
+  if (lengthF === 'long') result = result.filter(p => full(p).replace(/\s/g, '').length > 10);
+  if (field === 'name' && letter) result = result.filter(p => full(p).startsWith(letter));
+  if (filters.includes('young')) result = result.filter(p => p.age < 30);
+  if (filters.includes('adult')) result = result.filter(p => p.age >= 30);
+  if (filters.includes('moscow')) result = result.filter(p => p.city === 'Москва');
+
+  const exportCsv = (type) => {
+    let content, mime, ext;
+    if (type === 'json') { content = JSON.stringify(result, null, 2); mime = 'application/json'; ext = 'json'; }
+    else { content = 'Имя,Возраст,Город\n' + result.map(p => '"' + full(p) + '",' + p.age + ',"' + p.city + '"').join('\n'); mime = 'text/csv;charset=utf-8'; ext = 'csv'; }
+    const blob = new Blob(['\ufeff' + content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'filtered.' + ext; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const animKey = query + '|' + field + '|' + lengthF + '|' + letter + '|' + filters.join(',');
+
+  return (
+    <div className="card">
+      <div className="row">
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Поиск..." style={{ flex: 1, minWidth: 160 }} />
+        <select value={field} onChange={(e) => setField(e.target.value)}>
+          <option value="all">Все поля</option><option value="first">Имя</option><option value="last">Фамилия</option><option value="age">Возраст</option><option value="city">Город</option><option value="name">Полное имя</option>
+        </select>
+        <select value={lengthF} onChange={(e) => setLengthF(e.target.value)}>
+          <option value="all">Любая длина</option><option value="short">Короткие (≤10)</option><option value="long">Длинные (&gt;10)</option>
+        </select>
+      </div>
+
+      <div className="row">
+        <span className="pill" style={filters.includes('young') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('young')}>Моложе 30</span>
+        <span className="pill" style={filters.includes('adult') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('adult')}>30+</span>
+        <span className="pill" style={filters.includes('moscow') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('moscow')}>Москва</span>
+      </div>
+
+      {field === 'name' && (
+        <div className="letters">
+          {LETTERS.map(c => <button key={c} className={letter === c ? 'active' : ''} onClick={() => setLetter(letter === c ? '' : c)}>{c}</button>)}
+        </div>
+      )}
+
+      <div className="grid" key={animKey}>
+        {result.map((p, i) =>
+          <div className="person" key={i}>
+            <b>{full(p)}</b><span>{p.age} лет · {p.city}</span>
+          </div>
+        )}
+      </div>
+      <div className="muted">Найдено: {result.length} из {PEOPLE.length}</div>
+      <div className="row" style={{ marginTop: 12 }}>
+        <button className="pill" onClick={() => exportCsv('csv')} disabled={result.length === 0}>📥 CSV ({result.length})</button>
+        <button className="pill" onClick={() => exportCsv('json')} disabled={result.length === 0}>📥 JSON ({result.length})</button>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

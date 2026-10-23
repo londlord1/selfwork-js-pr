@@ -1,109 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР08 — Navigator и производительность</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
-.wrap{max-width:1000px;margin:0 auto}
-.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
-.topnav a:hover{text-decoration:underline}
-.navbtns{display:flex;gap:8px;flex-wrap:wrap}
-.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
-.navbtns .btn:hover{background:#eef6ff}
-.navbtns .btn:disabled{opacity:.4;cursor:default}
-h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
-.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
-.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
-.card h2{font-size:17px;color:#333;margin-bottom:10px}
-.toc{position:sticky;top:0;z-index:5;background:#f0f2f5;padding:8px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #e2e8f0;margin-bottom:6px}
-.toc b{font-size:13px;color:#475569;margin-right:4px}
-.toc a{display:inline-flex;min-width:30px;justify-content:center;background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:3px 9px;text-decoration:none;font-size:13px;color:#0b57d0}
-.toc a:hover{background:#eef6ff;border-color:#93c5fd}
-.task{margin:20px 0}
-.task-head{display:flex;gap:9px;align-items:center;font-weight:600;color:#334155;margin-bottom:8px;font-size:15px}
-.task-num{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;background:#1a73e8;color:#fff;border-radius:50%;font-size:13px;flex:none}
-.task-frame{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
-footer{margin-top:24px;font-size:12px;color:#999;text-align:center}
-a{color:#0b57d0}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР08 — Navigator и производительность: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:720px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin-top:10px}.stat{display:flex;justify-content:space-between;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:13px}.stat b{color:#1a73e8}.bar{height:14px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar>div{height:100%;background:#28a745}.muted{color:#64748b;font-size:12px;margin-top:6px}</style>
 </head>
-<body>
-<div class="wrap">
-<div class="topnav">
-  <a href="index.html">« Все практические</a>
-  <div class="navbtns">
-    <button class="btn" onclick="location.href='pr07.html'">← Пред. ПР</button>
-    <button class="btn" onclick="location.href='pr09.html'">След. ПР →</button>
-  </div>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr07.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr09.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР08</span><h1>ПР08 — Navigator и производительность (все задания)</h1>
+<div class="desc">Одна страница с данными браузера: автоопределение скорости соединения (1), глубина цвета экрана (2) и «умный» кэш страниц A4 в ОЗУ (3).</div>
+
+<div class="card"><h2>Соединение (задание 1)</h2>
+  <div class="row"><b id="conn">—</b><button class="rbtn gray" onclick="checkConn()">Обновить</button></div>
+  <div class="bar"><div id="connbar" style="width:0%"></div></div>
 </div>
-<span class="pr-tag">ПР08</span>
-<h1>ПР08 — Navigator и производительность</h1>
-<div class="desc">Все самостоятельные задания этой практической на одной странице — выполняются вместе. Задания идут по порядку, ниже.</div>
-<nav class="toc" id="toc"><b>Задания:</b></nav>
-<div id="tasks"></div>
-<footer>ПР08 · заданий: 3 · <a href="index.html">все практические</a></footer>
+
+<div class="card"><h2>Экран (задание 2)</h2>
+  <div class="stat"><span>Глубина цвета экрана</span><b id="depth">—</b></div>
+  <div class="stat"><span>Разрешение (devicePixelRatio)</span><b id="scale">—</b></div>
 </div>
+
+<div class="card"><h2>Умный кэш страниц A4 в ОЗУ (задание 3)</h2>
+  <div class="muted">Симуляция книги: страницы добавляются в кэш (perf/memory API), удаляется самая старая при переполнении 5 страниц.</div>
+  <div class="row"><button class="rbtn" onclick="addPage()">Добавить страницу</button><span class="muted">В кэше: <b id="cachesize">0</b>/5</span></div>
+  <div class="out" id="cacheout"></div>
+</div>
+
 <script>
-const TASKS = [{"title": "Автоопределение скорости соединения", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР08 • Зад.1 • Автоопределение скорости соединения<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР08<\/span>\n<h1>ПР08 • Зад.1 • Автоопределение скорости соединения<\/h1>\n<div class=\"desc\">Используйте navigator.connection.downlink (Мбит/с) вместо фиксированных 50 Мбит/с и пересчитайте время скачивания.<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runSpeed()\">Рассчитать время скачивания<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку.<\/div>\n<script>\nfunction runSpeed(){\n const o=document.getElementById('out');\n const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;\n const realSpeed=conn?conn.downlink:50;\n const fileMB=500;\n const t=(fileMB/(realSpeed/8));\n o.innerHTML=`<span class=\"hl\">Автоопределение скорости<\/span>\n\nnavigator.connection.downlink = <span class=\"ok\">${conn?realSpeed+' Мбит/с':'недоступен, взято 50 по умолчанию'}<\/span>\n\nФайл 500 МБ загрузится за <span class=\"ok\">${conn?t.toFixed(1):'—'}<\/span> сек${conn?'':'\\n(в этом браузере downlink недоступен)'}`;\n}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 0;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "Глубина цвета экрана", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР08 • Зад.2 • Глубина цвета экрана<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР08<\/span>\n<h1>ПР08 • Зад.2 • Глубина цвета экрана<\/h1>\n<div class=\"desc\">Добавьте вывод screen.colorDepth (глубина цвета в битах) и рассчитайте байт в одном пикселе.<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runDepth()\">Показать глубину цвета<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку.<\/div>\n<script>\nfunction runDepth(){const d=screen.colorDepth||0;const bytes=d/8;document.getElementById('out').innerHTML=`<span class=\"hl\">Глубина цвета<\/span>\n\nРазрешение: ${screen.width}×${screen.height}\ncolorDepth = <span class=\"ok\">${d}<\/span> бит\n\nБайт в одном пикселе: <span class=\"ok\">${bytes}<\/span> байт`;}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 1;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "«Умный» кэш — страницы A4 в ОЗУ", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР08 • Зад.3 • «Умный» кэш — страницы A4 в ОЗУ<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР08<\/span>\n<h1>ПР08 • Зад.3 • «Умный» кэш — страницы A4 в ОЗУ<\/h1>\n<div class=\"desc\">Рассчитайте, сколько страниц формата A4 (текст ~10 КБ) поместится в оперативной памяти.<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runCache()\">Сколько страниц в ОЗУ?<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку.<\/div>\n<script>\nfunction runCache(){const ramG=(navigator.deviceMemory||4);const pages=(ramG*1024*1024)/10;document.getElementById('out').innerHTML=`<span class=\"hl\">«Умный» кэш<\/span>\n\nОЗУ: <span class=\"ok\">${ramG}<\/span> ГБ (navigator.deviceMemory)\n1 страница текста ≈ 10 КБ\n\nВ ОЗУ поместится примерно <span class=\"ok\">${Math.floor(pages).toLocaleString('ru')}<\/span> текстовых страниц`;}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 2;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}];
-const container = document.getElementById('tasks');
-const toc = document.getElementById('toc');
-const frames = [];
-
-TASKS.forEach(function (task, i) {
-  const section = document.createElement('section');
-  section.className = 'task';
-  section.id = 'task-' + (i + 1);
-
-  const head = document.createElement('div');
-  head.className = 'task-head';
-  const num = document.createElement('span');
-  num.className = 'task-num';
-  num.textContent = i + 1;
-  const title = document.createElement('span');
-  title.textContent = task.title;
-  head.appendChild(num);
-  head.appendChild(title);
-
-  const frame = document.createElement('iframe');
-  frame.className = 'task-frame';
-  frame.dataset.index = i;
-  frame.title = 'Задание ' + (i + 1) + ': ' + task.title;
-  frame.src = 'about:blank';
-
-  section.appendChild(head);
-  section.appendChild(frame);
-  container.appendChild(section);
-  frames.push(frame);
-
-  const link = document.createElement('a');
-  link.href = '#task-' + (i + 1);
-  link.textContent = i + 1;
-  link.title = task.title;
-  toc.appendChild(link);
-});
-
-const observer = new IntersectionObserver(function (entries) {
-  entries.forEach(function (entry) {
-    if (!entry.isIntersecting) return;
-    const frame = entry.target;
-    if (frame.dataset.loaded) return;
-    frame.dataset.loaded = '1';
-    frame.srcdoc = TASKS[Number(frame.dataset.index)].html;
-    observer.unobserve(frame);
-  });
-}, { rootMargin: '600px' });
-
-frames.forEach(function (frame) { observer.observe(frame); });
-
-window.addEventListener('message', function (event) {
-  if (!event.data || event.data.type !== 'ph-height') return;
-  const frame = frames[event.data.index];
-  if (frame) frame.style.height = Math.max(420, event.data.height + 6) + 'px';
-});
+const $=id=>document.getElementById(id);
+// 1
+function checkConn(){
+  const c=navigator.connection||{effectiveType:'unknown',downlink:0};
+  const map={'4g':['4G',90],'3g':['3G',50],'2g':['2G',20],slow:['Slow-2G',8],unknown:['Нет данных',0]};
+  const [label,val]=map[c.effectiveType]||[c.effectiveType,50];
+  $('conn').textContent=navigator.onLine?'Онлайн · '+label+' · '+(c.downlink||1.4)+' Мбит/с':'Офлайн';
+  $('connbar').style.width=val+'%';
+}
+// 2
+function checkScreen(){
+  $('depth').textContent=screen.colorDepth+' бит'+(screen.pixelDepth===screen.colorDepth?'':' (pixelDepth '+screen.pixelDepth+')');
+  $('scale').textContent=window.devicePixelRatio+' · '+screen.width+'×'+screen.height;
+}
+// 3
+const cache=[];
+function bytes(s){return new Blob([s]).size;}
+function addPage(){
+  const n=cache.length+1;
+  const text='Страница №'+n+' — текст для демонстрации кэша. '+'x'.repeat(600);
+  cache.push({n,text,size:bytes(text)});
+  if(cache.length>5)cache.shift();
+  const used=cache.reduce((s,p)=>s+p.size,0);
+  $('cachesize').textContent=cache.length;
+  const perf=window.performance&&performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576)+' МБ':'н/д';
+  $('cacheout').innerHTML='Кэш: '+cache.map(p=>'#'+p.n).join(', ')+'<br>Всего в кэше: '+used+' байт'+'<br>Используемая JS-память: '+perf;
+  if(performance.mark)requestAnimationFrame(()=>performance.mark('cache-'+n));
+}
+checkConn();checkScreen();addPage();
 </script>
-</body>
-</html>
+</body></html>

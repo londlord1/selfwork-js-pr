@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР15 — Set, Map и Array: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:720px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:140px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.tag{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:5px 12px;font-size:13px;margin:4px}.tag .x{border:none;background:none;color:#dc3545;cursor:pointer;font-size:14px}.muted{color:#64748b;font-size:12px;margin-top:6px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;font-size:13px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr14.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr16.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР15</span><h1>ПР15 — Set, Map и Array (все задания)</h1>
+<div class="desc">Одно приложение статей: автодополнение тегов (1), инверсия статистики — тег → Set статей (2), поиск пересечения тегов (3) и WeakMap-кэш вычислений (4).</div>
+
+<div class="card"><h2>Статьи и теги</h2>
+  <div id="articles"></div>
+</div>
+
+<div class="card"><h2>1. Автодополнение тегов</h2>
+  <div class="row"><input id="newTag" placeholder="Введите тег..."><button class="rbtn" onclick="addTag()">Добавить</button><div id="sug" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+  <div id="tags"></div>
+</div>
+
+<div class="card"><h2>2. Статистика тег → Set статей</h2>
+  <div class="row"><button class="rbtn" onclick="invIndex()">Построить индекс</button></div>
+  <div id="index"></div>
+</div>
+
+<div class="card"><h2>3. Пересечение тегов двух статей</h2>
+  <div class="row">
+    <select id="s1"><option value="0">Статья 1</option><option value="1">Статья 2</option><option value="2">Статья 3</option></select>
+    <select id="s2"><option value="1">Статья 2</option><option value="2">Статья 3</option><option value="0">Статья 1</option></select>
+    <button class="rbtn" onclick="common()">Общие теги</button>
+  </div>
+  <div class="out" id="o3"></div>
+</div>
+
+<div class="card"><h2>4. WeakMap-кэш вычислений</h2>
+  <div class="row"><button class="rbtn gray" onclick="weakDemo()">Демонстрация кэша</button></div>
+  <div class="out" id="o4"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const articles=[
+  {id:1,title:'Основы JS',tags:['js','react','array']},
+  {id:2,title:'React списки',tags:['react','dom','array']},
+  {id:3,title:'Set и Map',tags:['js','set','map']}
+];
+let currentTags=new Set(['js','react','set']);
+
+function renderArticles(){
+  $('articles').innerHTML=articles.map(a=>
+    '<div class="stat"><b>'+a.id+'. '+a.title+'</b><span>'+a.tags.join(', ')+'</span></div>'
+  ).join('');
+}
+function renderTags(){
+  $('tags').innerHTML=[...currentTags].map(t=>
+    '<span class="tag">'+t+' <button class="x" onclick="removeTag(\''+t+'\')">×</button></span>'
+  ).join('');
+}
+function suggestTags(inputText){
+  const q=inputText.toLowerCase().trim();
+  if(!q)return[];
+  const all=[...new Set(articles.flatMap(a=>a.tags))];
+  return all.filter(t=>t.startsWith(q)&&!currentTags.has(t));
+}
+$('newTag').addEventListener('input',e=>{
+  $('sug').innerHTML=suggestTags(e.target.value).slice(0,5).map(t=>'<span class="tag" onclick="pick(\''+t+'\')">'+t+'</span>').join('');
+});
+function pick(t){currentTags.add(t);$('newTag').value='';$('sug').innerHTML='';renderTags();}
+function addTag(){const v=$('newTag').value.trim();if(v)currentTags.add(v);renderTags();$('newTag').value='';}
+function removeTag(t){currentTags.delete(t);renderTags();}
+
+const tagToArticles=new Map();
+function invIndex(){
+  tagToArticles.clear();
+  articles.forEach(a=>a.tags.forEach(t=>{
+    if(!tagToArticles.has(t))tagToArticles.set(t,new Set());
+    tagToArticles.get(t).add(a.id);
+  }));
+  $('index').innerHTML=[...tagToArticles.entries()].map(([t,set])=>
+    '<div class="stat"><span>'+t+'</span><b>Статьи: '+[...set].join(', ')+'</b></div>'
+  ).join('');
+}
+function commonTags(setA,setB){return new Set([...setA].filter(t=>setB.has(t)));}
+function common(){
+  const a=articles[$('s1').value],b=articles[$('s2').value];
+  const c=commonTags(new Set(a.tags),new Set(b.tags));
+  $('o3').textContent='Статья «'+a.title+'» ∩ «'+b.title+'» → общие: ['+[...c].join(', ')+']';
+}
+
+const cache=new WeakMap();
+function heavy(key){let c=cache.get(key);if(!c){c=key.tags.length*100;cache.set(key,c);}return c;}
+function weakDemo(){
+  let calls=0;
+  const localCache=new WeakMap();
+  const h=(k)=>{if(localCache.has(k))return {v:localCache.get(k),cached:true};calls++;const v=k.tags.map((t,i)=>t.length*(i+1)).reduce((a,b)=>a+b,0);localCache.set(k,v);return {v,cached:false};};
+  const r1=h(articles[0]),r2=h(articles[0]),r3=h(articles[1]);
+  $('o4').textContent='WeakMap-кэш: первый вызов считает (новый), повторный берёт из кэша.\nСтатья 1, попытка 1: '+r1.v+' ('+(r1.cached?'кэш':'вычислено')+')\nСтатья 1, попытка 2: '+r2.v+' ('+(r2.cached?'кэш ✓':'вычислено')+')\nСтатья 2: '+r3.v+' ('+(r3.cached?'кэш':'вычислено')+')\nВсего вычислений: '+calls;
+}
+renderArticles();renderTags();invIndex();
+</script>
+</body></html>

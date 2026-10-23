@@ -1,109 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР13 — Методы массивов</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
-.wrap{max-width:1000px;margin:0 auto}
-.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
-.topnav a:hover{text-decoration:underline}
-.navbtns{display:flex;gap:8px;flex-wrap:wrap}
-.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
-.navbtns .btn:hover{background:#eef6ff}
-.navbtns .btn:disabled{opacity:.4;cursor:default}
-h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
-.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
-.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}
-.card h2{font-size:17px;color:#333;margin-bottom:10px}
-.toc{position:sticky;top:0;z-index:5;background:#f0f2f5;padding:8px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #e2e8f0;margin-bottom:6px}
-.toc b{font-size:13px;color:#475569;margin-right:4px}
-.toc a{display:inline-flex;min-width:30px;justify-content:center;background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:3px 9px;text-decoration:none;font-size:13px;color:#0b57d0}
-.toc a:hover{background:#eef6ff;border-color:#93c5fd}
-.task{margin:20px 0}
-.task-head{display:flex;gap:9px;align-items:center;font-weight:600;color:#334155;margin-bottom:8px;font-size:15px}
-.task-num{display:inline-flex;width:26px;height:26px;align-items:center;justify-content:center;background:#1a73e8;color:#fff;border-radius:50%;font-size:13px;flex:none}
-.task-frame{width:100%;height:620px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:block;transition:height .15s ease}
-footer{margin-top:24px;font-size:12px;color:#999;text-align:center}
-a{color:#0b57d0}
-</style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР13 — Методы массивов: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:740px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:40px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:5px;font-size:13px}.stat b{color:#1a73e8}.muted{color:#64748b;font-size:12px}</style>
 </head>
-<body>
-<div class="wrap">
-<div class="topnav">
-  <a href="index.html">« Все практические</a>
-  <div class="navbtns">
-    <button class="btn" onclick="location.href='pr12.html'">← Пред. ПР</button>
-    <button class="btn" onclick="location.href='pr14.html'">След. ПР →</button>
-  </div>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr12.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr14.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР13</span><h1>ПР13 — Методы массивов (все задания)</h1>
+<div class="desc">Единая демонстрация: комбинирование методов в цепочки (1), подсчёт товаров по категориям через reduce (2) и some/every/findIndex (3).</div>
+
+<div class="card"><h2>1. Методы массивов + цепочки</h2>
+  <div class="row"><button class="rbtn" onclick="chain()">Выполнить цепочку</button><span class="muted">массив → map → filter → reduce</span></div>
+  <div class="out" id="o1"></div>
 </div>
-<span class="pr-tag">ПР13</span>
-<h1>ПР13 — Методы массивов</h1>
-<div class="desc">Все самостоятельные задания этой практической на одной странице — выполняются вместе. Задания идут по порядку, ниже.</div>
-<nav class="toc" id="toc"><b>Задания:</b></nav>
-<div id="tasks"></div>
-<footer>ПР13 · заданий: 3 · <a href="index.html">все практические</a></footer>
+
+<div class="card"><h2>2. Подсчёт по категориям (reduce)</h2>
+  <div class="row"><button class="rbtn" onclick="cats()">Подсчитать</button><span class="muted">reduce() → {категория: количество}</span></div>
+  <div id="cats"></div>
+  <div class="out" id="o2"></div>
 </div>
+
+<div class="card"><h2>3. some / every / findIndex</h2>
+  <div class="row"><button class="rbtn" onclick="someEvery()">Проверить</button></div>
+  <div class="out" id="o3"></div>
+</div>
+
 <script>
-const TASKS = [{"title": "Комбинирование методов (цепочки)", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР13 • Зад.1 • Комбинирование методов (цепочки)<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР13<\/span>\n<h1>ПР13 • Зад.1 • Комбинирование методов (цепочки)<\/h1>\n<div class=\"desc\">Создайте функцию getExpensiveTechNames(): одной цепочкой методов отфильтруйте категорию «tech», отберите дороже 500 и верните только названия.<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runChain()\">getExpensiveTechNames()<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку, чтобы запустить цепочку методов.<\/div>\n<script>\nconst warehouse=[\n {id:1,name:'Ноутбук',price:1000,quantity:4,category:'tech'},\n {id:2,name:'Мышь',price:50,quantity:15,category:'tech'},\n {id:3,name:'Клавиатура',price:80,quantity:10,category:'tech'},\n {id:4,name:'Стол',price:300,quantity:2,category:'furniture'},\n {id:5,name:'Стул',price:150,quantity:8,category:'furniture'},\n {id:6,name:'Лампа',price:40,quantity:20,category:'lighting'},\n {id:7,name:'Монитор',price:700,quantity:5,category:'tech'}\n];\nfunction getExpensiveTechNames(){return warehouse.filter(i=>i.category==='tech').filter(i=>i.price>500).map(i=>i.name);}\nfunction runChain(){const r=getExpensiveTechNames();document.getElementById('out').innerHTML=`<span class=\"hl\">filter(tech) → filter(>500) → map(name)<\/span>\n\nРезультат: <span class=\"ok\">${JSON.stringify(r)}<\/span>\n\nОжидалось: [\"Ноутбук\", \"Монитор\"]`;}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 0;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "Подсчёт товаров по категориям (reduce)", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР13 • Зад.2 • Подсчёт товаров по категориям (reduce)<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР13<\/span>\n<h1>ПР13 • Зад.2 • Подсчёт товаров по категориям (reduce)<\/h1>\n<div class=\"desc\">Используя reduce, создайте объект: ключ — категория, значение — количество товаров в ней.<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runCount()\">countByCategory()<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку.<\/div>\n<script>\nconst warehouse=[\n {id:1,name:'Ноутбук',price:1000,quantity:4,category:'tech'},\n {id:2,name:'Мышь',price:50,quantity:15,category:'tech'},\n {id:3,name:'Клавиатура',price:80,quantity:10,category:'tech'},\n {id:4,name:'Стол',price:300,quantity:2,category:'furniture'},\n {id:5,name:'Стул',price:150,quantity:8,category:'furniture'},\n {id:6,name:'Лампа',price:40,quantity:20,category:'lighting'},\n {id:7,name:'Монитор',price:700,quantity:5,category:'tech'}\n];\nfunction countByCategory(){return warehouse.reduce((acc,i)=>{acc[i.category]=(acc[i.category]||0)+1;return acc;},{});}\nfunction runCount(){const r=countByCategory();const o=document.getElementById('out');o.innerHTML=`<span class=\"hl\">reduce → { категория: количество }<\/span>\n\n${Object.entries(r).map(([k,v])=>`• ${k}: <span class=\"ok\">${v}<\/span>`).join('\\n')}\n\nОжидалось: { tech: 4, furniture: 2, lighting: 1 }`;}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 1;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}, {"title": "some / every / findIndex", "html": "<!DOCTYPE html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>ПР13 • Зад.3 • some / every / findIndex<\/title>\n<style>*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}\n.wrap{max-width:860px;margin:0 auto}\n.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}\n.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}\n.topnav a:hover{text-decoration:underline}\n.navbtns{display:flex;gap:8px}\n.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0;text-decoration:none}\n.navbtns .btn:hover{background:#eef6ff}\n.navbtns .btn:disabled{opacity:.4;cursor:default}\nh1{color:#1a73e8;margin-bottom:4px;font-size:24px}\n.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}\n.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}\n.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px 22px;margin:16px 0;box-shadow:0 2px 6px rgba(0,0,0,0.05)}\n.card h2{font-size:17px;color:#333;margin-bottom:10px}\n.btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;margin:6px 6px 0 0;transition:all .2s}\n.btn:hover{background:#0b5bc0}\n.btn.green{background:#28a745}.btn.green:hover{background:#1e7e34}\n.btn.red{background:#dc3545}.btn.red:hover{background:#c82333}\n.btn.orange{background:#f39c12}.btn.orange:hover{background:#d68910}\ninput,select,textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:4px 6px 4px 0}\ninput:focus,select:focus,textarea:focus{border-color:#1a73e8;outline:none}\nlabel{font-size:14px;color:#555}\n.out{background:#0f172a;color:#e2e8f0;padding:14px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;margin:12px 0;white-space:pre-wrap;min-height:40px}\n.ok{color:#2ecc71}.err{color:#ff6b6b}.hl{color:#f1c40f}\ntable{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}\nth,td{border:1px solid #cbd5e1;padding:8px;text-align:left}\nth{background:#eef2ff}\nfooter{margin-top:24px;font-size:12px;color:#999;text-align:center}\nol{padding-left:20px}\nol li{margin:6px 0}\nol a{color:#0b57d0;text-decoration:none;font-size:15px}\nol a:hover{text-decoration:underline}<\/style>\n<\/head>\n<body>\n<div class=\"wrap\">\n\n<span class=\"pr-tag\">ПР13<\/span>\n<h1>ПР13 • Зад.3 • some / every / findIndex<\/h1>\n<div class=\"desc\">Проверьте: есть ли товары дороже 2000 (some), все ли дешевле 2000 (every), и найдите индекс товара «Стул» (findIndex).<\/div>\n\n<div class=\"card\">\n<button class=\"btn\" onclick=\"runSome()\">some(price>2000)<\/button>\n<button class=\"btn green\" onclick=\"runEvery()\">every(price<2000)<\/button>\n<button class=\"btn orange\" onclick=\"runFind()\">findIndex('Стул')<\/button>\n<\/div>\n<div class=\"out\" id=\"out\">Нажмите кнопку.<\/div>\n<script>\nconst warehouse=[\n {id:1,name:'Ноутбук',price:1000,quantity:4,category:'tech'},\n {id:2,name:'Мышь',price:50,quantity:15,category:'tech'},\n {id:3,name:'Клавиатура',price:80,quantity:10,category:'tech'},\n {id:4,name:'Стол',price:300,quantity:2,category:'furniture'},\n {id:5,name:'Стул',price:150,quantity:8,category:'furniture'},\n {id:6,name:'Лампа',price:40,quantity:20,category:'lighting'},\n {id:7,name:'Монитор',price:700,quantity:5,category:'tech'}\n];\nfunction runSome(){const r=warehouse.some(i=>i.price>2000);document.getElementById('out').innerHTML=`<span class=\"hl\">some(price>2000)<\/span> = <span class=\"${r?'ok':'err'}\">${r}<\/span>\n\nЕсть ли товар дороже 2000 ₽?`;}\nfunction runEvery(){const r=warehouse.every(i=>i.price<2000);document.getElementById('out').innerHTML=`<span class=\"hl\">every(price<2000)<\/span> = <span class=\"${r?'ok':'err'}\">${r}<\/span>\n\nВсе ли товары дешевле 2000 ₽?`;}\nfunction runFind(){const idx=warehouse.findIndex(i=>i.name.toLowerCase()==='стул');document.getElementById('out').innerHTML=`<span class=\"hl\">findIndex(\"Стул\")<\/span> = <span class=\"ok\">${idx}<\/span>\n\nЭлемент на индексе ${idx}: «${warehouse[idx].name}»`;}\n<\/script>\n\n\n\n<\/div>\n<script>\n(function () {\n  var index = 2;\n  function send() {\n    parent.postMessage({ type: 'ph-height', index: index, height: document.documentElement.scrollHeight }, '*');\n  }\n  window.addEventListener('load', send);\n  if (window.ResizeObserver) new ResizeObserver(send).observe(document.documentElement);\n  setInterval(send, 1500);\n})();\n<\/script>\n<\/body>\n<\/html>"}];
-const container = document.getElementById('tasks');
-const toc = document.getElementById('toc');
-const frames = [];
-
-TASKS.forEach(function (task, i) {
-  const section = document.createElement('section');
-  section.className = 'task';
-  section.id = 'task-' + (i + 1);
-
-  const head = document.createElement('div');
-  head.className = 'task-head';
-  const num = document.createElement('span');
-  num.className = 'task-num';
-  num.textContent = i + 1;
-  const title = document.createElement('span');
-  title.textContent = task.title;
-  head.appendChild(num);
-  head.appendChild(title);
-
-  const frame = document.createElement('iframe');
-  frame.className = 'task-frame';
-  frame.dataset.index = i;
-  frame.title = 'Задание ' + (i + 1) + ': ' + task.title;
-  frame.src = 'about:blank';
-
-  section.appendChild(head);
-  section.appendChild(frame);
-  container.appendChild(section);
-  frames.push(frame);
-
-  const link = document.createElement('a');
-  link.href = '#task-' + (i + 1);
-  link.textContent = i + 1;
-  link.title = task.title;
-  toc.appendChild(link);
-});
-
-const observer = new IntersectionObserver(function (entries) {
-  entries.forEach(function (entry) {
-    if (!entry.isIntersecting) return;
-    const frame = entry.target;
-    if (frame.dataset.loaded) return;
-    frame.dataset.loaded = '1';
-    frame.srcdoc = TASKS[Number(frame.dataset.index)].html;
-    observer.unobserve(frame);
-  });
-}, { rootMargin: '600px' });
-
-frames.forEach(function (frame) { observer.observe(frame); });
-
-window.addEventListener('message', function (event) {
-  if (!event.data || event.data.type !== 'ph-height') return;
-  const frame = frames[event.data.index];
-  if (frame) frame.style.height = Math.max(420, event.data.height + 6) + 'px';
-});
+const $=id=>document.getElementById(id);
+const numbers=[1,2,3,4,5,6,7,8];
+function chain(){
+  const res=numbers.filter(n=>n%2===0).map(n=>n*10).reduce((a,b)=>a+b,0);
+  $('o1').textContent='numbers=['+numbers.join(', ')+']\n.filter(чётные) → [2,4,6,8]\n.map(×10) → [20,40,60,80]\n.reduce(sum) → '+res;
+}
+const goods=[
+  {name:'Хлеб',cat:'Продукты'},{name:'Мыло',cat:'Химия'},{name:'Молоко',cat:'Продукты'},
+  {name:'Порошок',cat:'Химия'},{name:'Яблоко',cat:'Продукты'},{name:'Телефон',cat:'Электроника'}
+];
+function cats(){
+  const counts=goods.reduce((acc,g)=>{acc[g.cat]=(acc[g.cat]||0)+1;return acc;},{});
+  $('cats').innerHTML=Object.entries(counts).map(([k,v])=>'<div class="stat"><span>'+k+'</span><b>'+v+'</b></div>').join('');
+  $('o2').textContent='reduce → '+JSON.stringify(counts);
+}
+function someEvery(){
+  const nums=[2,4,6,8,10];
+  $('o3').textContent='nums=['+nums.join(', ')+']\n· some(n=>n>8) → '+nums.some(n=>n>8)
+    +'\n· every(n=>n%2===0) → '+nums.every(n=>n%2===0)
+    +'\n· some(n=>n===7) → '+nums.some(n=>n===7)
+    +'\n· findIndex(n=>n===6) → '+nums.findIndex(n=>n===6)
+    +'\n· findIndex(n=>n===99) → '+nums.findIndex(n=>n===99)+' (нет → -1)';
+}
+chain();cats();someEvery();
 </script>
-</body>
-</html>
+</body></html>

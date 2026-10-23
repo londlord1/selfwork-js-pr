@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР24 — DOM: рендеринг и события (все задания)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}
+.navbtns{display:flex;gap:8px}
+.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}
+h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
+.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:10px}
+.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:14px 0;color:#1a56a0;font-size:14px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}
+.card h2{font-size:15px;color:#333;margin-bottom:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input,select{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}
+input:focus,select:focus{border-color:#1a73e8;outline:none}
+.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}
+.book-card{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.book-card .t{font-weight:600}
+.book-card .m{font-size:12px;color:#64748b}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.modal-box{background:#fff;border-radius:12px;padding:20px;min-width:300px}
+.modal-box label{font-size:12px;color:#64748b;display:block;margin-top:8px}
+.modal-box input{width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topnav">
+  <a href="index.html">« Все практические</a>
+  <div class="navbtns"><button class="btn" onclick="location.href='pr23.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr25.html'">След. ПР →</button></div>
+</div>
+<span class="pr-tag">ПР24</span>
+<h1>ПР24 — DOM: рендеринг и события (все задания)</h1>
+<div class="desc">Один книжный менеджер: редактирование книги через модальное окно, живой поиск и сортировка по году, названию и рейтингу.</div>
+
+<div class="card">
+  <div class="row">
+    <input id="search" placeholder="Поиск (реально времени)..." oninput="render()" style="flex:1">
+    <select id="sort" onchange="render()">
+      <option value="year-desc">Год: новые сначала</option>
+      <option value="year-asc">Год: старые сначала</option>
+      <option value="title">Название (А-Я)</option>
+      <option value="rating">Рейтинг ↑</option>
+    </select>
+  </div>
+  <div id="books"></div>
+  <div class="out" id="out"></div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>Редактирование книги</h3>
+    <label>Название</label><input id="edit-title">
+    <label>Автор</label><input id="edit-author">
+    <div class="row"><button class="rbtn green" onclick="saveEdit()">Сохранить</button><button class="rbtn gray" onclick="closeModal()">Отмена</button></div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let books = [
+  { id: 1, title: 'Война и мир', author: 'Л. Н. Толстой', year: 1869, rating: 4.9 },
+  { id: 2, title: 'Анна Каренина', author: 'Л. Н. Толстой', year: 1877, rating: 4.8 },
+  { id: 3, title: 'Мастер и Маргарита', author: 'М. А. Булгаков', year: 1967, rating: 4.9 },
+  { id: 4, title: 'Дюна', author: 'Ф. Герберт', year: 1965, rating: 4.6 },
+  { id: 5, title: 'Гарри Поттер', author: 'Дж. Роулинг', year: 1997, rating: 4.7 }
+];
+let editingId = null;
+
+const by = {
+  'year-desc': (a, b) => b.year - a.year,
+  'year-asc': (a, b) => a.year - b.year,
+  'title': (a, b) => a.title.localeCompare(b.title, 'ru'),
+  'rating': (a, b) => b.rating - a.rating
+};
+
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function out(html) { $('out').innerHTML = html; }
+
+function render() {
+  const q = $('search').value.trim().toLowerCase();
+  let list = books.filter((b) => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+  list = [...list].sort(by[$('sort').value]);
+  $('books').innerHTML = list.map((b) =>
+    '<div class="book-card"><div><span class="t">' + esc(b.title) + '</span><div class="m">' + esc(b.author) + ' · ' + b.year + ' · ★ ' + b.rating + '</div></div>'
+    + '<button class="rbtn gray" onclick="openModal(' + b.id + ')">✏️ Редактировать</button></div>'
+  ).join('');
+  out('Показано ' + list.length + ' из ' + books.length + ' · сортировка: ' + $('sort').value);
+}
+
+function openModal(id) {
+  editingId = id;
+  const b = books.find((x) => x.id === id);
+  $('edit-title').value = b.title;
+  $('edit-author').value = b.author;
+  $('modal').classList.add('open');
+}
+function closeModal() { $('modal').classList.remove('open'); editingId = null; }
+function saveEdit() {
+  const b = books.find((x) => x.id === editingId);
+  if (!b) return;
+  const t = $('edit-title').value.trim(), a = $('edit-author').value.trim();
+  if (!t) { out('Название не может быть пустым'); return; }
+  b.title = t; b.author = a || b.author;
+  closeModal();
+  render();
+  out('Книга обновлена: ' + t + ' — ' + (a || b.author));
+}
+
+render();
+</script>
+</body>
+</html>

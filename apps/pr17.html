@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР17 — Инкапсуляция: ограниченный счётчик</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:600px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:90px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:14px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.red{background:#dc3545}.rbtn.orange{background:#f39c12}.value{font-size:44px;color:#1a73e8;font-weight:700;text-align:center;margin:8px 0}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:40px}.muted{color:#64748b;font-size:12px;margin-top:6px}.err{color:#ff6b6b}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr16.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr18.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР17</span><h1>ПР17 — Инкапсуляция: ограниченный счётчик</h1>
+<div class="desc">Приватная переменная через замыкание. Фабрика <code>createBoundedCounter(min, max)</code>: блокировка выхода за пределы, <code>getRange()</code>, <code>reset()</code> до min, ошибка при min &gt; max.</div>
+
+<div class="card">
+  <div class="row">
+    <label class="muted">min</label><input id="min" type="number" value="0">
+    <label class="muted">max</label><input id="max" type="number" value="5">
+    <button class="rbtn" onclick="create()">Создать</button>
+    <button class="rbtn red" onclick="doReset()">reset()</button>
+  </div>
+  <div class="value" id="value">0</div>
+  <div class="row" style="justify-content:center">
+    <button class="rbtn orange" onclick="inc()">increment()</button>
+    <button class="rbtn gray" onclick="dec()">decrement()</button>
+    <button class="rbtn gray" onclick="privacy()">Показать приватность</button>
+  </div>
+  <div class="out" id="out">Создайте счётчик.</div>
+  <div class="muted">Попробуйте min=5, max=0 — фабрика выбросит ошибку.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let counter=null;
+
+function createBoundedCounter(min,max){
+  min=Number(min);max=Number(max);
+  if(min>max)throw new Error('Некорректный диапазон: min ('+min+') больше max ('+max+')');
+  let count=min; // приватная переменная, доступна только внутри через замыкание
+  return {
+    increment(){ if(count<max){count++;return {value:count};} return {warning:'Достигнут максимум: '+max}; },
+    decrement(){ if(count>min){count--;return {value:count};} return {warning:'Достигнут минимум: '+min}; },
+    getValue(){return count;},
+    getRange(){return {min:min,max:max,current:count};},
+    reset(){count=min;return {value:count};}
+  };
+}
+
+function out(html){$('out').innerHTML=html;}
+function render(extra){
+  if(!counter){$('value').textContent='—';$('out').textContent='Сначала создайте счётчик';return;}
+  const r=counter.getRange();
+  $('value').textContent=r.current;
+  out('getRange() → '+JSON.stringify(r)+(extra?'\n'+extra:'')+'\nПрямой доступ counter.count = '+String(counter.count)+' (undefined)');
+}
+function create(){
+  try{counter=createBoundedCounter($('min').value,$('max').value);render('Создан счётчик');}
+  catch(e){counter=null;$('value').textContent='—';$('out').textContent='Ошибка: '+e.message;}
+}
+function inc(){if(!counter)return render();const r=counter.increment();render(r.warning?'<span class="err">'+r.warning+'</span>':'increment()');}
+function dec(){if(!counter)return render();const r=counter.decrement();render(r.warning?'<span class="err">'+r.warning+'</span>':'decrement()');}
+function doReset(){if(!counter)return render();const r=counter.reset();render('reset()');}
+function privacy(){if(!counter)return render();render('counter.count = '+String(counter.count)+' — прямого доступа нет (undefined)');}
+create();
+</script>
+</body></html>
