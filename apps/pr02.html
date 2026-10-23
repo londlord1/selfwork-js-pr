@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР02 — Функции и работа с массивами: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:840px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:150px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.rbtn.orange{background:#f39c12}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin-top:10px}.hl{color:#4ade80}.muted{color:#64748b;font-size:12px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr01.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr03.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР02</span><h1>ПР02 — Функции и работа с массивами (все задания)</h1>
+<div class="desc">Все четыре самостоятельных задания на одной странице: калькулятор (1), среднее арифметическое (2), обратный порядок (3), уникальные элементы (4).</div>
+
+<div class="card"><h2>1. Калькулятор</h2>
+  <div class="row">
+    <input id="ca" type="number" value="12" placeholder="Первое число">
+    <input id="cb" type="number" value="4" placeholder="Второе число">
+  </div>
+  <div class="row">
+    <button class="rbtn" onclick="runAdd()">add()</button>
+    <button class="rbtn green" onclick="runSubtract()">subtract()</button>
+    <button class="rbtn orange" onclick="runMultiply()">multiply()</button>
+    <button class="rbtn red" onclick="runDivide()">divide()</button>
+  </div>
+  <div class="out" id="o1"></div>
+</div>
+
+<div class="card"><h2>2. Среднее арифметическое</h2>
+  <div class="row"><input id="nums2" value="10, 20, 30, 40, 50">
+    <button class="rbtn" onclick="runAverage()">average()</button></div>
+  <div class="out" id="o2"></div>
+</div>
+
+<div class="card"><h2>3. Обратный порядок</h2>
+  <div class="row"><input id="nums3" value="1, 2, 3, 4, 5">
+    <button class="rbtn" onclick="runReverse()">reverseArray()</button></div>
+  <div class="out" id="o3"></div>
+</div>
+
+<div class="card"><h2>4. Уникальные элементы</h2>
+  <div class="row"><input id="nums4" value="1, 2, 3, 2, 4, 3, 5, 1">
+    <button class="rbtn" onclick="runUnique()">unique()</button></div>
+  <div class="out" id="o4"></div>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function parseArr(id){var raw=$(id).value;var parts=raw.split(',');var arr=[];for(var i=0;i<parts.length;i++){var v=parts[i].trim();if(v!==''){var n=Number(v);arr.push(isNaN(n)?v:n);}}return arr;}
+function fmt(arr){var s=[];for(var i=0;i<arr.length;i++){s.push(arr[i]);}return '['+s.join(', ')+']';}
+
+// ---- 1. Калькулятор ----
+function getA(){return Number($('ca').value)||0;}
+function getB(){return Number($('cb').value)||0;}
+function add(a,b){return a+b;}
+function subtract(a,b){return a-b;}
+function multiply(a,b){return a*b;}
+function divide(a,b){if(b===0)return 'Ошибка: деление на ноль';return a/b;}
+function runAdd(){var a=getA(),b=getB();$('o1').innerHTML='<b>add('+a+', '+b+')</b><br>'+a+' + '+b+' = <span class="hl">'+add(a,b)+'</span>';}
+function runSubtract(){var a=getA(),b=getB();$('o1').innerHTML='<b>subtract('+a+', '+b+')</b><br>'+a+' − '+b+' = <span class="hl">'+subtract(a,b)+'</span>';}
+function runMultiply(){var a=getA(),b=getB();$('o1').innerHTML='<b>multiply('+a+', '+b+')</b><br>'+a+' × '+b+' = <span class="hl">'+multiply(a,b)+'</span>';}
+function runDivide(){var a=getA(),b=getB();$('o1').innerHTML='<b>divide('+a+', '+b+')</b><br>'+a+' ÷ '+b+' = <span class="hl">'+divide(a,b)+'</span>';}
+
+// ---- 2. Среднее арифметическое ----
+function average(arr){if(!arr.length)return 0;var sum=0;for(var i=0;i<arr.length;i++){sum+=Number(arr[i]);}return sum/arr.length;}
+function runAverage(){var arr=parseArr('nums2');var avg=average(arr);$('o2').innerHTML='<b>average()</b><br>Массив: '+fmt(arr)+'<br>Среднее: <span class="hl">'+avg.toFixed(2)+'</span>';}
+
+// ---- 3. Обратный порядок (без reverse()) ----
+function reverseArray(arr){var out=[];for(var i=arr.length-1;i>=0;i--){out.push(arr[i]);}return out;}
+function runReverse(){var arr=parseArr('nums3');var rev=reverseArray(arr);$('o3').innerHTML='<b>reverseArray()</b> (без reverse())<br>Было: '+fmt(arr)+'<br>Стало: <span class="hl">'+fmt(rev)+'</span>';}
+
+// ---- 4. Уникальные элементы ----
+function unique(arr){var out=[];for(var i=0;i<arr.length;i++){if(out.indexOf(arr[i])===-1){out.push(arr[i]);}}return out;}
+function runUnique(){var arr=parseArr('nums4');var u=unique(arr);$('o4').innerHTML='<b>unique()</b> (удаление дубликатов)<br>Было: '+fmt(arr)+'<br>Уникальные: <span class="hl">'+fmt(u)+'</span>';}
+
+// инициализация
+runAdd();
+runAverage();
+runReverse();
+runUnique();
+</script>
+</body></html>

@@ -2,43 +2,154 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР07 — Валидация форм: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:640px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.pass-wrap{position:relative;flex:1;min-width:150px}.pass-wrap input{width:100%;padding:10px 40px 10px 12px}.pass-wrap .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer}.input{padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;flex:1;min-width:150px;font-family:inherit}.input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:14px;cursor:pointer}.ok{color:#166534;background:#dcfce7;border:1px solid #86efac;border-radius:10px;padding:9px 12px;font-size:13px;margin-top:8px}.err{color:#991b1b;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;padding:9px 12px;font-size:13px;margin-top:8px;white-space:pre-wrap}.hint{font-size:12px;color:#64748b;margin-left:8px}.badge{display:inline-block;min-width:32px;text-align:center;padding:3px 10px;border-radius:999px;font-size:13px;border:1px solid #cbd5e1}</style>
+<title>ПР07 — Валидация формы средствами JavaScript</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:640px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:4px}.field{margin:10px 0}.field label{display:block;font-size:13px;color:#333;font-weight:600;margin-bottom:4px}.field .req{color:#dc3545}.input-wrap{display:flex;align-items:center;gap:8px}.pass-wrap{position:relative;flex:1}.pass-wrap.holder input{width:100%;padding:10px 42px 10px 12px}.pass-wrap input{width:100%;padding:10px 12px}.pass-wrap .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer}.input{padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;flex:1;min-width:150px;font-family:inherit;background:#fff}.input:focus{border-color:#1a73e8;outline:none;box-shadow:0 0 0 3px rgba(26,115,232,.12)}.input.ok{border-color:#28a745;background:#f0faf0}.input.bad{border-color:#dc3545;background:#fff5f5}.msg{font-size:12px;margin-top:4px;min-height:16px}.msg.ok{color:#166534}.msg.bad{color:#991b1b}.badge{display:inline-block;min-width:32px;text-align:center;padding:3px 10px;border-radius:10px;background:#e2e8f0;color:#334155;font-size:12px;font-weight:600}.badge.pass{background:#86efac;color:#166534;border:1px solid #4ade80}.badge.fail{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}.hint{font-size:12px;color:#64748b;margin-left:8px}.checks{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:14px;cursor:pointer}.rbtn:disabled{background:#a8c6f5;cursor:not-allowed}.rbtn.gray{background:#64748b}.btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.cbrow{display:flex;align-items:center;gap:8px;font-size:13px;color:#333}.cbrow input{width:16px;height:16px;cursor:pointer}.out{background:#0f172a;color:#7dd3fc;border-radius:10px;padding:12px 16px;font-family:Consolas,monospace;font-size:13px;margin-top:14px;white-space:pre-wrap;min-height:60px}.success{color:#166534;background:#dcfce7;border:1px solid #86efac;border-radius:10px;padding:9px 12px;font-size:13px;margin-top:8px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr06.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr08.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР07</span><h1>ПР07 — Валидация форм (все задания)</h1>
-<div class="desc">Одна форма с валидацией: минимум 8 символов (1), хотя бы одна цифра (2), «глаз» показать/скрыть пароль (3), возраст 18+ по дате рождения (4).</div>
+<span class="pr-tag">ПР07</span><h1>ПР07 — Валидация формы средствами JavaScript</h1>
+<div class="desc">Регистрация с живой валидацией: имя и email (общие требования), пароль — минимум 8 символов и хотя бы одна цифра (зад. 1–2), «глаз» показа/скрытия (зад. 3), дата рождения с возрастом 18+ (зад. 4). Зелёные/красные рамки, кнопка «Зарегистрироваться» активируется только при полной валидности.</div>
 
-<div class="card"><h2>Пароль</h2>
-  <div class="row"><div class="pass-wrap"><input id="pass" type="password" placeholder="Пароль" oninput="valid()"><button class="eye" id="eye" onclick="togglePass()">👁</button></div></div>
-  <div class="row"><span class="hint">Проверки:</span><span class="badge" id="b1">8+</span><span class="badge" id="b2">цифра</span><span class="badge" id="b3">глаз</span></div>
-  <div id="pmsg"></div>
+<div class="card">
+  <h2>Регистрация</h2>
+
+  <div class="field">
+    <label>Имя <span class="req">*</span></label>
+    <input class="input" id="name" type="text" placeholder="Только буквы, минимум 2" oninput="checkName()" onblur="checkName()">
+    <div class="msg" id="nameMsg"></div>
+  </div>
+
+  <div class="field">
+    <label>Email <span class="req">*</span></label>
+    <input class="input" id="email" type="email" placeholder="example@mail.ru" oninput="checkEmail()" onblur="checkEmail()">
+    <div class="msg" id="emailMsg"></div>
+  </div>
+
+  <div class="field">
+    <label>Пароль <span class="req">*</span> <span class="hint">минимум 8 символов и хотя бы одна цифра</span></label>
+    <div class="pass-wrap holder">
+      <input id="pass" type="password" placeholder="Пароль" oninput="checkPass()">
+      <button class="eye" id="eye" onclick="togglePass()" title="Показать/скрыть пароль">👁</button>
+    </div>
+    <div class="checks">
+      <span class="badge" id="b1">8+</span>
+      <span class="badge" id="b2">цифра</span>
+    </div>
+    <div class="msg" id="passMsg"></div>
+  </div>
+
+  <div class="field">
+    <label>Дата рождения <span class="req">*</span> <span class="hint">возраст 18+</span></label>
+    <input class="input" id="birth" type="date" oninput="checkAge()" onblur="checkAge()">
+    <div class="msg" id="birthMsg"></div>
+  </div>
+
+  <div class="field cbrow" style="margin-top:14px">
+    <input type="checkbox" id="agree" onchange="valid()">
+    <label for="agree" style="margin:0;font-weight:400">Я согласен(на) с условиями обработки данных <span class="req">*</span></label>
+  </div>
+
+  <div class="btns">
+    <button class="rbtn" id="submit" onclick="submitForm()" disabled>Зарегистрироваться</button>
+    <button class="rbtn gray" onclick="resetForm()">Очистить</button>
+  </div>
+
+  <div id="smsg"></div>
 </div>
 
-<div class="card"><h2>Возраст (18+)</h2>
-  <div class="row"><input class="input" id="birth" type="date"><button class="rbtn" onclick="age()">Проверить</button></div>
-  <div id="amsg"></div>
-</div>
+<div class="out" id="out">/ ПР07 · введите данные — пройдите все проверки, чтобы кнопка стала активной</div>
 
 <script>
-const $=id=>document.getElementById(id);
-function valid(){
+const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ok={ok:'ok',bad:'bad'};
+
+function log(msg){const o=$('out');o.innerHTML=esc(new Date().toLocaleTimeString('ru-RU')+' — '+msg)+'\n'+o.innerHTML.split('\n').slice(0,5).join('\n');}
+function setMsg(id,txt,good){const el=$(id);el.textContent=txt;el.className='msg '+(txt?good?'ok':'bad':'');}
+function setField(inp,state,txt,msgId,good){
+  inp.classList.remove(ok.ok,ok.bad);
+  if(state){inp.classList.add(state);}
+  if(txt!==undefined)setMsg(msgId,txt,good);
+}
+
+/* зад.1-2: пароль — минимум 8 символов и хотя бы одна цифра */
+function checkPass(){
   const p=$('pass').value;
   const ok1=p.length>=8, ok2=/\d/.test(p);
-  $('b1').style.background=ok1?'#86efac':'#e2e8f0';
-  $('b2').style.background=ok2?'#86efac':'#e2e8f0';
-  $('pmsg').innerHTML=ok1&&ok2?'<div class="ok">✔ Пароль корректный: минимум 8 символов и есть цифра</div>':'<div class="err">Условия:<br>• минимум 8 символов — '+(ok1?'да':'нет')+'<br>• хотя бы одна цифра — '+(ok2?'да':'нет')+'</div>';
+  $('b1').className='badge '+(ok1?'pass':'fail');
+  $('b2').className='badge '+(ok2?'pass':'fail');
+  const good=ok1&&ok2;
+  setField($('pass'),good?ok.ok:ok.bad, good?'':'• минимум 8 символов — '+(ok1?'да':'нет')+'\n• хотя бы одна цифра — '+(ok2?'да':'нет'), 'passMsg', good);
+  return good;
 }
+
+/* зад.3: «глаз» переключает тип поля пароля */
 function togglePass(){
-  const p=$('pass'); p.type=p.type==='password'?'text':'password'; $('eye').textContent=p.type==='password'?'👁':'🙈';
+  const p=$('pass');
+  p.type=p.type==='password'?'text':'password';
+  $('eye').textContent=p.type==='password'?'👁':'🙈';
+  log(p.type==='password'?'пароль скрыт':'пароль показан');
 }
-function age(){
+
+/* общая: имя — только буквы и пробелы, минимум 2 символа */
+function checkName(){
+  const v=$('name').value.trim();
+  const g=/^[А-Яа-яA-Za-z\s]{2,}$/.test(v);
+  setField($('name'),v===''?null:(g?ok.ok:ok.bad),
+    v===''?'Имя обязательно для заполнения':(g?'':'Только буквы (минимум 2)'),'nameMsg',g);
+  return g&&v!=='';
+}
+
+/* общая: email — корректный формат */
+function checkEmail(){
+  const v=$('email').value.trim();
+  const g=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  setField($('email'),v===''?null:(g?ok.ok:ok.bad),
+    v===''?'Email обязателен для заполнения':(g?'':'Введите корректный email (example@mail.ru)'),'emailMsg',g);
+  return g&&v!=='';
+}
+
+/* зад.4: возраст не младше 18 лет по дате рождения */
+function calcAge(){
   const d=new Date($('birth').value);
-  if(isNaN(d)){ $('amsg').innerHTML='<div class="err">Выберите дату рождения</div>'; return; }
-  const y=new Date(); let years=y.getFullYear()-d.getFullYear();
-  const m=y.getMonth()-d.getMonth(); if(m<0||(m===0&&y.getDate()<d.getDate()))years--;
-  $('amsg').innerHTML=years>=18?'<div class="ok">Вам '+years+' — доступ разрешён (18+)</div>':'<div class="err">Вам '+years+' — доступ запрещён (нужно 18+)</div>';
+  if(isNaN(d))return -1;
+  const y=new Date();let age=y.getFullYear()-d.getFullYear();
+  const m=y.getMonth()-d.getMonth();
+  if(m<0||(m===0&&y.getDate()<d.getDate()))age--;
+  return age;
+}
+function checkAge(){
+  const age=calcAge();
+  if(age<0){setField($('birth'),null,'Выберите дату рождения','birthMsg',false);return false;}
+  const g=age>=18;
+  setField($('birth'),g?ok.ok:ok.bad,g?'':'Вам '+age+' — нужно не младше 18 лет','birthMsg',g);
+  return g;
+}
+
+/* общая: вся форма валидна → кнопка активна */
+function valid(){
+  const all=checkPass()&&checkName()&&checkEmail()&&checkAge()&&$('agree').checked;
+  $('submit').disabled=!all;
+  if(all)log('✅ все поля валидны — кнопка «Зарегистрироваться» активна');
+  return all;
+}
+function submitForm(){
+  if(!valid())return;
+  const age=calcAge();
+  $('smsg').innerHTML='<div class="success">✔ Регистрация успешна! '+esc($('name').value.trim())+', добро пожаловать.</div>';
+  log('регистрация: '+esc($('name').value.trim())+' <'+esc($('email').value.trim())+'> · возраст '+age+' · форма заблокирована');
+  ['name','email','pass','birth'].forEach(id=>$(id).disabled=true);
+  $('agree').disabled=true;
+  $('submit').disabled=true;
+  $('eye').disabled=true;
+}
+function resetForm(){
+  ['name','email','pass','birth'].forEach(id=>{const el=$(id);el.value='';el.classList.remove(ok.ok,ok.bad);el.disabled=false;});
+  $('pass').type='password';$('eye').textContent='👁';$('eye').disabled=false;
+  $('b1').className='badge';$('b2').className='badge';
+  $('agree').checked=false;$('agree').disabled=false;
+  ['nameMsg','emailMsg','passMsg','birthMsg'].forEach(id=>setMsg(id,'',true));
+  $('smsg').innerHTML='';$('submit').disabled=true;
+  log('форма очищена');
 }
 valid();
 </script>

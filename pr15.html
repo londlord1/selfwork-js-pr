@@ -88,14 +88,22 @@ function common(){
   $('o3').textContent='Статья «'+a.title+'» ∩ «'+b.title+'» → общие: ['+[...c].join(', ')+']';
 }
 
-const cache=new WeakMap();
-function heavy(key){let c=cache.get(key);if(!c){c=key.tags.length*100;cache.set(key,c);}return c;}
+const articleCache=new WeakMap();
+let cacheCalls=0;
+function getTagCount(articleObject){
+  if(articleCache.has(articleObject)){
+    return {count:articleCache.get(articleObject),cached:true};
+  }
+  cacheCalls++;
+  const count=articleObject.tags.length;
+  articleCache.set(articleObject,count);
+  return {count,cached:false};
+}
 function weakDemo(){
-  let calls=0;
-  const localCache=new WeakMap();
-  const h=(k)=>{if(localCache.has(k))return {v:localCache.get(k),cached:true};calls++;const v=k.tags.map((t,i)=>t.length*(i+1)).reduce((a,b)=>a+b,0);localCache.set(k,v);return {v,cached:false};};
-  const r1=h(articles[0]),r2=h(articles[0]),r3=h(articles[1]);
-  $('o4').textContent='WeakMap-кэш: первый вызов считает (новый), повторный берёт из кэша.\nСтатья 1, попытка 1: '+r1.v+' ('+(r1.cached?'кэш':'вычислено')+')\nСтатья 1, попытка 2: '+r2.v+' ('+(r2.cached?'кэш ✓':'вычислено')+')\nСтатья 2: '+r3.v+' ('+(r3.cached?'кэш':'вычислено')+')\nВсего вычислений: '+calls;
+  const before=cacheCalls;
+  const a=getTagCount(articles[0]),b=getTagCount(articles[0]),c=getTagCount(articles[1]);
+  const made=cacheCalls-before;
+  $('o4').textContent='WeakMap-кэш (articleCache): ключ — объект статьи, значение — число тегов.\nСтатья 1, попытка 1: '+a.count+' тегов ('+(a.cached?'кэш':'вычислено')+')\nСтатья 1, попытка 2: '+b.count+' тегов ('+(b.cached?'кэш ✓':'вычислено')+')\nСтатья 2: '+c.count+' тегов ('+(c.cached?'кэш':'вычислено')+')\nВсего реальных вычислений: '+made;
 }
 renderArticles();renderTags();invIndex();
 </script>

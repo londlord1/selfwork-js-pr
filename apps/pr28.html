@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР28 — React: props и темы (все задания)</title>
+<title>ПР28 — React: props, динамические стили, подъем состояния</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}
@@ -21,12 +21,14 @@ h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
 .slider:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
 .switch input:checked + .slider{background:#1a73e8}
 .switch input:checked + .slider:before{transform:translateX(24px)}
-.pill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer;transition:all .25s}
 .pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
 .swatches{display:flex;gap:10px;flex-wrap:wrap}
-.swatch{width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer}
-.swatch.active{border-color:#0f172a}
+.swatch{width:30px;height:30px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .25s}
+.swatch.active{border-color:#0f172a;transform:scale(1.18)}
 .muted{color:#64748b;font-size:13px;margin-top:8px}
+.theme-icon{display:inline-block;font-size:26px;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.theme-icon.flip{transform:rotate(180deg)}
 </style>
 <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
@@ -39,72 +41,114 @@ h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
   <div class="navbtns"><button class="btn" onclick="location.href='pr27.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr29.html'">След. ПР →</button></div>
 </div>
 <span class="pr-tag">ПР28</span>
-<h1>ПР28 — React: props, динамические стили, темы (все задания)</h1>
-<div class="desc">Одно приложение тем со всеми заданиями: четыре карточки, ползунок и кнопка, сохранение в localStorage, анимация, акцентный цвет, три темы и авто-режим по времени суток.</div>
+<h1>ПР28 — React: props, динамические стили, подъем состояния</h1>
+<div class="desc">Одно React-приложение тем со всеми заданиями: четыре карточки, ползунок и кнопка, сохранение в localStorage, анимация, акцентный цвет, три темы и авто-режим по времени суток. Состояние темы поднято в App и передаётся через props.</div>
 <div id="root"></div>
 </div>
 <script type="text/babel" data-presets="react">
 const { useState, useEffect } = React;
 const KEY = 'pr28_theme';
+const ACCENT_KEY = 'pr28_accent';
 
 const THEMES = {
-  light: { bg: '#f0f2f5', text: '#111827', card: '#ffffff' },
-  dark: { bg: '#1a1a1a', text: '#f9fafb', card: '#2d2d2d' },
-  blue: { bg: '#e3f2fd', text: '#0d47a1', card: '#ffffff' }
+  light: { label: '☀️ Светлая', bg: '#f0f2f5', text: '#111827', cardBg: '#ffffff', cardText: '#333333' },
+  dark:  { label: '🌙 Темная',  bg: '#1a1a1a', text: '#f9fafb', cardBg: '#2d2d2d', cardText: '#e5e7eb' },
+  blue:  { label: '🔵 Синяя',   bg: '#e3f2fd', text: '#0d47a1', cardBg: '#ffffff', cardText: '#0d47a1' }
 };
 
 function isNight() { const h = new Date().getHours(); return h < 6 || h >= 18; }
+function dayTheme() { return isNight() ? 'dark' : 'light'; }
 
 const CARDS = [
-  ['Карточка 1', 'Первая карточка с описанием.'],
-  ['Карточка 2', 'Вторая карточка использует те же пропсы.'],
-  ['Карточка 3', 'Третья карточка — ещё один экземпляр компонента.'],
-  ['Карточка 4', 'Четвёртая добавлена в задании 1.']
+  ['Карточка 1', 'Это пример карточки, которая меняет свой внешний вид через пропсы.' ],
+  ['Карточка 2', 'Тёмная тема делает интерфейс комфортным для работы ночью.'],
+  ['Карточка 3', 'При переключении темы все карточки обновляются одновременно.' ],
+  ['Карточка 4', 'Четвёртая карточка из задания 1 — можно добавлять сколько угодно.' ]
 ];
 
+// Задание 1: компонент Card получает всё через props
+function Card({ themeKey, theme, accent, title, description }) {
+  const cardStyle = {
+    background: theme.cardBg, color: theme.cardText, borderRadius: 12, padding: 14, margin: '10px 0',
+    boxShadow: `0 2px 8px rgba(0,0,0,${themeKey === 'dark' ? .3 : .08})`,
+    transition: 'all .5s cubic-bezier(.4,0,.2,1)', border: `1px solid ${themeKey === 'dark' ? '#444' : '#e0e0e0'}`
+  };
+  return (
+    <div style={cardStyle}>
+      <h3 style={{ color: accent, marginBottom: 6 }}>{title}</h3>
+      <p style={{ fontSize: 14, lineHeight: 1.6 }}>{description}</p>
+      <span style={{ display: 'inline-block', marginTop: 10, padding: '3px 10px', borderRadius: 12, fontSize: 12,
+        background: themeKey === 'dark' ? '#444' : '#e8e8e8', color: theme.text }}>{theme.label}</span>
+    </div>
+  );
+}
+
+// Задание 2: кнопка + ползунок, стиль зависит от theme (props)
+function ThemeToggle({ themeKey, theme, accent, onToggle }) {
+  const isLightish = themeKey !== 'dark';
+  return (
+    <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14, flexWrap: 'wrap' }}>
+      <span className={isLightish ? 'theme-icon' : 'theme-icon flip'}>🌓</span>
+      <label className="switch">
+        <input type="checkbox" checked={!isLightish} onChange={(e) => onToggle(e.target.checked)} />
+        <span className="slider"></span>
+      </label>
+      <button
+        onClick={() => onToggle(isLightish)}
+        style={{ padding: '9px 16px', border: 'none', borderRadius: 8, background: accent, color: '#fff', cursor: 'pointer', transition: 'background .3s' }}
+      >{themeKey === 'dark' ? 'Переключить на светлую' : 'Переключить на тёмную'}</button>
+    </div>
+  );
+}
+
+// Задание 5: отдельный компонент ThemeSettings (выбор темы, акцент, авто)
+function ThemeSettings({ themeKey, accent, auto, onTheme, onAccent, onAuto }) {
+  const colors = ['#4CAF50', '#2196F3', '#f44336', '#FF9800', '#9C27B0'];
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <p className="muted">Тема:</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', margin: '6px 0' }}>
+        {Object.keys(THEMES).map((k) => (
+          <button key={k} className={themeKey === k ? 'pill active' : 'pill'} onClick={() => onTheme(k)}>{THEMES[k].label}</button>
+        ))}
+        <button className={auto ? 'pill active' : 'pill'} onClick={() => onAuto(!auto)}>🤖 Авто {auto ? 'вкл' : 'выкл'}</button>
+      </div>
+      <p className="muted">Акцентный цвет:</p>
+      <div className="swatches" style={{ marginTop: 6 }}>
+        {colors.map((c) => (
+          <button key={c} className={accent === c ? 'swatch active' : 'swatch'} style={{ background: c }} onClick={() => onAccent(c)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  // Задание 3 + 6 + 1: состояние поднято в App, theme — строка 'light'|'dark'|'blue'
   const [theme, setTheme] = useState(() => { try { return localStorage.getItem(KEY) || 'light'; } catch (e) { return 'light'; } });
+  const [accent, setAccent] = useState(() => { try { return localStorage.getItem(ACCENT_KEY) || '#4CAF50'; } catch (e) { return '#4CAF50'; } });
   const [auto, setAuto] = useState(true);
-  const [accent, setAccent] = useState('#4CAF50');
 
-  useEffect(() => {
-    if (auto) setTheme(isNight() ? 'dark' : 'light');
-  }, [auto]);
-
-  useEffect(() => { if (!auto) localStorage.setItem(KEY, theme); }, [theme, auto]);
+  useEffect(() => { if (!auto) return; setTheme(dayTheme()); }, [auto]);
+  // Задание 3: сохранение темы и акцента в localStorage (в ручном режиме)
+  useEffect(() => { if (!auto) try { localStorage.setItem(KEY, theme); } catch (e) {} }, [theme, auto]);
+  useEffect(() => { try { localStorage.setItem(ACCENT_KEY, accent); } catch (e) {} }, [accent]);
 
   const t = THEMES[theme];
 
+  const pickTheme = (k) => { setAuto(false); setTheme(k); };
+  const toggleLightish = (force) => { setAuto(false); setTheme(force ? 'dark' : 'light'); };
+
   return (
     <div style={{ background: t.bg, color: t.text, borderRadius: 14, padding: 20, transition: 'all .4s' }}>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 14 }}>
-        {Object.keys(THEMES).map((k) => (
-          <button key={k} className={theme === k ? 'pill active' : 'pill'} onClick={() => { setTheme(k); setAuto(false); }}>{k}</button>
-        ))}
-        <button className={auto ? 'pill active' : 'pill'} onClick={() => setAuto(!auto)}>Авто</button>
-        <span style={{ fontSize: 12, color: '#999' }}>{new Date().toLocaleTimeString('ru-RU')}</span>
-      </div>
-
-      <div style={{ marginBottom: 14 }}>
-        <p className="muted">Акцентный цвет:</p>
-        <div className="swatches" style={{ marginTop: 6 }}>
-          {['#4CAF50', '#2196F3', '#f44336', '#FF9800', '#9C27B0'].map((c) => (
-            <button key={c} className={accent === c ? 'swatch active' : 'swatch'} style={{ background: c }} onClick={() => setAccent(c)} />
-          ))}
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14 }}>
-        <label className="switch"><input type="checkbox" checked={theme !== 'light'} onChange={(e) => { setAuto(false); setTheme(e.target.checked ? 'dark' : 'light'); }} /><span className="slider"></span></label>
-        <button style={{ padding: '9px 16px', border: 'none', borderRadius: 8, background: accent, color: '#fff', cursor: 'pointer' }} onClick={() => { setAuto(false); setTheme(theme === 'dark' ? 'light' : 'dark'); }}>Переключить</button>
-      </div>
-
+      <ThemeSettings themeKey={theme} accent={accent} auto={auto} onTheme={pickTheme} onAccent={setAccent} onAuto={setAuto} />
+      <ThemeToggle themeKey={theme} theme={t} accent={accent} onToggle={toggleLightish} />
       {CARDS.map((c, i) => (
-        <div key={i} style={{ background: t.card, color: t.text, borderRadius: 12, padding: 14, margin: '10px 0', boxShadow: '0 2px 8px rgba(0,0,0,.08)' }}>
-          <h3 style={{ color: accent }}>{c[0]}</h3>
-          <p style={{ fontSize: 14, marginTop: 4 }}>{c[1]}</p>
-        </div>
+        <Card key={i} themeKey={theme} theme={t} accent={accent} title={c[0]} description={c[1]} />
       ))}
+      <p className="muted" style={{ textAlign: 'center', marginTop: 14 }}>
+        Текущая тема: <strong>{t.label}</strong> · {auto ? 'автоматическая (по времени суток)' : 'ручная'} · {new Date().toLocaleTimeString('ru-RU')}
+      </p>
     </div>
   );
 }

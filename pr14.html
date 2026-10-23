@@ -3,78 +3,198 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ПР14 — Объекты и деструктуризация: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:680px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.field{display:flex;gap:8px;align-items:center;margin-bottom:6px}.field label{width:130px;font-size:13px;color:#64748b}.field input{flex:1}.muted{color:#64748b;font-size:12px;margin-top:6px}.exp{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;font-size:13px}</style>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:740px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.field{display:flex;gap:8px;align-items:center;margin-bottom:6px}.field label{width:150px;font-size:13px;color:#64748b}.field input{flex:1}.exp{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;font-size:13px}.item{display:inline-block;background:#e0f2fe;border:1px solid #bae6fd;color:#0369a1;border-radius:8px;padding:3px 10px;margin:0 4px 4px 0;font-size:13px}.item button{margin-left:6px;border:none;background:none;color:#dc3545;font-size:14px;cursor:pointer}.muted{color:#64748b;font-size:12px;margin-top:6px}h3{font-size:13px;color:#1a73e8;margin:12px 0 6px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr13.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr15.html'">След. ПР →</button></div></div>
 <span class="pr-tag">ПР14</span><h1>ПР14 — Объекты и деструктуризация (все задания)</h1>
-<div class="desc">Одно приложение резюме: добавление опыта работы (1), иммутабельное обновление объекта (2), значения по умолчанию при деструктуризации (3) и сохранение резюме в localStorage (4).</div>
+<div class="desc">Конструктор резюме: опыт работы через сокращённый синтаксис и иммутабельный spread (1), иммутабельное обновление вложенных полей (2), деструктуризация со значениями по умолчанию (3) и сохранение в localStorage (4).</div>
 
-<div class="card"><h2>Резюме</h2>
-  <div class="field"><label>Имя</label><input id="fname" value="Иван"></div>
-  <div class="field"><label>Должность</label><input id="role" value="Разработчик"></div>
+<div class="card"><h2>Конструктор резюме</h2>
+  <h3>Личная информация</h3>
+  <div class="field"><label>Имя</label><input id="firstName" value="Иван"></div>
+  <div class="field"><label>Фамилия</label><input id="lastName" value="Иванов"></div>
+  <div class="field"><label>Возраст</label><input id="age" type="number" value="30"></div>
+
+  <h3>Адрес (вложенный объект)</h3>
   <div class="field"><label>Город</label><input id="city" value="Москва"></div>
-  <div class="row"><button class="rbtn green" onclick="addExp()">+ Опыт работы</button><button class="rbtn" onclick="save()">💾 Сохранить</button><button class="rbtn red" onclick="reset()">Сброс</button></div>
-  <div id="exp"></div>
-  <div class="out" id="out"></div>
+  <div class="field"><label>Улица</label><input id="street" value="Ленина"></div>
+  <div class="field"><label>Дом</label><input id="building" value="15"></div>
+
+  <h3>Навыки (массив строк)</h3>
+  <div class="row"><input id="skillInput" placeholder="Название навыка"><button class="rbtn green" onclick="addSkill()">+ Навык</button>
+  <button class="rbtn gray" onclick="loadLast()">Загрузить последнее</button></div>
+  <div id="skillsList"></div>
+  <div class="muted">Дубликаты не добавляются.</div>
+
+  <h3>Опыт работы (Задание 1)</h3>
+  <div class="row"><input id="expCompany" placeholder="Компания"><input id="expPosition" placeholder="Должность"><input id="expYears" type="number" placeholder="Лет">
+  <button class="rbtn green" onclick="addExperience()">+ Опыт</button></div>
+  <div id="expList"></div>
+  <div class="muted">job = { company, position, years } — сокращённый синтаксис, добавление через spread.</div>
+
+  <h3>Контакты (вложенный объект)</h3>
+  <div class="field"><label>Email</label><input id="email" value="ivan@example.com"></div>
+  <div class="field"><label>Телефон</label><input id="phone" value="+7-999-123-45-67"></div>
+
+  <div class="row"><button class="rbtn" onclick="buildAndDisplay()">Собрать резюме</button><button class="rbtn green" onclick="saveResume()">💾 Сохранить</button><button class="rbtn red" onclick="clearForm()">Очистить</button></div>
+  <div class="muted">Сборка: композиция через spread, вложенные объекты копируются { ...address }.</div>
+</div>
+
+<div class="card"><h2>Иммутабельное обновление (Задание 2)</h2>
+  <div class="field"><label>Путь</label><input id="path" value="address.city"></div>
+  <div class="field"><label>Новое значение</label><input id="newVal" value="Санкт-Петербург"></div>
+  <button class="rbtn green" onclick="runUpdate()">updateResumeField(путь)</button>
+  <div class="out" id="updOut"></div>
+  <div class="muted">Функция <b>updateResumeField(resume, path, value)</b> — spread на каждом уровне вложенности, оригинал не изменяется.</div>
+</div>
+
+<div class="card"><h2>Показ резюме (Задание 3)</h2>
+  <button class="rbtn" onclick="buildAndDisplay()">Показать резюме</button>
+  <div id="output"></div>
+  <div id="out"></div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-const KEY='pr14_resume';
+const KEY='savedResume';
+let skills=[];
+let experienceList=[];
 
-// резюме с деструктуризацией и значениями по умолчанию (задание 3)
-function createResume({ name='Аноним', role='Без должности', city='Не указан', experience=[] }={}){
-  return { name, role, city, experience: experience.map(e=>({...e})) };
+/* Задание 1: добавление опыта (сокращённый синтаксис + иммутабельный spread) */
+function addExperience(){
+  const company=$('expCompany').value.trim();
+  const position=$('expPosition').value.trim();
+  const years=Number($('expYears').value)||0;
+  if(!company||!position)return;
+  const job={ company, position, years };           // сокращённый синтаксис
+  experienceList=[...experienceList, job];           // иммутабельно
+  $('expCompany').value='';$('expPosition').value='';$('expYears').value='';
+  renderExp();
 }
-
-let resume=loadResume();
-
-function loadResume(){
-  try{const d=JSON.parse(localStorage.getItem(KEY));if(d)return createResume(d);}catch(e){}
-  return createResume({name:'Иван',role:'Разработчик',city:'Москва',experience:[]
-    // стартовый опыт через иммутабельное добавление:
-  });
-}
-
 function renderExp(){
-  $('exp').innerHTML=resume.experience.map((e,i)=>
-    '<div class="exp"><span><b>'+e.title+'</b> — '+e.company+' ('+e.years+')</span><button class="rbtn red" onclick="delExp('+i+')">×</button></div>'
-  ).join('')||'<span class="muted">Опыта пока нет.</span>';
+  $('expList').innerHTML=experienceList.map((e,i)=>
+    '<div class="exp"><span><b>'+e.position+'</b> в '+e.company+' ('+e.years+' лет)</span><button class="rbtn red" onclick="delExp('+i+')">×</button></div>'
+  ).join('')||'<span class="muted">Опыта нет.</span>';
+}
+function delExp(i){experienceList=experienceList.filter((_,idx)=>idx!==i);renderExp();}
+
+/* Навыки */
+function addSkill(){
+  const s=$('skillInput').value.trim();
+  if(!s)return;
+  if(skills.includes(s)){$('skillInput').value='';return;} // без дубликатов
+  skills=[...skills,s];
+  $('skillInput').value='';
+  renderSkills();
+}
+function renderSkills(){
+  $('skillsList').innerHTML=skills.map(s=>'<span class="item">'+s+'<button onclick="delSkill(\''+s+'\')">×</button></span>').join('')||'<span class="muted">Навыков нет.</span>';
+}
+function delSkill(s){skills=skills.filter(x=>x!==s);renderSkills();}
+
+/* Задание 2: иммутабельное обновление по пути spread-ом на каждом уровне */
+function updateResumeField(resume, fieldPath, newValue){
+  const parts=fieldPath.split('.');
+  if(parts.length===1)return { ...resume, [parts[0]]:newValue };
+  if(parts.length===2)return { ...resume, [parts[0]]: { ...resume[parts[0]], [parts[1]]:newValue } };
+  return resume; // глубже — только 2 уровня по заданию
+}
+function runUpdate(){
+  const resume=buildResume();
+  const orig=JSON.stringify(resume);
+  const updated=updateResumeField(resume, $('path').value, $('newVal').value);
+  const paths=$('path').value.split('.');
+  const oldVal=paths[1]?resume[paths[0]][paths[1]]:resume[paths[0]];
+  $('updOut').textContent=
+    'orig == updated ? '+(orig===JSON.stringify(resume) ? 'true' : 'false')+' (оригинал не тронут)\n'+
+    'JSON.stringify(orig) === '+JSON.stringify(resume)+'\n'+
+    'get("'+$('path').value+'") было → '+JSON.stringify(oldVal)+', стало → '+JSON.stringify(paths[1]?updated[paths[0]][paths[1]]:updated[paths[0]]);
 }
 
-function addExp(){
-  // иммутабельное обновление: создаём новый массив, не мутируя исходный (задание 2)
-  const newExp=[
-    ...resume.experience,
-    { title:'Новая позиция '+(resume.experience.length+1), company: $('role').value||'Компания', years: new Date().getFullYear() }
-  ];
-  resume={ ...resume, experience: newExp }; // иммутабельно
-  renderExp();
-  $('out').textContent='Опыт добавлен иммутабельно: experience.length = '+resume.experience.length+'\nupdateResume (новый объект) → '+JSON.stringify({name:resume.name,role:resume.role});
+/* Сборка объекта через spread-композицию */
+function buildResume(){
+  const personalInfo={
+    firstName:$('firstName').value.trim(),
+    lastName:$('lastName').value.trim(),
+    age:Number($('age').value)||0
+  };
+  const address={
+    city:$('city').value.trim(),
+    street:$('street').value.trim(),
+    building:$('building').value.trim()
+  };
+  const email=$('email').value.trim();
+  const phone=$('phone').value.trim();
+  const contacts={ email, phone }; // сокращённый синтаксис
+  return {
+    ...personalInfo,
+    address:{ ...address },       // копия вложенного объекта
+    skills:[...skills],
+    experience:[...experienceList],
+    contacts:{ ...contacts }
+  };
 }
 
-function delExp(i){
-  resume={ ...resume, experience: resume.experience.filter((_,idx)=>idx!==i) };
-  renderExp();
+/* Задание 3: деструктуризация со значениями по умолчанию (вложенные = {}) */
+function displayResume(resume){
+  const {
+    firstName='Неизвестный', lastName='Пользователь', age='не указан',
+    address:{ city='Город не указан', street='', building='' }={},
+    skills=[], experience=[],
+    contacts:{ email='не указан', phone='не указан' }={}
+  }=resume;
+  const fullName=firstName+' '+lastName;
+  const addrFull=city+(street||building?', '+[street,building].filter(Boolean).join(', '):'');
+  let html='<h2 style="font-size:15px;color:#1a73e8;margin:4px 0">Резюме: '+fullName+'</h2>';
+  html+='<p><strong>Возраст:</strong> '+age+'</p>';
+  html+='<p><strong>Адрес:</strong> '+addrFull+'</p>';
+  html+='<p><strong>Навыки:</strong> '+(skills.length?skills.join(', '):'не указаны')+'</p>';
+  html+='<p><strong>Email:</strong> '+email+'</p>';
+  html+='<p><strong>Телефон:</strong> '+phone+'</p>';
+  if(experience.length){
+    html+='<h3>Опыт работы:</h3><ul>';
+    experience.forEach(job=>{html+='<li>'+job.position+' в '+job.company+' ('+job.years+' лет)</li>';});
+    html+='</ul>';
+  }
+  $('output').innerHTML=html;
+  $('out').textContent=
+    'Деструктуризация с умолчаниями:\nconst { firstName, age, address:{ city }, contacts:{ email } } = resume\n'+
+    'firstName → "'+firstName+'", city → "'+city+'", email → "'+email+'"'+
+    (resume.address===undefined||resume.contacts===undefined?'\n(отсутствовали address/contacts — сработали {} = умолчания)':'');
 }
 
-function save(){
-  resume={ ...resume, name:$('fname').value||'Аноним', role:$('role').value||'Без должности', city:$('city').value||'Не указан' };
-  localStorage.setItem(KEY, JSON.stringify(resume));
-  renderExp();
-  $('out').textContent='Сохранено в localStorage.\nПример деструктуризации с умолчаниями:';
-  $('out').textContent+='\nconst {name, city} = resume → '+resume.name+' ('+resume.city+')';
+function buildAndDisplay(){
+  const resume=buildResume();
+  displayResume(resume);
+  console.log('Объект резюме:', resume);
 }
 
-function reset(){
-  localStorage.removeItem(KEY);
-  resume=createResume({name:'Иван',role:'Разработчик',city:'Москва'});
-  $('fname').value='Иван';$('role').value='Разработчик';$('city').value='Москва';
-  renderExp();
+/* Задание 4: сохранение в localStorage (ключ 'savedResume') */
+function saveResume(){
+  localStorage.setItem(KEY, JSON.stringify(buildResume()));
+  $('out').textContent='Сохранено в localStorage (ключ "'+KEY+'").\nМожно нажать «Загрузить последнее».';
+}
+function loadLast(){
+  const saved=localStorage.getItem(KEY);
+  if(!saved){$('out').textContent='В localStorage нет сохранённого резюме.';return;}
+  const r=JSON.parse(saved);
+  skills=r.skills||[];experienceList=r.experience||[];
+  $('firstName').value=r.firstName||'';$('lastName').value=r.lastName||'';$('age').value=r.age||'';
+  $('city').value=(r.address&&r.address.city)||'';$('street').value=(r.address&&r.address.street)||'';$('building').value=(r.address&&r.address.building)||'';
+  $('email').value=(r.contacts&&r.contacts.email)||'';$('phone').value=(r.contacts&&r.contacts.phone)||'';
+  renderSkills();renderExp();
+  displayResume(r);
+  $('out').textContent='Загружено последнее резюме из localStorage.';
 }
 
-$('fname').value=resume.name;$('role').value=resume.role;$('city').value=resume.city;
-renderExp();
+function clearForm(){
+  document.querySelectorAll('input').forEach(i=>i.value='');
+  skills=[];experienceList=[];
+  renderSkills();renderExp();
+  $('output').innerHTML='';$('out').textContent='Форма и данные очищены.';
+}
+
+renderSkills();renderExp();
 </script>
 </body></html>

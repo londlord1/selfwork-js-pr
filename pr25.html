@@ -29,6 +29,7 @@ input:focus{border-color:#1a73e8;outline:none}
 .item{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px}
 .item .t{font-weight:600}
 .muted{color:#64748b;font-size:12px;margin-top:8px}
+.status{color:#64748b;font-size:12px;margin-bottom:6px}
 .out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:40px;margin-top:10px}
 </style>
 </head>
@@ -59,6 +60,7 @@ input:focus{border-color:#1a73e8;outline:none}
     <span class="pill" id="f-fav" onclick="setFilter('fav')">⭐ Избранное</span>
   </div>
   <div id="books"></div>
+  <div class="status" id="status"></div>
   <div class="out" id="out"></div>
 </div>
 
@@ -72,7 +74,13 @@ let filter = 'all';
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (d && Array.isArray(d.books)) return d;
+    if (d && Array.isArray(d.books)) {
+      if (!Array.isArray(d.history) || typeof d.index !== 'number') {
+        d.history = [JSON.parse(JSON.stringify(d.books))];
+        d.index = 0;
+      }
+      return d;
+    }
   } catch (e) {}
   return { books: [], history: [[]], index: 0, lastSaved: null };
 }
@@ -88,25 +96,39 @@ function persist(snapshotBook) {
 }
 
 function updateSaved() {
-  $('saved').textContent = 'Сохранено в ' + (state.lastSaved ? state.lastSaved.toLocaleTimeString('ru-RU') : '—');
+  $('saved').textContent = state.lastSaved
+    ? 'Сохранено в ' + new Date(state.lastSaved).toLocaleTimeString('ru-RU')
+    : 'ещё не сохранено';
+}
+
+function hoursAgo(ts) {
+  const diff = Date.now() - new Date(ts).getTime();
+  return diff < 0 ? 0 : Math.round(diff / 60000);
 }
 
 function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-function out(html) { $('out').innerHTML = html; }
+let lastLog = '';
+function out(html) { lastLog = html; $('out').innerHTML = html; }
 
 function render() {
   const list = filter === 'fav' ? state.books.filter((b) => b.fav) : state.books;
   $('books').innerHTML = list.length
     ? list.map((b, i) => {
         const idx = state.books.indexOf(b);
-        return '<div class="item"><span class="t">' + esc(b.title) + ' ' + (b.fav ? '⭐' : '') + '</span>'
+        return '<div class="item"><span class="t">' + esc(b.title) + '</span>'
           + '<span><button class="rbtn" style="padding:4px 10px" onclick="toggleFav(' + idx + ')">' + (b.fav ? '⭐' : '☆') + '</button>'
           + '<button class="rbtn red" style="padding:4px 10px" onclick="removeBook(' + idx + ')">×</button></span></div>';
       }).join('')
     : '<span class="muted">Список пуст.</span>';
   $('f-all').classList.toggle('active', filter === 'all');
   $('f-fav').classList.toggle('active', filter === 'fav');
-  out('Книг: ' + state.books.length + (state.books.length ? ', средний рейтинг: ' + avg() : '') + '<br>История: ' + state.history.length + ' состояний, шаг ' + (state.index + 1) + ' из ' + state.history.length + '<br>Синхронизация: изменения в другой вкладке применяются автоматически');
+  const favCount = state.books.filter((b) => b.fav).length;
+  $('status').textContent =
+    'Книг: ' + state.books.length +
+    (state.books.length ? ', из них в «Избранном»: ' + favCount + ', средний рейтинг: ' + avg() : '') +
+    ' · История: ' + state.history.length + ' состояний, шаг ' + (state.index + 1) + ' из ' + state.history.length +
+    (state.lastSaved ? ' · Последнее сохранение ' + hoursAgo(state.lastSaved) + ' мин назад' : '');
+  updateSaved();
 }
 
 function avg() { return Number((state.books.reduce((s, b) => s + (b.r || 0), 0) / state.books.length).toFixed(2)); }
@@ -117,21 +139,24 @@ function addBook() {
   persist([{ title: t, r: Number((Math.random() * 1 + 4).toFixed(1)), fav: false }, ...state.books]);
   $('title').value = '';
   render();
-  out('Книга добавлена и сохранена');
+  out('Книга «' + esc(t) + '» добавлена и сохранена');
 }
 
 function removeBook(i) {
+  const title = state.books[i] ? state.books[i].title : '';
   const copy = [...state.books];
   copy.splice(i, 1);
   persist(copy);
   render();
+  out('Книга «' + esc(title) + '» удалена и сохранена');
 }
 
 function toggleFav(i) {
   const copy = JSON.parse(JSON.stringify(state.books));
-  copy[i] = { ...copy[i], fav: !copy[i].fav };
+  copy[i].fav = !copy[i].fav;
   persist(copy);
   render();
+  out(copy[i].fav ? '«' + esc(copy[i].title) + '» добавлена в «Избранное»' : '«' + esc(copy[i].title) + '» убрана из «Избранного»');
 }
 
 function undo() {
@@ -139,8 +164,9 @@ function undo() {
     state.index--;
     state.books = JSON.parse(JSON.stringify(state.history[state.index]));
     localStorage.setItem(KEY, JSON.stringify(state));
+    updateSaved();
     render();
-    out('Последнее действие отменено');
+    out('Последнее действие отменено → шаг ' + (state.index + 1) + '/' + state.history.length);
   } else {
     out('Отменять нечего');
   }
@@ -150,20 +176,22 @@ function resetAll() {
   state = { books: [], history: [[]], index: 0, lastSaved: null };
   persist([]);
   render();
+  out('Библиотека очищена и сохранена');
 }
 
 function setFilter(f) { filter = f; render(); }
 
 function openSecond() {
   window.open(location.href, '_blank');
-  out('Вторая вкладка открыта — добавляйте книги в любой; здесь они появятся после обновления');
+  out('Вторая вкладка открыта — добавляйте книги в любой; здесь они появятся автоматически');
 }
 
 window.addEventListener('storage', (e) => {
   if (e.key === KEY) {
+    const wasBooks = state.books.length;
     state = load();
     render();
-    out('🔄 Данные синхронизированы с другой вкладки');
+    out('🔄 Данные синхронизированы с другой вкладки' + (state.books.length !== wasBooks ? ' — книг теперь ' + state.books.length : ''));
   }
 });
 

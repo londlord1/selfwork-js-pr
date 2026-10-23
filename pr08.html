@@ -8,53 +8,67 @@
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr07.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr09.html'">След. ПР →</button></div></div>
 <span class="pr-tag">ПР08</span><h1>ПР08 — Navigator и производительность (все задания)</h1>
-<div class="desc">Одна страница с данными браузера: автоопределение скорости соединения (1), глубина цвета экрана (2) и «умный» кэш страниц A4 в ОЗУ (3).</div>
+<div class="desc">Одна страница с данными браузера: автоопределение скорости соединения и время скачивания (1), глубина цвета экрана и байты на пиксель (2), «умный» кэш — сколько страниц A4 поместится в ОЗУ (3).</div>
 
 <div class="card"><h2>Соединение (задание 1)</h2>
-  <div class="row"><b id="conn">—</b><button class="rbtn gray" onclick="checkConn()">Обновить</button></div>
+  <div class="stat"><span>Тип соединения</span><b id="conn">—</b></div>
+  <div class="stat"><span>Скорость (downlink)</span><b id="speed">—</b></div>
+  <div class="stat"><span>Файл 500 МБ → время скачивания</span><b id="dltime">—</b></div>
   <div class="bar"><div id="connbar" style="width:0%"></div></div>
+  <div class="row"><button class="rbtn gray" onclick="checkConn()">Обновить</button></div>
 </div>
 
 <div class="card"><h2>Экран (задание 2)</h2>
-  <div class="stat"><span>Глубина цвета экрана</span><b id="depth">—</b></div>
-  <div class="stat"><span>Разрешение (devicePixelRatio)</span><b id="scale">—</b></div>
+  <div class="stat"><span>Разрешение</span><b id="res">—</b></div>
+  <div class="stat"><span>Глубина цвета (colorDepth)</span><b id="depth">—</b></div>
+  <div class="stat"><span>Байт на пиксель (глубина / 8)</span><b id="bpp">—</b></div>
 </div>
 
-<div class="card"><h2>Умный кэш страниц A4 в ОЗУ (задание 3)</h2>
-  <div class="muted">Симуляция книги: страницы добавляются в кэш (perf/memory API), удаляется самая старая при переполнении 5 страниц.</div>
-  <div class="row"><button class="rbtn" onclick="addPage()">Добавить страницу</button><span class="muted">В кэше: <b id="cachesize">0</b>/5</span></div>
-  <div class="out" id="cacheout"></div>
+<div class="card"><h2>Умный кэш в ОЗУ (задание 3)</h2>
+  <div class="stat"><span>Объём ОЗУ (deviceMemory)</span><b id="ram">—</b></div>
+  <div class="stat"><span>Как текст: МБ / КБ</span><b id="ramunits">—</b></div>
+  <div class="row"><button class="rbtn" onclick="runCache()">Рассчитать</button></div>
+  <div class="out" id="ramout"></div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-// 1
+// 1. Соединение: downlink вместо фиксированных 50 Мбит/с + время скачивания
+const FILE_MB=500;
 function checkConn(){
   const c=navigator.connection||{effectiveType:'unknown',downlink:0};
-  const map={'4g':['4G',90],'3g':['3G',50],'2g':['2G',20],slow:['Slow-2G',8],unknown:['Нет данных',0]};
-  const [label,val]=map[c.effectiveType]||[c.effectiveType,50];
-  $('conn').textContent=navigator.onLine?'Онлайн · '+label+' · '+(c.downlink||1.4)+' Мбит/с':'Офлайн';
-  $('connbar').style.width=val+'%';
+  const map={'4g':'4G','3g':'3G','2g':'2G',slow:'Slow-2G',unknown:'Нет данных'};
+  const label=(map[c.effectiveType]||c.effectiveType)+' · '+(navigator.onLine?'онлайн':'офлайн');
+  const realSpeed=c.downlink>0?c.downlink:0;
+  const speedMBps=realSpeed/8;
+  const downloadSec=realSpeed>0?(FILE_MB/speedMBps):null;
+  $('conn').textContent=label;
+  $('speed').textContent=(realSpeed>0?realSpeed.toFixed(1):'н/д')+' Мбит/с';
+  $('dltime').textContent=downloadSec!==null?downloadSec.toFixed(1)+' сек':'н/д';
+  const pct=Math.min(100,((realSpeed>0?realSpeed:0)/100)*100);
+  $('connbar').style.width=pct+'%';
 }
-// 2
+// 2. Экран: глубина цвета + байты на пиксель
 function checkScreen(){
-  $('depth').textContent=screen.colorDepth+' бит'+(screen.pixelDepth===screen.colorDepth?'':' (pixelDepth '+screen.pixelDepth+')');
-  $('scale').textContent=window.devicePixelRatio+' · '+screen.width+'×'+screen.height;
+  $('res').textContent=screen.width+'×'+screen.height+' (devicePixelRatio '+window.devicePixelRatio+')';
+  $('depth').textContent=screen.colorDepth+' бит';
+  const bytesPerPixel=(screen.colorDepth/8);
+  $('bpp').textContent=bytesPerPixel.toFixed(2)+' байт';
 }
-// 3
-const cache=[];
-function bytes(s){return new Blob([s]).size;}
-function addPage(){
-  const n=cache.length+1;
-  const text='Страница №'+n+' — текст для демонстрации кэша. '+'x'.repeat(600);
-  cache.push({n,text,size:bytes(text)});
-  if(cache.length>5)cache.shift();
-  const used=cache.reduce((s,p)=>s+p.size,0);
-  $('cachesize').textContent=cache.length;
-  const perf=window.performance&&performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576)+' МБ':'н/д';
-  $('cacheout').innerHTML='Кэш: '+cache.map(p=>'#'+p.n).join(', ')+'<br>Всего в кэше: '+used+' байт'+'<br>Используемая JS-память: '+perf;
-  if(performance.mark)requestAnimationFrame(()=>performance.mark('cache-'+n));
+// 3. Умный кэш: страниц A4 (~10 КБ текста) в ОЗУ
+function runCache(){
+  const ram=navigator.deviceMemory||0;
+  $('ram').textContent=(ram>0?ram+' ГБ':'н/д');
+  if(ram<=0){$('ramout').textContent='navigator.deviceMemory недоступен в этом браузере — расчёт невозможен.';return;}
+  const ramMB=ram*1024, ramKB=ramMB*1024;
+  $('ramunits').textContent=ramMB+' МБ = '+ramKB+' КБ';
+  const pageKB=10;
+  const pages=(ram*1024*1024)/pageKB;
+  $('ramout').textContent=
+    'ОЗУ: '+ram+' ГБ = '+ramMB+' МБ = '+ramKB+' КБ\n'+
+    'Страница A4 ≈ '+pageKB+' КБ текста\n'+
+    'Поместится ~ '+Math.floor(pages).toLocaleString('ru-RU')+' страниц (≈'+Math.floor(pages/1000).toLocaleString('ru-RU')+' тыс.)';
 }
-checkConn();checkScreen();addPage();
+checkConn();checkScreen();runCache();
 </script>
 </body></html>

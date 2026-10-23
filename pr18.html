@@ -20,6 +20,9 @@ h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
 .btn{background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;margin:4px 6px 4px 0}
 .btn:hover{background:#0b5bc0}
 .btn.gray{background:#64748b}.btn.green{background:#28a745}.btn.red{background:#dc3545}.btn.orange{background:#f39c12}
+.rbtn{padding:10px 16px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:4px 6px 4px 0}
+.rbtn:hover{background:#0b5bc0}
+.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.rbtn.orange{background:#f39c12}
 input{padding:8px 10px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%;font-family:inherit}
 input:focus{border-color:#1a73e8;outline:none}
 .layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
@@ -72,7 +75,7 @@ input:focus{border-color:#1a73e8;outline:none}
       <div class="group">
         <label>1. Приветствие и счётчик</label>
         <input id="name" value="студент" placeholder="Имя">
-        <button class="btn green" onclick="sayHello()" style="margin-top:6px">👋 Приветствие</button>
+        <button class="rbtn green" onclick="sayHello()" style="margin-top:6px">👋 Приветствие</button>
         <div class="muted">Нажатий: <b id="count">0</b></div>
       </div>
 
@@ -83,15 +86,15 @@ input:focus{border-color:#1a73e8;outline:none}
           <button class="swatch" style="background:#e8f5e9" onclick="setBg('#e8f5e9')" title="зелёный"></button>
           <button class="swatch" style="background:#fff3e0" onclick="setBg('#fff3e0')" title="оранжевый"></button>
           <button class="swatch" style="background:#2196F3" onclick="setBg('#2196F3')" title="синий"></button>
-          <button class="btn gray" onclick="resetBg()" style="margin:0">Сброс</button>
+          <button class="rbtn gray" onclick="resetBg()" style="margin:0">Сброс</button>
         </div>
       </div>
 
       <div class="group">
         <label>3. Размер шрифта</label>
-        <button class="btn" onclick="changeFont(2)">A+</button>
-        <button class="btn" onclick="changeFont(-2)">A−</button>
-        <button class="btn gray" onclick="resetFont()">Сброс</button>
+        <button class="rbtn" onclick="changeFont(2)">A+</button>
+        <button class="rbtn" onclick="changeFont(-2)">A−</button>
+        <button class="rbtn gray" onclick="resetFont()">Сброс</button>
         <span class="muted"> текущий: <b id="fontsize">16 px</b></span>
       </div>
 
@@ -103,9 +106,9 @@ input:focus{border-color:#1a73e8;outline:none}
 
       <div class="group">
         <label>6. Контент-скрипт</label>
-        <button class="btn" onclick="highlight()">Выделить заголовки</button>
-        <button class="btn orange" onclick="addBanner()">Баннер</button>
-        <button class="btn red" onclick="clearEffects()">Убрать эффекты</button>
+        <button class="rbtn" onclick="sendCommand('highlight')">Выделить заголовки</button>
+        <button class="rbtn orange" onclick="sendCommand('addBanner')">Баннер</button>
+        <button class="rbtn red" onclick="sendCommand('clear')">Убрать эффекты</button>
       </div>
     </div>
   </div>
@@ -116,8 +119,8 @@ input:focus{border-color:#1a73e8;outline:none}
   <div class="group">
     <input id="note-text" placeholder="Текст заметки...">
   </div>
-  <button class="btn green" onclick="saveNote()">💾 Сохранить</button>
-  <button class="btn red" onclick="clearNotes()">Очистить</button>
+  <button class="rbtn green" onclick="saveNote()">💾 Сохранить</button>
+  <button class="rbtn red" onclick="clearNotes()">Очистить</button>
   <div id="notes" style="margin-top:10px"></div>
 </div>
 
@@ -128,19 +131,30 @@ input:focus{border-color:#1a73e8;outline:none}
 const $ = (id) => document.getElementById(id);
 const URL_KEY = 'pr18_notes_' + location.pathname;
 const COUNT_KEY = 'pr18_clicks';
+const DARK_KEY = 'pr18_dark';
 let fontLevel = 16;
 let clicks = Number(localStorage.getItem(COUNT_KEY) || 0);
+let darkOn = localStorage.getItem(DARK_KEY) === '1';
+let currentBg = '';
 
 function out(msg) { $('out').textContent = msg; }
 function logStatus(msg) { out(msg); }
 
+function applyState() {
+  const page = $('page');
+  page.style.transition = 'background-color .3s, color .3s';
+  page.style.background = darkOn ? '#1a1a1a' : currentBg;
+  page.classList.toggle('dark', darkOn);
+}
+
 function setBg(color) {
-  $('page').style.background = color;
-  $('page').style.transition = 'background-color .3s';
+  currentBg = color;
+  if (!darkOn) applyState();
   logStatus('Фон страницы: ' + color);
 }
 function resetBg() {
-  $('page').style.background = '';
+  currentBg = '';
+  applyState();
   logStatus('Фон сброшен');
 }
 
@@ -173,8 +187,11 @@ function sayHello() {
 }
 
 function toggleDark(on) {
-  $('page').classList.toggle('dark', on);
+  darkOn = on;
+  localStorage.setItem(DARK_KEY, on ? '1' : '0');
+  $('dark').checked = on;
   $('darklabel').textContent = on ? 'включён' : 'выключен';
+  applyState();
   logStatus('Тёмный режим: ' + (on ? 'включён' : 'выключен'));
 }
 
@@ -190,7 +207,7 @@ function highlight() {
     h.style.outline = '1px solid #f59e0b';
     n++;
   });
-  logStatus('Выделено заголовков: ' + n);
+  logStatus('Контент-скрипт: выделено заголовков: ' + n);
 }
 
 function addBanner() {
@@ -202,15 +219,29 @@ function addBanner() {
     banner.style.cssText = 'background:#1a73e8;color:#fff;padding:6px 10px;border-radius:6px;margin-bottom:10px;font-size:13px';
     $('page').prepend(banner);
   }
-  logStatus('Баннер добавлен');
+  logStatus('Контент-скрипт: баннер добавлен');
+}
+
+// Задание 6: имитация приёма команд в отдельном файле content-script.js.
+// В реальном расширении здесь был бы browser.runtime.onMessage.addListener,
+// получающий сообщения из popup через browser.tabs.sendMessage.
+function contentScriptCommand(command) {
+  const map = {
+    highlight: () => { highlight(); return 'highlight'; },
+    addBanner: () => { addBanner(); return 'addBanner'; },
+    clear: () => { clearEffects(); return 'clear'; }
+  };
+  return map[command] ? map[command]() : null;
+}
+function sendCommand(command) {
+  const done = contentScriptCommand(command);
+  logStatus('popup → content-script: команда "' + done + '" принята и выполнена');
 }
 
 function clearEffects() {
   resetBg();
   resetFont();
-  $('page').classList.remove('dark');
-  $('dark').checked = false;
-  $('darklabel').textContent = 'выключен';
+  toggleDark(false);
   $('page').querySelectorAll('[data-hl]').forEach((h) => {
     h.removeAttribute('data-hl');
     h.style.padding = '';
@@ -269,6 +300,9 @@ function clearNotes() {
 }
 
 $('count').textContent = clicks;
+$('dark').checked = darkOn;
+$('darklabel').textContent = darkOn ? 'включён' : 'выключен';
+applyState();
 renderNotes();
 </script>
 </body>

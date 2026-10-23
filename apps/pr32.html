@@ -19,21 +19,31 @@ h1{color:#1a73e8;margin-bottom:4px;font-size:24px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
 input,select{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px}
 input:focus,select:focus{border-color:#1a73e8;outline:none}
-.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}
-.pill.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.check{display:inline-flex;align-items:center;gap:7px;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer;background:#fff;user-select:none}
+.check input{width:15px;height:15px;accent-color:#1a73e8;cursor:pointer}
+.check.active{background:#eef6ff;border-color:#1a73e8}
+.pill{display:inline-block;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer;color:#0b57d0}
+.pill:hover{border-color:#1a73e8}
 .letters{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
 .letters button{width:30px;height:30px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;cursor:pointer;font-size:13px}
+.letters button:hover{border-color:#1a73e8}
 .letters button.active{background:#1a73e8;color:#fff;border-color:#1a73e8}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:10px}
-.person{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;animation:in .3s ease both}
-.person b{display:block}
-.person span{font-size:12px;color:#64748b}
-@keyframes in{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;min-width:0}
+.item b{display:block}
+.item span{font-size:12px;color:#64748b}
+.item-enter{opacity:0;transform:translateX(-14px)}
+.item-enter-active{opacity:1;transform:none;transition:opacity 300ms ease-in,transform 300ms ease-in}
+.item-exit{opacity:1;transform:none}
+.item-exit-active{opacity:0;transform:translateX(14px);transition:opacity 300ms ease-in,transform 300ms ease-in}
+.active-filters{background:#f5f9ff;border:1px dashed #c9e3ff;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:13px;color:#1a56a0;flex-wrap:wrap;gap:6px}
+.empty{border:1px dashed #cbd5e1;border-radius:8px;padding:24px;text-align:center;color:#64748b;margin-top:10px}
 .muted{color:#64748b;font-size:12px;margin-top:8px}
 </style>
 <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script src="https://unpkg.com/react-transition-group@4.4.5/dist/react-transition-group.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -43,26 +53,35 @@ input:focus,select:focus{border-color:#1a73e8;outline:none}
 </div>
 <span class="pr-tag">ПР32</span>
 <h1>ПР32 — React: фильтрация и сортировка (все задания)</h1>
-<div class="desc">Одно приложение списка людей со всеми заданиями: больше данных, фильтр по длине и первой букве, поиск по полям, множественные фильтры, экспорт CSV/JSON и анимация при фильтрации.</div>
+<div class="desc">Одно приложение списка людей со всеми заданиями: больше данных, фильтр по длине и первой букве, поиск по полям, множественные фильтры, экспорт CSV/JSON и анимация при входе/выходе элементов.</div>
 <div id="root"></div>
 </div>
 <script type="text/babel" data-presets="react">
-const { useState } = React;
+const { useState, useMemo } = React;
+const { CSSTransition, TransitionGroup } = ReactTransitionGroup;
 const LETTERS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'.split('');
 
 const PEOPLE = [
-  { first: 'Анна', last: 'Иванова', age: 25, city: 'Москва' },
-  { first: 'Борис', last: 'Петров', age: 30, city: 'Санкт-Петербург' },
-  { first: 'Мария', last: 'Федорова', age: 22, city: 'Москва' },
-  { first: 'Алексей', last: 'Смирнов', age: 41, city: 'Новосибирск' },
-  { first: 'Ирина', last: 'Соколова', age: 35, city: 'Казань' },
-  { first: 'John', last: 'Smith', age: 28, city: 'London' },
-  { first: 'Наталья', last: 'Волкова', age: 27, city: 'Москва' },
-  { first: 'Максим', last: 'Алексеев', age: 33, city: 'Екатеринбург' },
-  { first: 'Юлия', last: 'Лебедева', age: 29, city: 'Санкт-Петербург' },
-  { first: 'Константин', last: 'Козлов', age: 44, city: 'Минск' }
+  { first: 'Анна',     last: 'Иванова',      age: 25, city: 'Москва' },
+  { first: 'Борис',    last: 'Петров',       age: 30, city: 'Санкт-Петербург' },
+  { first: 'Мария',    last: 'Фёдорова',     age: 22, city: 'Москва' },
+  { first: 'Алексей',  last: 'Смирнов',      age: 41, city: 'Новосибирск' },
+  { first: 'Ирина',    last: 'Соколова',     age: 35, city: 'Казань' },
+  { first: 'Джон',     last: 'Смит',         age: 28, city: 'Лондон' },
+  { first: 'John',     last: 'Smith',        age: 28, city: 'London' },
+  { first: 'Наталья',  last: 'Волкова',      age: 27, city: 'Москва' },
+  { first: 'Максим',   last: 'Алексеев',     age: 33, city: 'Екатеринбург' },
+  { first: 'Юлия',     last: 'Лебедева',     age: 29, city: 'Санкт-Петербург' },
+  { first: 'Константин', last: 'Козлов',     age: 44, city: 'Минск' },
+  { first: 'Екатерина', last: 'Кузнецова',   age: 31, city: 'Ростов-на-Дону' },
+  { first: 'Мария',    last: 'Мюллер',       age: 26, city: 'Берлин' },
+  { first: 'Давид',    last: 'Коэн',         age: 24, city: 'Тель-Авив' },
+  { first: 'Ли',       last: 'Нен',          age: 20, city: 'Ханой' },
+  { first: 'Юн',       last: 'Ким',          age: 34, city: 'Сеул' }
 ];
 const full = (p) => p.first + ' ' + p.last;
+// длина полного имени без пробелов (имя + фамилия слитно)
+const nameLen = (p) => full(p).replace(/\s/g, '').length;
 
 function App() {
   const [query, setQuery] = useState('');
@@ -72,68 +91,126 @@ function App() {
   const [filters, setFilters] = useState([]);
 
   const toggleFilter = (id) => setFilters((f) => f.includes(id) ? f.filter(x => x !== id) : [...f, id]);
+  const clearAll = () => { setQuery(''); setField('all'); setLengthF('all'); setLetter(''); setFilters([]); };
 
-  let result = PEOPLE;
-  const q = query.trim().toLowerCase();
-  if (q) result = result.filter(p => {
-    const obj = field === 'all' ? p : { [field]: p[field] };
-    return Object.values(obj).some(v => String(v).toLowerCase().includes(q));
-  });
-  if (lengthF === 'short') result = result.filter(p => full(p).replace(/\s/g, '').length <= 10);
-  if (lengthF === 'long') result = result.filter(p => full(p).replace(/\s/g, '').length > 10);
-  if (field === 'name' && letter) result = result.filter(p => full(p).startsWith(letter));
-  if (filters.includes('young')) result = result.filter(p => p.age < 30);
-  if (filters.includes('adult')) result = result.filter(p => p.age >= 30);
-  if (filters.includes('moscow')) result = result.filter(p => p.city === 'Москва');
+  // Задание 2–6: единая фильтрация с useMemo
+  const result = useMemo(() => {
+    let r = PEOPLE;
+    const q = query.trim().toLowerCase();
 
-  const exportCsv = (type) => {
+    // Задание 4: поиск по всем полям или выбранному
+    if (q) {
+      r = field === 'all'
+        ? r.filter(p => Object.values(p).some(v => String(v).toLowerCase().includes(q)))
+        : r.filter(p => String(p[field]).toLowerCase().includes(q));
+    }
+
+    // Задание 2: длина полного имени
+    if (lengthF === 'short') r = r.filter(p => nameLen(p) <= 5);
+    if (lengthF === 'long')  r = r.filter(p => nameLen(p) > 5);
+
+    // Задание 3: поиск по первой букве имени
+    if (letter) r = r.filter(p => p.first.toUpperCase().startsWith(letter));
+
+    // Задание 5: множественный выбор применяется одновременно
+    if (filters.includes('young')) r = r.filter(p => p.age < 30);
+    if (filters.includes('adult')) r = r.filter(p => p.age >= 30);
+    if (filters.includes('moscow')) r = r.filter(p => p.city === 'Москва');
+    if (filters.includes('short-name')) r = r.filter(p => p.first.length <= 5);
+
+    return r;
+  }, [query, field, lengthF, letter, filters]);
+
+  // Задание 6: экспорт CSV / JSON
+  const exportResults = (type) => {
     let content, mime, ext;
-    if (type === 'json') { content = JSON.stringify(result, null, 2); mime = 'application/json'; ext = 'json'; }
-    else { content = 'Имя,Возраст,Город\n' + result.map(p => '"' + full(p) + '",' + p.age + ',"' + p.city + '"').join('\n'); mime = 'text/csv;charset=utf-8'; ext = 'csv'; }
-    const blob = new Blob(['\ufeff' + content], { type: mime });
+    if (type === 'json') { content = JSON.stringify(result.map(p => ({ full: full(p), ...p })), null, 2); mime = 'application/json'; ext = 'json'; }
+    else {
+      content = 'Имя,Возраст,Город\n' + result.map(p => '"' + full(p) + '","' + p.age + '","' + p.city + '"').join('\n');
+      mime = 'text/csv;charset=utf-8'; ext = 'csv';
+    }
+    const blob = new Blob([ '\ufeff' + content ], { type: mime });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'filtered.' + ext; a.click();
     URL.revokeObjectURL(url);
   };
 
-  const animKey = query + '|' + field + '|' + lengthF + '|' + letter + '|' + filters.join(',');
+  const activeLabels = {
+    young: 'Моложе 30', adult: '30 и старше', moscow: 'Только Москва', 'short-name': 'Имя ≤ 5'
+  };
+  const activeCount = filters.length + (lengthF !== 'all' ? 1 : 0) + (letter ? 1 : 0) + (query ? 1 : 0);
 
   return (
     <div className="card">
       <div className="row">
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Поиск..." style={{ flex: 1, minWidth: 160 }} />
-        <select value={field} onChange={(e) => setField(e.target.value)}>
-          <option value="all">Все поля</option><option value="first">Имя</option><option value="last">Фамилия</option><option value="age">Возраст</option><option value="city">Город</option><option value="name">Полное имя</option>
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Поиск по выбранному полю..." style={{ flex: 1, minWidth: 160 }} />
+        <select value={field} onChange={(e) => setField(e.target.value)} title="Поле для поиска">
+          <option value="all">Все поля</option>
+          <option value="first">Имя</option>
+          <option value="last">Фамилия</option>
+          <option value="age">Возраст</option>
+          <option value="city">Город</option>
         </select>
-        <select value={lengthF} onChange={(e) => setLengthF(e.target.value)}>
-          <option value="all">Любая длина</option><option value="short">Короткие (≤10)</option><option value="long">Длинные (&gt;10)</option>
+        <select value={lengthF} onChange={(e) => { setLengthF(e.target.value); }} title="Фильтр по длине полного имени">
+          <option value="all">Любая длина</option>
+          <option value="short">Короткие (≤5)</option>
+          <option value="long">Длинные (&gt;5)</option>
         </select>
       </div>
 
-      <div className="row">
-        <span className="pill" style={filters.includes('young') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('young')}>Моложе 30</span>
-        <span className="pill" style={filters.includes('adult') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('adult')}>30+</span>
-        <span className="pill" style={filters.includes('moscow') ? { background: '#1a73e8', color: '#fff' } : {}} onClick={() => toggleFilter('moscow')}>Москва</span>
+      <div className="row" style={{ marginTop: 12 }}>
+        <span className="check" style={filters.includes('young') ? { background: '#eef6ff', borderColor: '#1a73e8' } : {}}>
+          <input type="checkbox" checked={filters.includes('young')} onChange={() => toggleFilter('young')} /> Моложе 30
+        </span>
+        <span className="check" style={filters.includes('adult') ? { background: '#eef6ff', borderColor: '#1a73e8' } : {}}>
+          <input type="checkbox" checked={filters.includes('adult')} onChange={() => toggleFilter('adult')} /> 30 и старше
+        </span>
+        <span className="check" style={filters.includes('moscow') ? { background: '#eef6ff', borderColor: '#1a73e8' } : {}}>
+          <input type="checkbox" checked={filters.includes('moscow')} onChange={() => toggleFilter('moscow')} /> Только Москва
+        </span>
+        <span className="check" style={filters.includes('short-name') ? { background: '#eef6ff', borderColor: '#1a73e8' } : {}}>
+          <input type="checkbox" checked={filters.includes('short-name')} onChange={() => toggleFilter('short-name')} /> Имя ≤ 5 букв
+        </span>
       </div>
 
-      {field === 'name' && (
-        <div className="letters">
-          {LETTERS.map(c => <button key={c} className={letter === c ? 'active' : ''} onClick={() => setLetter(letter === c ? '' : c)}>{c}</button>)}
+      <div className="letters">
+        <button className={letter === '' ? 'active' : ''} onClick={() => setLetter('')}>Все</button>
+        {LETTERS.map(c => <button key={c} className={letter === c ? 'active' : ''} onClick={() => setLetter(letter === c ? '' : c)}>{c}</button>)}
+      </div>
+
+      {activeCount > 0 && (
+        <div className="row active-filters">
+          <b>Активные фильтры:</b>
+          {query && <span className="pill">поиск: «{query}»</span>}
+          {lengthF !== 'all' && <span className="pill">{lengthF === 'short' ? 'Короткие' : 'Длинные'}</span>}
+          {letter && <span className="pill">буква: {letter}</span>}
+          {filters.map(f => <span key={f} className="pill">{activeLabels[f]}</span>)}
+          <button className="pill" onClick={clearAll}>✕ Сбросить</button>
         </div>
       )}
 
-      <div className="grid" key={animKey}>
+      <TransitionGroup component="div" className="grid">
         {result.map((p, i) =>
-          <div className="person" key={i}>
-            <b>{full(p)}</b><span>{p.age} лет · {p.city}</span>
-          </div>
+          <CSSTransition key={full(p) + '|' + i} timeout={300} classNames="item">
+            <div className="item">
+              <b>{full(p)}</b>
+              <span>{p.age} лет · {p.city} · ({nameLen(p)} зн.)</span>
+            </div>
+          </CSSTransition>
         )}
-      </div>
+      </TransitionGroup>
+
+      {result.length === 0 && (
+        <div className="empty">
+          😕 Ничего не найдено. Измените запрос или <button className="pill" onClick={clearAll}>сбросьте фильтры</button>
+        </div>
+      )}
+
       <div className="muted">Найдено: {result.length} из {PEOPLE.length}</div>
       <div className="row" style={{ marginTop: 12 }}>
-        <button className="pill" onClick={() => exportCsv('csv')} disabled={result.length === 0}>📥 CSV ({result.length})</button>
-        <button className="pill" onClick={() => exportCsv('json')} disabled={result.length === 0}>📥 JSON ({result.length})</button>
+        <button className="pill" onClick={() => exportResults('csv')} disabled={result.length === 0}>📥 Экспорт CSV ({result.length})</button>
+        <button className="pill" onClick={() => exportResults('json')} disabled={result.length === 0}>📥 Экспорт JSON ({result.length})</button>
       </div>
     </div>
   );

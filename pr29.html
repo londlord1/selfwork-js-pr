@@ -47,29 +47,41 @@ input:focus{border-color:#1a73e8;outline:none}
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef } = React;
 
+let _audioCtx = null;
+function audioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
+}
 function beep() {
+  // Повторное использование одного AudioContext вместо создания нового при каждом срабатывании
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = audioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
     const o = ctx.createOscillator(); const g = ctx.createGain();
     o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = 800; o.type = 'sine'; g.gain.value = 0.3;
-    o.start(); setTimeout(() => { o.stop(); ctx.close(); }, 500);
+    o.frequency.value = 800; o.type = 'sine';
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.setValueAtTime(0, ctx.currentTime + 0.5);
+    o.start();
+    const t = setTimeout(() => { try { o.stop(); } catch (e) {} }, 600);
+    o.onended = () => clearTimeout(t);
   } catch (e) {}
 }
 
 function fmt(s) { return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
 
 function SingleTimer({ id }) {
-  const [initial, setInitial] = useState(30);
-  const [time, setTime] = useState(() => { try { const d = JSON.parse(localStorage.getItem('pr29_t' + id) || 'null'); return d ? d.time : 30; } catch (e) { return 30; } });
-  const [active, setActive] = useState(false);
-  const [finished, setFinished] = useState(false);
+  const [initial, setInitial] = useState(() => { try { const d = JSON.parse(localStorage.getItem('pr29_t' + id) || 'null'); return d && typeof d.initial === 'number' ? d.initial : 30; } catch (e) { return 30; } });
+  const [time, setTime] = useState(() => { try { const d = JSON.parse(localStorage.getItem('pr29_t' + id) || 'null'); return d && typeof d.time === 'number' ? d.time : initial; } catch (e) { return 30; } });
+  const [active, setActive] = useState(() => { try { return JSON.parse(localStorage.getItem('pr29_t' + id) || 'null')?.active || false; } catch (e) { return false; } });
+  const [finished, setFinished] = useState(() => { try { return JSON.parse(localStorage.getItem('pr29_t' + id) || 'null')?.finished || false; } catch (e) { return false; } });
 
   useEffect(() => {
-    localStorage.setItem('pr29_t' + id, JSON.stringify({ time }));
-  }, [time]);
+    localStorage.setItem('pr29_t' + id, JSON.stringify({ time, initial }));
+  }, [time, initial]);
 
   useEffect(() => {
+    // Единый интервал на весь компонент: один setInterval, очистка при паузе/размонтировании
     if (!active) return;
     const iv = setInterval(() => setTime((t) => { if (t <= 1) { setActive(false); setFinished(true); beep(); return 0; } return t - 1; }), 1000);
     return () => clearInterval(iv);
@@ -92,7 +104,7 @@ function SingleTimer({ id }) {
         </svg>
       </div>
       <div className="row" style={{ justifyContent: 'center' }}>
-        {[5, 10, 30, 60].map((s) => <button key={s} className="rbtn gray" onClick={() => { setInitial(s); if (!active && finished) { setTime(s); setFinished(false); } }}>{s}с</button>)}
+        {[5, 10, 30, 60].map((s) => <button key={s} className="rbtn gray" onClick={() => { setInitial(s); if (!active) { setTime(s); setFinished(false); } }}>{s}с</button>)}
       </div>
       <div className="row" style={{ justifyContent: 'center' }}>
         <input type="number" value={Math.floor(time / 60)} onChange={(e) => { const m = Math.max(0, Math.min(99, Number(e.target.value) || 0)); if (!active) setTime(m * 60 + (time % 60)); }} /> <b>:</b>

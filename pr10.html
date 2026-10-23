@@ -2,61 +2,150 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР10 — Списки и DOM: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:800px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.red{background:#dc3545}.li{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;transition:all .3s}.li.anim{animation:pop .35s ease}@keyframes pop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:34px;margin-top:10px}
-.clone{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px}.muted{color:#64748b;font-size:12px}</style>
+<title>ПР10 — Доступ к HTML-элементам при помощи DOM: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:820px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.red{background:#dc3545}.rbtn.green{background:#28a745}.muted{color:#64748b;font-size:12px}.oli{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:5px;transition:all .3s}.hl-mark{background:#ffe066 !important;box-shadow:0 0 0 2px #f5b301}.clone{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px}.gallery{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.gitem{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:10px 16px;cursor:pointer;transition:all .3s;user-select:none}.gitem:hover{border-color:#1a73e8}.gitem.new{animation:pop .45s ease}.oli.new{animation:pop .45s ease}.gitem.newer{animation:pop .45s ease}@keyframes pop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:34px;margin-top:10px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr09.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr11.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР10</span><h1>ПР10 — Списки и DOM (все задания)</h1>
-<div class="desc">Одна страница списка: сортировка (1), поиск по тексту (2), сохранение в localStorage (3), глубокое клонирование элемента (4) и анимация появления новых элементов (5).</div>
+<span class="pr-tag">ПР10</span><h1>ПР10 — Доступ к HTML-элементам при помощи DOM (все задания)</h1>
+<div class="desc">Одна страница: сортировка списка через Array.from (1), поиск и подсветка элементов по всей странице (2), сохранение состояния в localStorage (3), рекурсивное глубокое клонирование (4) и анимация добавления в галерее и списке (5).</div>
 
-<div class="card"><h2>Список: сортировка + поиск + localStorage + анимация</h2>
-  <div class="row">
-    <input id="newName" placeholder="Новый элемент" onkeydown="if(event.key==='Enter')addName()">
-    <button class="rbtn" onclick="addName()">Добавить</button>
-    <input id="find" placeholder="Поиск..." oninput="render()">
-    <button class="rbtn gray" onclick="sortList()">Сортировать А-Я</button>
-    <button class="rbtn red" onclick="clearList()">Очистить</button>
-  </div>
-  <div id="list"></div>
-  <div class="out" id="out"></div>
+<div class="card"><h2>1. Сортировка списка (Array.from + sort)</h2>
+  <div class="row"><input id="addItem" placeholder="Новый элемент списка" onkeydown="if(event.key==='Enter')addListItem()"><button class="rbtn green" onclick="addListItem()">Добавить</button><button class="rbtn gray" onclick="sortList()">Сортировать А-Я</button></div>
+  <ul id="dynamicList"></ul>
+  <div class="out" id="sortOut"></div>
 </div>
 
-<div class="card"><h2>Глубокое клонирование (задание 4)</h2>
+<div class="card"><h2>2. Поиск и подсветка по всей странице</h2>
+  <div class="row"><input id="searchText" placeholder="Искомый текст..." onkeydown="if(event.key==='Enter')highlightSearch()"><button class="rbtn" onclick="highlightSearch()">Найти и подсветить</button><button class="rbtn gray" onclick="clearHighlight()">Снять подсветку</button></div>
+  <p class="muted">Будут подсвечены все элементы страницы, содержимое которых содержит указанный текст (ищется по всему документу, не только в списке).</p>
+  <div class="out" id="searchOut"></div>
+</div>
+
+<div class="card"><h2>3. Сохранение состояния в localStorage</h2>
+  <div class="row"><input id="taskInput" placeholder="Новая задача..." onkeydown="if(event.key==='Enter')addTask()"><button class="rbtn green" onclick="addTask()">Добавить</button><button class="rbtn red" onclick="clearTasks()">Очистить</button></div>
+  <div id="taskList"></div>
+  <p class="muted">Состояние списка задач автоматически сохраняется и восстанавливается при перезагрузке страницы.</p>
+  <div class="out" id="taskOut"></div>
+</div>
+
+<div class="card"><h2>4. Глубокое клонирование (рекурсивное)</h2>
   <div class="row">
-    <div class="clone" id="orig"><b>Оригинал</b><input value="текст"></div>
-    <button class="rbtn gray" onclick="cloneCopy()">Клонировать</button>
-    <div id="clonearea"></div>
+    <div class="clone" id="orig"><b>Оригинал</b><span> ○ </span><input value="текст" data-info="атрибут сохраняется"></div>
+    <button class="rbtn gray" onclick="cloneDeep()">Клонировать (рекурсивно)</button>
   </div>
+  <div id="clonearea"></div>
+  <p class="muted">Копия строится собственной рекурсивной функцией deepClone (обход childNodes + копирование атрибутов), без cloneNode().</p>
+  <div class="out" id="cloneOut"></div>
+</div>
+
+<div class="card"><h2>5. Анимация появления (галерея и список)</h2>
+  <div class="row"><input id="galleryInput" placeholder="Название элемента галереи..." onkeydown="if(event.key==='Enter')addGallery()"><button class="rbtn green" onclick="addGallery()">Добавить в галерею</button></div>
+  <div class="gallery" id="gallery"></div>
+  <p class="muted">Новые элементы галереи и списка появляются с CSS-анимацией pop.</p>
+  <div class="out" id="galleryOut"></div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const KEY='pr10_list';
-let items=load();
-function load(){try{return JSON.parse(localStorage.getItem(KEY))||['Яблоко','Банан','Апельсин'];}catch(e){return['Яблоко','Банан','Апельсин'];}}
-function save(){localStorage.setItem(KEY,JSON.stringify(items));}
-function render(){
-  const q=$('find').value.trim().toLowerCase();
-  const list=items.filter(x=>x.toLowerCase().includes(q));
-  $('list').innerHTML=list.map(x=>'<div class="li anim"><span>'+esc(x)+'</span><button class="rbtn red" onclick="delName(\''+esc(x).replace(/'/g,"\\'")+'\')">×</button></div>').join('');
-  $('out').textContent='Показано '+list.length+' из '+items.length+' · '+(items.slice().sort().join(', '));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- 1. Сортировка списка #dynamicList через Array.from ---------- */
+const DYNAMIC=['Яблоко','Банан','Апельсин','Груша','Киви'];
+function sortList(){
+  const list=$('dynamicList');
+  const items=Array.from(list.children);        // Array.from обходит узлы списка
+  items.sort((a,b)=>a.textContent.localeCompare(b.textContent,'ru'));  // и сортируем их
+  items.forEach(li=>list.appendChild(li));       // вставляем в новом порядке
+  $('sortOut').textContent='Отсортировано (Array.from + sort): '+items.map(x=>x.textContent).join(' · ');
 }
-function addName(){const v=$('newName').value.trim();if(!v)return;items.push(v);save();$('newName').value='';render();}
-function delName(n){items=items.filter(x=>x!==n);save();render();}
-function sortList(){items.sort((a,b)=>a.localeCompare(b,'ru'));save();render();$('out').textContent='Отсортировано: '+items.join(', ');}
-function clearList(){items=[];save();render();}
-function cloneCopy(){
+function addListItem(){
+  const v=$('addItem').value.trim();if(!v)return;
+  const li=document.createElement('li');li.className='oli';
+  li.innerHTML='<span>'+esc(v)+'</span><button class="rbtn red small" onclick="this.parentNode.remove()">×</button>';
+  li.classList.add('new');                       // анимация появления
+  $('dynamicList').appendChild(li);
+  $('addItem').value='';
+  $('sortOut').textContent='Элемент «'+v+'» добавлен в список.';
+}
+
+/* ---------- 2. Поиск и подсветка по всей странице ---------- */
+let lastQuery='';
+function highlightSearch(){
+  clearHighlight();
+  const q=$('searchText').value.trim();if(!q){$('searchOut').textContent='Введите текст для поиска.';return;}
+  lastQuery=q.toLowerCase();
+  const found=[];                              // идём по ВСЕМ элементам страницы
+  document.querySelectorAll('body *').forEach(el=>{
+    const txt=(el.childElementCount?el.textContent:'')||'';
+    if(el.textContent&&el.childElementCount===0&&txt.toLowerCase().includes(lastQuery))found.push(el);
+  });
+  found.forEach(el=>el.classList.add('hl-mark'));
+  $('searchOut').textContent='Найдено и подсвечено элементов: '+found.length+(found.length?'\n'+found.map(e=>'<'+e.tagName.toLowerCase()+'> «'+e.textContent.trim().slice(0,40)+'»').join('\n'):'');
+}
+function clearHighlight(){document.querySelectorAll('.hl-mark').forEach(el=>el.classList.remove('hl-mark'));$('searchOut').textContent='Подсветка снята.';}
+
+/* ---------- 3. localStorage: список задач ---------- */
+const KEY='pr10_tasks';
+let tasks=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||['Изучить DOM','Сделать сортировку','Настроить поиск'];}catch(e){return['Изучить DOM','Сделать сортировку','Настроить поиск'];}}
+function save(){localStorage.setItem(KEY,JSON.stringify(tasks));}
+function renderTasks(){
+  $('taskList').innerHTML=tasks.map((t,i)=>'<div class="oli"><span>'+esc(t)+'</span><button class="rbtn red" onclick="delTask('+i+')">×</button></div>').join('');
+  $('taskOut').textContent='Задач: '+tasks.length+' · сохранено в localStorage ('+KEY+')';
+}
+function addTask(){const v=$('taskInput').value.trim();if(!v)return;tasks.push(v);save();$('taskInput').value='';renderTasks();}
+function delTask(i){tasks.splice(i,1);save();renderTasks();}
+function clearTasks(){if(confirm('Удалить все задачи?')){tasks=[];save();renderTasks();}}
+
+/* ---------- 4. Рекурсивное глубокое клонирование ---------- */
+function deepClone(node){
+  if(node.nodeType===Node.TEXT_NODE)return document.createTextNode(node.nodeValue);
+  if(node.nodeType===Node.COMMENT_NODE)return document.createComment(node.data);
+  // элементы: создаём такой же тег
+  const copy=document.createElement(node.tagName);
+  // копируем все атрибуты
+  Array.from(node.attributes).forEach(a=>copy.setAttribute(a.name,a.value));
+  // рекурсивно обходим дочерние узлы (не только элементы — и текст, и комментарии)
+  Array.from(node.childNodes).forEach(child=>copy.appendChild(deepClone(child)));
+  return copy;
+}
+function cloneDeep(){
   const orig=$('orig');
-  const copy=orig.cloneNode(true);
-  copy.querySelector('b').textContent='Клон';
+  const a=$('clonearea');a.innerHTML='';
+  const copy=deepClone(orig);          // собственная рекурсивная функция
   copy.style.border='2px solid #1a73e8';
-  const a=$('clonearea');a.innerHTML='';a.appendChild(copy);
-  // deep check: изменение значения клона не влияет на оригинал
-  copy.querySelector('input').value='изменено в клоне';
-  $('out').textContent='Клон создан (deep copy). Значение оригинала: «'+orig.querySelector('input').value+'», клона: «'+copy.querySelector('input').value+'» — независимы ✓';
+  copy.querySelector('b').textContent='Клон';
+  a.appendChild(copy);
+  copy.querySelector('input').setAttribute('value','изменено в клоне');
+  $('cloneOut').textContent=
+    'Рекурсивный deepClone (без cloneNode).\n'+
+    'Атрибуты клона: '+copy.querySelector('input').getAttribute('data-info')+' ✓\n'+
+    'Значение оригинала: «'+orig.querySelector('input').getAttribute('value')+'», клона: «'+copy.querySelector('input').getAttribute('value')+'» — независимы ✓';
 }
-render();
+
+/* ---------- 5. Анимация появления (галерея) ---------- */
+const GALLERY=['Фото 1','Фото 2','Фото 3'];
+function renderGallery(){
+  $('gallery').innerHTML=GALLERY.map(g=>'<div class="gitem" onclick="selectGallery(this)">'+esc(g)+'</div>').join('');
+}
+function addGallery(){
+  renderGallery();
+  const v=$('galleryInput').value.trim();if(!v)return;
+  GALLERY.push(v);$('galleryInput').value='';
+  renderGallery();
+  const items=$('gallery').children;
+  items[items.length-1].classList.add('new');   // анимация на новом элементе
+  $('galleryOut').textContent='В галерее появился элемент «'+v+'» (CSS-анимация pop).';
+}
+function selectGallery(el){
+  document.querySelectorAll('.gitem').forEach(x=>x.style.outline='');
+  el.style.outline='3px solid #1a73e8';
+}
+
+/* инициализация */
+$('dynamicList').innerHTML=DYNAMIC.map(n=>'<li class="oli"><span>'+esc(n)+'</span><button class="rbtn red" onclick="this.parentNode.remove()">×</button></li>').join('');
+renderTasks();
+renderGallery();
 </script>
 </body></html>

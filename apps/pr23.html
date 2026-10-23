@@ -68,6 +68,7 @@ input:focus,select:focus{border-color:#1a73e8;outline:none}
     <button class="rbtn gray" onclick="skip(999)">больше длительности</button>
     <span class="muted" id="playback"></span>
   </div>
+  <div class="out" id="pout"></div>
 </div>
 
 <script>
@@ -133,7 +134,7 @@ function skip(time) {
   const result = player.skipTo(time);
   const p = Math.round(player.currentTime / player.duration * 100);
   $('playback').textContent = '⏩ Текущее: ' + player.currentTime + ' / ' + player.duration + ' мин (' + p + '%)';
-  out('skipTo(' + time + ') → ' + result + ' мин');
+  $('pout').innerHTML = 'skipTo(' + time + ') → ' + result + ' мин';
 }
 
 collection.addBook(new Book('Война и мир', 'Л. Н. Толстой', 1869));

@@ -115,10 +115,17 @@ def build(src_dir, out_dir):
         grouped.setdefault(pr, []).append((num, path))
 
     os.makedirs(out_dir, exist_ok=True)
-    prs = sorted(grouped)
-    index_cards = []
 
     apps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+    APP_COUNTS = {1: 4, 2: 4}
+    apps = set()
+    for _f in glob.glob(os.path.join(apps_dir, 'pr*.html')):
+        _m = re.match(r'pr(\d+)\.html', os.path.basename(_f))
+        if _m:
+            apps.add(int(_m.group(1)))
+
+    prs = sorted(set(grouped) | apps)
+    index_cards = []
 
     for pr in prs:
         app_path = os.path.join(apps_dir, 'pr%02d.html' % pr)
@@ -126,7 +133,7 @@ def build(src_dir, out_dir):
             open(os.path.join(out_dir, 'pr%02d.html' % pr), 'w', encoding='utf-8').write(
                 open(app_path, encoding='utf-8').read()
             )
-            count = len(sorted(grouped[pr]))
+            count = len(grouped.get(pr, [])) or APP_COUNTS.get(pr, 0)
             index_cards.append((pr, 'ПР%02d — %s' % (pr, PR_TITLES.get(pr, '')), count))
             continue
 
@@ -141,8 +148,9 @@ def build(src_dir, out_dir):
         title = 'ПР%02d — %s' % (pr, PR_TITLES.get(pr, ''))
         payload = json.dumps(tasks, ensure_ascii=False).replace('</', '<\\/')
 
-        prev_link = 'pr%02d.html' % (pr - 1) if (pr - 1) in grouped else 'index.html'
-        next_link = 'pr%02d.html' % (pr + 1) if (pr + 1) in grouped else 'index.html'
+        _prs = set(prs)
+        prev_link = 'pr%02d.html' % (pr - 1) if (pr - 1) in _prs else 'index.html'
+        next_link = 'pr%02d.html' % (pr + 1) if (pr + 1) in _prs else 'index.html'
 
         page = """<!DOCTYPE html>
 <html lang="ru">

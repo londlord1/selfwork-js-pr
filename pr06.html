@@ -2,50 +2,77 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР06 — To-Do: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:760px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input,select{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus,select:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.red{background:#dc3545}.task{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:10px 12px;margin-bottom:7px;flex-wrap:wrap}.task .m{font-size:12px;color:#64748b}.task.done{border-left-color:#28a745}.task.over{border-left-color:#dc3545}.task .t{font-weight:600}.overdue{color:#dc3545;font-size:12px}.pr{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px}.pr.high{background:#fee2e2;color:#991b1b}.pr.mid{background:#fff7e6;color:#b45309}.pr.low{background:#dcfce7;color:#166534}.muted{color:#64748b;font-size:12px;margin-top:6px}</style>
+<title>ПР06 — Объекты JavaScript: To-Do List</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:760px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 6px}input,select{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus,select:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.red{background:#dc3545}.rbtn.small{padding:6px 10px;font-size:12px}.task{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:10px 12px;margin-bottom:7px;flex-wrap:wrap}.task .m{font-size:12px;color:#64748b}.task.done{border-left-color:#28a745}.task.done .t{color:#94a3b8;text-decoration:line-through}.task.over{border-left-color:#dc3545}.task .t{font-weight:600}.overdue{color:#dc3545;font-size:12px;font-weight:600}.pr{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600}.pr.high{background:#fee2e2;color:#991b1b}.pr.mid{background:#fff7e6;color:#b45309}.pr.low{background:#dcfce7;color:#166534}.muted{color:#64748b;font-size:12px;margin-top:6px}.badge{display:inline-block;background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe;border-radius:8px;padding:3px 10px;font-size:12px;cursor:pointer;user-select:none}.out{background:#0f172a;color:#a5f3fc;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:14px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr05.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr07.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР06</span><h1>ПР06 — To-Do: все задания</h1>
-<div class="desc">Один список задач со всеми заданиями: дата создания (1), сохранение в localStorage (2), приоритеты (3) и срок выполнения с отметкой просроченных (4).</div>
+<span class="pr-tag">ПР06</span><h1>ПР06 — Объекты JavaScript: To-Do List</h1>
+<div class="desc">Менеджер задач: дата создания (1), сохранение в localStorage (2), приоритет с сортировкой (3), срок выполнения и отметка просроченных (4).</div>
 <div class="card">
+  <h2>Новая задача</h2>
   <div class="row">
     <input id="title" placeholder="Новая задача..." onkeydown="if(event.key==='Enter')add()">
     <select id="prio"><option value="low">Низкий</option><option value="mid">Средний</option><option value="high">Высокий</option></select>
     <input id="due" type="date">
     <button class="rbtn" onclick="add()">Добавить</button>
   </div>
+  <div class="toolbar">
+    <span id="sortBtn" class="badge" onclick="toggleSort()" title="Переключить сортировку"></span>
+    <span class="muted" id="info" style="margin-top:0"></span>
+  </div>
   <div id="list"></div>
-  <div class="muted" id="info"></div>
 </div>
+<div class="out" id="out">/ PR06 · объекты задач находятся в localStorage
+/ Добавьте задачу со сроком или приоритетом — смотрите лог действий.</div>
 <script>
 const $=id=>document.getElementById(id), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const KEY='pr06_todo';
-let tasks=load();
+const KEY='pr06_todo', PRIORITY={high:0,mid:1,low:2};
+let tasks=load();      /* задание 2: loadTasks из localStorage */
+let sortBy='prio';     /* сортировка: prio = по приоритету, natural = порядок ввода */
+
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return[];}}
-function save(){localStorage.setItem(KEY,JSON.stringify(tasks));}
-function add(){
+function save(){localStorage.setItem(KEY,JSON.stringify(tasks));}   /* задание 2: saveTasks в localStorage */
+function log(msg){const o=$('out');o.textContent=new Date().toLocaleTimeString('ru-RU')+' — '+msg+'\n'+o.textContent.split('\n').slice(0,5).join('\n');}
+
+function ordered(){
+  const order=sortBy==='prio'
+    ? (a,b)=> (a.done!==b.done ? (a.done?1:-1) : PRIORITY[a.prio]-PRIORITY[b.prio])  /* задание 3: сортировка по приоритету */
+    : ()=>0;
+  return [...tasks].sort(order);
+}
+
+/* задание 4: просрочена, только если срок строго раньше сегодняшней даты */
+function isOver(t){ return !t.done && t.due && new Date(t.due+'T00:00:00') < dayStart(); }
+function dayStart(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+
+function add(){  /* задание 1 и 4: фиксируем дату создания и срок */
   const t=$('title').value.trim(); if(!t)return;
-  tasks.push({id:Date.now(),text:t,prio:$('prio').value,due:$('due').value||null,done:false,created:new Date()});
-  $('title').value=''; $('due').value=''; save(); render();
+  const pr=$('prio').value, due=$('due').value||null;
+  tasks.push({id:Date.now(),text:t,prio:pr,due:due,done:false,created:new Date()});
+  const names={high:'высокий',mid:'средний',low:'низкий'};
+  const dueTxt=due?new Date(due+'T00:00:00').toLocaleDateString('ru-RU'):'—';
+  $('title').value=''; $('due').value=''; save();
+  log('добавлена задача «'+t+'» · приоритет '+names[pr]+' · срок: '+dueTxt);
+  render();
 }
 function render(){
-  const now=new Date();
-  $('list').innerHTML=tasks.map(task=>{
-    const isOver=task.done?false:task.due&&new Date(task.due).getTime()<now.getTime();
-    const d=task.due?new Date(task.due).toLocaleDateString('ru-RU'):'—';
-    return '<div class="task'+(task.done?' done':'')+(isOver?' over':'')+'">'
-      +'<div><span class="t">'+esc(task.text)+'</span><div class="m">создано '+new Date(task.created).toLocaleString('ru-RU')+' · срок: '+d+'</div>'
-      +'<span class="pr '+task.prio+'">'+({high:'высокий',mid:'средний',low:'низкий'}[task.prio])+'</span> '
-      +(isOver?'<span class="overdue">⚠ просрочена</span>':'')+'</div>'
+  $('list').innerHTML=ordered().map(task=>{
+    const over=isOver(task);
+    const d=task.due?new Date(task.due+'T00:00:00').toLocaleDateString('ru-RU'):'—';
+    return '<div class="task'+(task.done?' done':'')+(over?' over':'')+'">'
+      +'<div><span class="t">'+esc(task.text)+'</span> '
+      +'<span class="pr '+task.prio+'">'+({high:'высокий',mid:'средний',low:'низкий'}[task.prio])+'</span>'
+      +'<div class="m">создано '+new Date(task.created).toLocaleString('ru-RU')+' · срок: '+d+(over?' · <span class="overdue">⚠ просрочена</span>':'')+'</div></div>'
       +'<div><button class="rbtn" onclick="toggle('+task.id+')">'+(task.done?'↩':'✔')+'</button>'
       +'<button class="rbtn red" onclick="del('+task.id+')">×</button></div></div>';
   }).join('')||'<span class="muted">Список пуст.</span>';
-  $('info').textContent='Задач: '+tasks.length+' · выполнено: '+tasks.filter(t=>t.done).length+' · просрочено: '+tasks.filter(t=>!t.done&&t.due&&new Date(t.due)<now).length+' · данные в localStorage';
+  $('info').textContent='Задач: '+tasks.length+' · выполнено: '+tasks.filter(t=>t.done).length+' · просрочено: '+tasks.filter(t=>isOver(t)).length+' · в localStorage';
+  $('sortBtn').textContent=sortBy==='prio'?'Сортировка: приоритет 🔽':'Сортировка: ввод ↔';
 }
-function toggle(id){const t=tasks.find(x=>x.id===id);t.done=!t.done;save();render();}
-function del(id){tasks=tasks.filter(x=>x.id!==id);save();render();}
+function toggleSort(){ sortBy=sortBy==='prio'?'natural':'prio'; log('сортировка: '+(sortBy==='prio'?'по приоритету':'порядок ввода')); render(); }
+function toggle(id){const t=tasks.find(x=>x.id===id);t.done=!t.done;log('задача «'+t.text+'» '+(t.done?'выполнена':'возвращена'));save();render();}
+function del(id){const t=tasks.find(x=>x.id===id);tasks=tasks.filter(x=>x.id!==id);log('удалена задача «'+t.text+'»');save();render();}
 render();
 </script>
 </body></html>

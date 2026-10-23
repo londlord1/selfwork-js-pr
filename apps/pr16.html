@@ -2,32 +2,36 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР16 — JSON и структуры данных: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:760px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.post{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:10px 12px;margin-bottom:8px}.post.dim{opacity:.5}.post h3{font-size:14px}.post .m{font-size:12px;color:#64748b}.post .tags{font-size:12px;color:#1a73e8}.post .star{cursor:pointer;border:none;background:none;font-size:16px;float:right}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 11px;margin-bottom:5px;font-size:13px}.bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;display:inline-block;width:90px}.bar>div{height:100%;background:#1a73e8}.muted{color:#64748b;font-size:12px}</style>
+<title>ПР16 — Комплексная работа с JSON и структурами</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:760px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}.navbtns .btn:hover{background:#eef4ff}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;width:100%}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn:hover{opacity:.9}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.muted{color:#64748b;font-size:12px}.post{background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1a73e8;border-radius:8px;padding:10px 12px;margin-bottom:8px}.post.dim{opacity:.5}.post h3{font-size:14px}.post .m{font-size:12px;color:#64748b}.post .tags{font-size:12px;color:#1a73e8}.post .star{cursor:pointer;border:none;background:none;font-size:16px;float:right}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;align-items:center;gap:8px}.bar{display:inline-block;background:#e2e8f0;border-radius:6px;height:8px;width:80px;vertical-align:middle;overflow:hidden}.bar>div{background:#1a73e8;height:100%}.hint{font-size:12px;color:#64748b;margin-bottom:6px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr15.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr17.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР16</span><h1>ПР16 — Комплексная работа с JSON (все задания)</h1>
-<div class="desc">Одно приложение блога: статистика тегов Map + топ-5 (1), полнотекстовый поиск (2), рекомендации по избранному (3) и экспорт данных в JSON (4).</div>
+<span class="pr-tag">ПР16</span><h1>ПР16 — Комплексная работа с JSON и структурами</h1>
+<div class="desc">Одно приложение блога на встроенных структурах данных: статистика тегов через Map (1), полнотекстовый поиск (2), рекомендации по избранному (3) и экспорт состояния в JSON (4).</div>
 
 <div class="card"><h2>Блог</h2>
-  <div class="row"><input id="search" placeholder="Поиск по заголовку или превью..." oninput="render()"></div>
+  <div class="hint">Нажмите &#9734;, чтобы добавить пост в избранное (поле <code>fav</code>).</div>
+  <div class="row"><input id="search" placeholder="Задание 2. Поиск по заголовку или превью..." oninput="searchPosts(this.value)"></div>
+  <div id="postcount" class="muted"></div>
   <div id="posts"></div>
 </div>
 
-<div class="card"><h2>1. Топ-5 тегов</h2>
+<div class="card"><h2>Задание 1. Статистика по тегам (Map) — топ-5</h2>
   <div id="top"></div>
-  <div class="row"><button class="rbtn" onclick="showTop()">Пересчитать</button></div>
+  <div class="row"><button class="rbtn" onclick="calculateTagStats()">Пересчитать топ-5</button></div>
 </div>
 
-<div class="card"><h2>3. Рекомендации по избранному</h2>
-  <div class="row"><button class="rbtn green" onclick="recommend()">Рекомендовать</button></div>
-  <div class="out" id="rec"></div>
+<div class="card"><h2>Задание 3. Рекомендации на основе избранного</h2>
+  <div class="hint">Посты, похожие на избранные по числу совпавших тегов.</div>
+  <div class="row"><button class="rbtn green" onclick="getRecommendations()">Рекомендовать</button></div>
+  <div class="out" id="rec"><em>Нажмите «Рекомендовать»</em></div>
 </div>
 
-<div class="card"><h2>4. Экспорт в JSON</h2>
-  <div class="row"><button class="rbtn" onclick="exportJson()">Скачать JSON</button><span class="muted">+ показать ниже</span></div>
-  <div class="out" id="json"><em>Нажмите «Скачать JSON»</em></div>
+<div class="card"><h2>Задание 4. Экспорт состояния в JSON</h2>
+  <div class="hint">Формат: избранные посты, общее число постов, дата экспорта (файл blog-state.json).</div>
+  <div class="row"><button class="rbtn" onclick="exportState()">Скачать blog-state.json</button></div>
+  <div class="out" id="json"><em>Нажмите «Скачать blog-state.json»</em></div>
 </div>
 
 <script>
@@ -40,45 +44,74 @@ const posts=[
   {id:5,title:'JSON API',preview:'Работа с fetch и сериализацией',tags:['js','json','api'],fav:false},
   {id:6,title:'Компоненты и ключи',preview:'Списки и key в React',tags:['react','jsx','key'],fav:true}
 ];
-let display=posts;
+const postsMap=new Map(posts.map(p=>[p.id,p]));
+let currentDisplayPosts=[...posts];
 
-function avg(p){const sum=p.reduce((a,o)=>a+o.tags.length,0);return sum/p.length;}
-
-function render(){
-  const q=$('search').value.trim().toLowerCase();
-  display=posts.filter(p=>!q||p.title.toLowerCase().includes(q)||p.preview.toLowerCase().includes(q));
-  $('posts').innerHTML=display.map(p=>
+function renderPosts(list){
+  currentDisplayPosts=list;
+  $('postcount').textContent='Показано постов: '+list.length+' из '+posts.length;
+  $('posts').innerHTML=list.map(p=>
     '<div class="post"><button class="star" onclick="toggleFav('+p.id+')">'+(p.fav?'⭐':'☆')+'</button><h3>'+p.title+'</h3><div class="m">'+p.preview+'</div><div class="tags">'+p.tags.join(' · ')+'</div></div>'
-  ).join('');
+  ).join('')||'<div class="muted">Ничего не найдено</div>';
 }
-function toggleFav(id){const p=posts.find(x=>x.id===id);p.fav=!p.fav;render();}
 
-function showTop(){
-  const counts=new Map();
-  posts.forEach(p=>p.tags.forEach(t=>counts.set(t,(counts.get(t)||0)+1)));
-  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const max=top[0]?top[0][1]:1;
-  $('top').innerHTML=top.map(([t,c])=>
+function toggleFav(id){
+  postsMap.get(id).fav=!postsMap.get(id).fav;
+  if($('search').value.trim()){searchPosts($('search').value);}else{renderPosts([...posts]);}
+}
+
+// Задание 2: полнотекстовый поиск
+function searchPosts(query){
+  const lowerQuery=query.toLowerCase().trim();
+  const found=lowerQuery
+    ? posts.filter(p=>p.title.toLowerCase().includes(lowerQuery)||p.preview.toLowerCase().includes(lowerQuery))
+    : [...posts];
+  renderPosts(found);
+}
+
+// Задание 1: статистика по тегам через Map, топ-5
+function calculateTagStats(){
+  const tagCounts=new Map();
+  posts.forEach(post=>post.tags.forEach(tag=>{
+    tagCounts.set(tag,(tagCounts.get(tag)||0)+1);
+  }));
+  const topTags=[...tagCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max=topTags.length?topTags[0][1]:1;
+  $('top').innerHTML=topTags.map(([t,c])=>
     '<div class="stat"><span>'+t+'</span><span><div class="bar"><div style="width:'+(c/max*100)+'%"></div></div> '+c+'</span></div>'
   ).join('')||'Нет тегов';
 }
 
-function recommend(){
-  const favTags=new Set(posts.filter(p=>p.fav).flatMap(p=>p.tags));
-  const recs=posts.filter(p=>!p.fav&&p.tags.some(t=>favTags.has(t)));
-  $('rec').textContent=recs.length
-    ? 'Похоже на ваше избранное:\n'+recs.map(p=>'· '+p.title+' ('+p.tags.join(', ')+')').join('\n')
+// Задание 3: рекомендации по избранному (учёт частоты тегов)
+function getRecommendations(){
+  const favorites=new Set(posts.filter(p=>p.fav).map(p=>p.id));
+  if(favorites.size===0){$('rec').textContent='Нет избранных постов — добавьте их звёздочкой.';return;}
+  const favTags=new Set();
+  favorites.forEach(id=>{const post=postsMap.get(id);if(post)post.tags.forEach(t=>favTags.add(t));});
+  const recommendations=posts.filter(post=>!favorites.has(post.id)&&post.tags.some(t=>favTags.has(t)))
+    .map(post=>({post,score:post.tags.filter(t=>favTags.has(t)).length}))
+    .sort((a,b)=>b.score-a.score);
+  $('rec').textContent=recommendations.length
+    ? 'Похоже на ваше избранное (по совпадающим тегам):\n'+recommendations.map(r=>'· '+r.post.title+' ('+r.post.tags.join(', ')+') — совпадений: '+r.score).join('\n')
     : 'Ничего похожего не найдено';
 }
 
-function exportJson(){
-  const data=JSON.stringify(posts,null,2);
-  const blob=new Blob([data],{type:'application/json'});
+// Задание 4: экспорт состояния в JSON
+function exportState(){
+  const favorites=[...posts].filter(p=>p.fav).map(p=>p.id);
+  const state={
+    favorites:favorites,
+    totalPosts:posts.length,
+    favoriteCount:favorites.length,
+    exportDate:new Date().toISOString()
+  };
+  const jsonString=JSON.stringify(state,null,2);
+  const blob=new Blob([jsonString],{type:'application/json'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='posts.json';a.click();URL.revokeObjectURL(url);
-  $('json').textContent=data;
+  const a=document.createElement('a');a.href=url;a.download='blog-state.json';a.click();URL.revokeObjectURL(url);
+  $('json').textContent=jsonString;
 }
 
-render();showTop();
+renderPosts([...posts]);calculateTagStats();
 </script>
 </body></html>

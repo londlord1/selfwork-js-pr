@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПР01 — Основы синтаксиса и типы данных: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:840px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}.navbtns .btn:disabled{opacity:.5;cursor:default}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:150px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.red{background:#dc3545}.rbtn.orange{background:#f39c12}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:36px;margin-top:10px}.muted{color:#64748b;font-size:12px}</style>
+</head>
+<body><div class="wrap">
+<div class="topnav"><a href="../index.html">« Все практические</a><div class="navbtns"><button class="btn" disabled>← Пред. ПР</button><button class="btn" onclick="location.href='pr02.html'">След. ПР →</button></div></div>
+<span class="pr-tag">ПР01</span><h1>ПР01 — Основы синтаксиса и типы данных (все задания)</h1>
+<div class="desc">Все четыре самостоятельных задания на одной странице: калькулятор возраста (1), таблица умножения на 5 (2), поиск максимума (3), факториал (4). Вместо prompt() используются поля ввода и кнопки.</div>
+
+<div class="card"><h2>1. Калькулятор возраста</h2>
+  <div class="row"><input id="birthyear" value="2005" placeholder="Год рождения">
+    <button class="rbtn" onclick="calcAge()">Рассчитать возраст</button></div>
+  <div class="muted">Введите год рождения и нажмите кнопку — вы увидите, сколько лет человеку в текущем году.</div>
+  <div class="out" id="o1"></div>
+</div>
+
+<div class="card"><h2>2. Таблица умножения на 5</h2>
+  <div class="row">
+    <button class="rbtn" onclick="showTable5()">Вывести таблицу ×5</button>
+    <button class="rbtn gray" onclick="showTableN()">Таблица на своё число</button>
+    <input id="mult" value="5" placeholder="Множитель (для кнопки справа)">
+  </div>
+  <div class="muted">Печатается строкой «5 × 1 = 5» … «5 × 10 = 50» циклом for (задание с фиксированным множителем 5).</div>
+  <div class="out" id="o2"></div>
+</div>
+
+<div class="card"><h2>3. Поиск максимума из трёх чисел</h2>
+  <div class="row">
+    <input id="n1" value="8" placeholder="Первое число">
+    <input id="n2" value="12" placeholder="Второе число">
+    <input id="n3" value="5" placeholder="Третье число">
+    <button class="rbtn" onclick="findMax()">Найти максимум</button>
+  </div>
+  <div class="muted">Максимум находится последовательными условиями if / else (без встроенных Math.max).</div>
+  <div class="out" id="o3"></div>
+</div>
+
+<div class="card"><h2>4. Факториал числа</h2>
+  <div class="row"><input id="facn" value="6" placeholder="Число N">
+    <button class="rbtn" onclick="calcFactorial()">Вычислить факториал</button></div>
+  <div class="muted">Факториал N (N!) — произведение 1 × 2 × … × N, считается циклом for.</div>
+  <div class="out" id="o4"></div>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---- 1. Калькулятор возраста ----
+function calcAge(){
+  const year=parseInt($('birthyear').value,10);
+  if(isNaN(year)){ $('o1').innerHTML='Ошибка: введите корректный год рождения.'; return; }
+  const age=new Date().getFullYear()-year;
+  $('o1').innerHTML='Год рождения: <b>'+esc(String(year))+'</b><br>Возраст: <span style="color:#4ade80"><b>'+age+'</b></span> лет';
+}
+
+// ---- 2. Таблица умножения ----
+function showTable5(){
+  let rows=[];
+  for(let i=1;i<=10;i++){ rows.push('5 × '+i+' = '+(5*i)); }
+  $('o2').innerHTML='<b>Таблица умножения на 5</b><br>'+rows.join('<br>');
+}
+function showTableN(){
+  const n=parseInt($('mult').value,10);
+  if(isNaN(n)){ $('o2').innerHTML='Ошибка: введите множитель.'; return; }
+  let rows=[];
+  for(let i=1;i<=10;i++){ rows.push(n+' × '+i+' = '+(n*i)); }
+  $('o2').innerHTML='<b>Таблица умножения на '+esc(String(n))+'</b> (дополнительно)<br>'+rows.join('<br>');
+}
+
+// ---- 3. Поиск максимума (только условия if/else) ----
+function findMax(){
+  const a=parseInt($('n1').value,10);
+  const b=parseInt($('n2').value,10);
+  const c=parseInt($('n3').value,10);
+  if(isNaN(a)||isNaN(b)||isNaN(c)){ $('o3').innerHTML='Ошибка: все три поля должны содержать числа.'; return; }
+  let max;
+  if(a>=b){
+    if(a>=c){ max=a; } else { max=c; }
+  } else {
+    if(b>=c){ max=b; } else { max=c; }
+  }
+  $('o3').innerHTML='Числа: '+esc(String(a))+', '+esc(String(b))+', '+esc(String(c))+
+    '<br>Максимум (через if/else): <span style="color:#4ade80"><b>'+max+'</b></span>';
+}
+
+// ---- 4. Факториал (циклом) ----
+function calcFactorial(){
+  const n=parseInt($('facn').value,10);
+  if(isNaN(n)||n<0){ $('o4').innerHTML='Ошибка: введите целое неотрицательное число.'; return; }
+  if(n>170){ $('o4').innerHTML='Число слишком велико, результат будет бесконечностью.'; return; }
+  let fact=1;
+  const steps=[];
+  for(let i=1;i<=n;i++){ fact*=i; steps.push(i); }
+  $('o4').innerHTML='<b>'+n+'! =</b> '+steps.join(' × ')+' = <span style="color:#4ade80"><b>'+fact.toLocaleString('ru-RU')+'</b></span>';
+}
+
+// инициализация
+calcAge();
+showTable5();
+findMax();
+calcFactorial();
+</script>
+</body></html>

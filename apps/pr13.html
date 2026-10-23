@@ -2,54 +2,86 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР13 — Методы массивов: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:740px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:40px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:5px;font-size:13px}.stat b{color:#1a73e8}.muted{color:#64748b;font-size:12px}</style>
+<title>ПР13 — Методы перебора массивов</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:740px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:13px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;white-space:pre-wrap;min-height:40px;margin-top:10px}.stat{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:5px;font-size:13px}.stat b{color:#1a73e8}.muted{color:#64748b;font-size:12px}table{margin-top:8px}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr12.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr14.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР13</span><h1>ПР13 — Методы массивов (все задания)</h1>
-<div class="desc">Единая демонстрация: комбинирование методов в цепочки (1), подсчёт товаров по категориям через reduce (2) и some/every/findIndex (3).</div>
+<span class="pr-tag">ПР13</span><h1>ПР13 — Методы перебора массивов</h1>
+<div class="desc">Веб-приложение «Инвентаризация склада»: работа с одним массивом объектов warehouse. Задание 1 — цепочка filter/filter/map (getExpensiveTechNames), Задание 2 — reduce (countByCategory), Задание 3 — some/every/findIndex.</div>
 
-<div class="card"><h2>1. Методы массивов + цепочки</h2>
-  <div class="row"><button class="rbtn" onclick="chain()">Выполнить цепочку</button><span class="muted">массив → map → filter → reduce</span></div>
+<div class="card"><h2>Задание 1. getExpensiveTechNames() — цепочка методов</h2>
+  <div class="row"><button class="rbtn" onclick="runTask1()">Выполнить цепочку</button><span class="muted">warehouse → filter(tech) → filter(price&gt;500) → map(name)</span></div>
   <div class="out" id="o1"></div>
 </div>
 
-<div class="card"><h2>2. Подсчёт по категориям (reduce)</h2>
-  <div class="row"><button class="rbtn" onclick="cats()">Подсчитать</button><span class="muted">reduce() → {категория: количество}</span></div>
+<div class="card"><h2>Задание 2. countByCategory() — reduce</h2>
+  <div class="row"><button class="rbtn" onclick="runTask2()">Подсчитать</button><span class="muted">reduce → {категория: количество}</span></div>
   <div id="cats"></div>
   <div class="out" id="o2"></div>
 </div>
 
-<div class="card"><h2>3. some / every / findIndex</h2>
-  <div class="row"><button class="rbtn" onclick="someEvery()">Проверить</button></div>
+<div class="card"><h2>Задание 3. some / every / findIndex</h2>
+  <div class="row"><button class="rbtn" onclick="runTask3()">Проверить</button></div>
   <div class="out" id="o3"></div>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const numbers=[1,2,3,4,5,6,7,8];
-function chain(){
-  const res=numbers.filter(n=>n%2===0).map(n=>n*10).reduce((a,b)=>a+b,0);
-  $('o1').textContent='numbers=['+numbers.join(', ')+']\n.filter(чётные) → [2,4,6,8]\n.map(×10) → [20,40,60,80]\n.reduce(sum) → '+res;
-}
-const goods=[
-  {name:'Хлеб',cat:'Продукты'},{name:'Мыло',cat:'Химия'},{name:'Молоко',cat:'Продукты'},
-  {name:'Порошок',cat:'Химия'},{name:'Яблоко',cat:'Продукты'},{name:'Телефон',cat:'Электроника'}
+const warehouse = [
+    { id: 1, name: "Ноутбук", price: 1000, quantity: 4, category: "tech" },
+    { id: 2, name: "Мышь", price: 50, quantity: 15, category: "tech" },
+    { id: 3, name: "Клавиатура", price: 80, quantity: 10, category: "tech" },
+    { id: 4, name: "Стол", price: 300, quantity: 2, category: "furniture" },
+    { id: 5, name: "Стул", price: 150, quantity: 8, category: "furniture" },
+    { id: 6, name: "Лампа", price: 40, quantity: 20, category: "lighting" },
+    { id: 7, name: "Монитор", price: 700, quantity: 5, category: "tech" }
 ];
-function cats(){
-  const counts=goods.reduce((acc,g)=>{acc[g.cat]=(acc[g.cat]||0)+1;return acc;},{});
-  $('cats').innerHTML=Object.entries(counts).map(([k,v])=>'<div class="stat"><span>'+k+'</span><b>'+v+'</b></div>').join('');
-  $('o2').textContent='reduce → '+JSON.stringify(counts);
+
+function getExpensiveTechNames() {
+    return warehouse
+        .filter(item => item.category === 'tech')
+        .filter(item => item.price > 500)
+        .map(item => item.name);
 }
-function someEvery(){
-  const nums=[2,4,6,8,10];
-  $('o3').textContent='nums=['+nums.join(', ')+']\n· some(n=>n>8) → '+nums.some(n=>n>8)
-    +'\n· every(n=>n%2===0) → '+nums.every(n=>n%2===0)
-    +'\n· some(n=>n===7) → '+nums.some(n=>n===7)
-    +'\n· findIndex(n=>n===6) → '+nums.findIndex(n=>n===6)
-    +'\n· findIndex(n=>n===99) → '+nums.findIndex(n=>n===99)+' (нет → -1)';
+
+function countByCategory() {
+    return warehouse.reduce((acc, item) => {
+        acc[item.category] = (acc[item.category] || 0) + 1;
+        return acc;
+    }, {});
 }
-chain();cats();someEvery();
+
+function runTask1() {
+    const names = getExpensiveTechNames();
+    $('o1').textContent =
+        'warehouse.filter(category===tech)\n' +
+        '  .filter(price>500)\n' +
+        '  .map(name)\n' +
+        '→ ' + JSON.stringify(names) +
+        '\nОжидаемый результат (по методичке): ["Ноутбук", "Монитор"]';
+}
+
+function runTask2() {
+    const counts = countByCategory();
+    $('cats').innerHTML = Object.entries(counts).map(([k, v]) =>
+        '<div class="stat"><span>Категория: ' + k + '</span><b>' + v + ' шт.</b></div>'
+    ).join('');
+    $('o2').textContent =
+        'countByCategory() → ' + JSON.stringify(counts) +
+        '\nОжидаемый результат (по методичке): {tech:4, furniture:2, lighting:1}';
+}
+
+function runTask3() {
+    const hasExpensive = warehouse.some(item => item.price > 2000);
+    const allCheap = warehouse.every(item => item.price < 2000);
+    const chairIndex = warehouse.findIndex(item => item.name === 'Стул');
+    $('o3').textContent =
+        'some(price>2000): есть товары дороже 2000? → ' + hasExpensive +
+        '\nevery(price<2000): все товары дешевле 2000? → ' + allCheap +
+        '\nfindIndex(name===\"Стул\"): индекс товара «Стул» → ' + chairIndex +
+        '\nfindIndex(name===\"Телефон\"): несуществующий → ' + warehouse.findIndex(item => item.name === 'Телефон') + ' (−1)';
+}
+
+const $ = id => document.getElementById(id);
 </script>
 </body></html>

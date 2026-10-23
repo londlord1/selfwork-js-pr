@@ -2,65 +2,110 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР09 — События и взаимодействие: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:820px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.zone{height:120px;border:2px dashed #cbd5e1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#f8fafc;color:#64748b;font-size:14px;transition:background .2s}.zone.over{background:#dcfce7;border-color:#28a745;color:#166534}.task{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px}.task.done{opacity:.55;text-decoration:line-through}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:34px;margin-top:10px}.menu{position:absolute;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.15);padding:5px;display:none;min-width:150px;z-index:50}.menu button{display:block;width:100%;text-align:left;border:none;background:none;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:13px}.menu button:hover{background:#eef6ff}.ctx{position:relative}.muted{color:#64748b;font-size:12px;margin-top:6px}.timer{font-size:16px;color:#1a73e8;font-weight:700}.overlay{background:rgba(15,23,42,.45);color:#fff;padding:8px 14px;border-radius:8px;font-size:13px}</style>
+<title>ПР09 — Обработка событий, используя JavaScript: все задания</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:820px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}input{padding:8px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;min-width:120px}input:focus{border-color:#1a73e8;outline:none}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:36px;margin-top:10px}.muted{color:#64748b;font-size:12px}.arena{position:relative;height:230px;border:2px dashed #cbd5e1;border-radius:12px;background:#f8fafc;overflow:hidden}.sq{position:absolute;left:20px;top:20px;width:80px;height:80px;background:#3498db;border-radius:12px;cursor:grab;user-select:none;box-shadow:0 4px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:12px;text-align:center}.sq.drag{cursor:grabbing;box-shadow:0 10px 20px rgba(0,0,0,.35);transform:scale(1.05)}.ctxmenu{position:fixed;display:none;min-width:160px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2);padding:6px;z-index:999}.ctxmenu button{display:block;width:100%;text-align:left;background:none;border:none;padding:8px 12px;font-size:13px;border-radius:6px;cursor:pointer;color:#333}.ctxmenu button:hover{background:#eef6ff;color:#1a73e8}.task{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:6px}.task.done{opacity:.55;text-decoration:line-through}.timer{font-weight:bold;color:#166534}.timer.warn{color:#dc3545}</style>
 </head>
 <body><div class="wrap">
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr08.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr10.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР09</span><h1>ПР09 — События и взаимодействие (все задания)</h1>
-<div class="desc">Одна страница: кастомное контекстное меню (1), drag&amp;drop (2), фильтр списка задач (3) и таймер активности пользователя (4).</div>
+<span class="pr-tag">ПР09</span><h1>ПР09 — Обработка событий, используя JavaScript (все задания)</h1>
+<div class="desc">Одна страница: блокировка стандартного контекстного меню и своё кастомное меню на правый клик (1), перетаскивание цветного квадрата мышью mousedown/mousemove/mouseup (2), фильтр задач по мере ввода (3) и таймер активности пользователя (4).</div>
 
 <div class="card"><h2>1. Кастомное контекстное меню</h2>
-  <div class="ctx"><div class="zone" id="ctxzone">Кликните правой кнопкой мыши здесь</div>
-  <div class="menu" id="menu"><button onclick="ctxAct('Выбрано: Копировать')">📋 Копировать</button><button onclick="ctxAct('Выбрано: Свойства')">⚙ Свойства</button><button onclick="ctxAct('Выбрано: Обновить')">🔄 Обновить</button></div></div>
+  <div class="muted">Стандартное контекстное меню заблокировано на всей странице. Кликните правой кнопкой в любом месте — появится своё меню.</div>
+  <div class="row"><button class="rbtn" onclick="ctxAct('Выбрано действие на кнопке')">Правая кнопка сработает и здесь</button></div>
   <div class="out" id="ctxout"></div>
 </div>
+<div class="ctxmenu" id="menu"><button onclick="ctxAct('Копировать')">📋 Копировать</button><button onclick="ctxAct('Свойства')">⚙ Свойства</button><button onclick="ctxAct('Обновить')">🔄 Обновить</button></div>
 
-<div class="card"><h2>2. Drag &amp; Drop</h2>
-  <div class="zone" id="drop" >Перетащите объект сюда</div>
-  <div class="row"><button class="rbtn" id="drag" draggable="true">Перетаскиваемый объект</button></div>
-  <div class="out" id="dropout"></div>
+<div class="card"><h2>2. Drag &amp; Drop (перетаскивание)</h2>
+  <div class="muted">Цветной квадрат перетаскивается мышью по всей области: mousedown — захват, mousemove — движение, mouseup — отпускание.</div>
+  <div class="arena" id="arena"><div class="sq" id="sq">Тяни<br>меня</div></div>
+  <div class="out" id="dropout">Перетащите квадрат мышью…</div>
 </div>
 
 <div class="card"><h2>3. Фильтр списка задач</h2>
-  <div class="row"><select id="tfilter" onchange="tFilter()"><option value="all">Все</option><option value="done">Выполненные</option><option value="todo">Активные</option></select><button class="rbtn" onclick="tAdd()">+ Задача</button></div>
-  <div class="row"><input id="tinput" placeholder="Название задачи" onkeydown="if(event.key==='Enter')tAdd()"></div>
+  <div class="row"><input id="tinput" placeholder="Название задачи" onkeydown="if(event.key==='Enter')tAdd()"><button class="rbtn" onclick="tAdd()">+ Задача</button></div>
+  <div class="row"><span class="muted">Фильтр:</span><input id="tfilter" placeholder="Фильтровать задачи по мере ввода…" oninput="tRender()"></div>
   <div id="tlist"></div>
 </div>
 
 <div class="card"><h2>4. Таймер активности</h2>
   <div><span class="timer" id="act">Активен</span> · неактивность: <b id="idle">0</b> сек</div>
-  <div class="row"><button class="rbtn gray" onclick="resetIdle()">Сбросить</button><span class="muted">Движение мыши/клавиатура сбрасывают счётчик; после 3 сек «неактивен».</span></div>
+  <div class="row"><button class="rbtn gray" onclick="resetIdle()">Сбросить</button><span class="muted">Движение мыши / нажатие клавиш сбрасывают счётчик; после 30 сек — предупреждение «неактивен».</span></div>
+  <div class="out" id="actlog"></div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-// 1 контекстное меню
-const zone=$('ctxzone'), menu=$('menu');
-zone.addEventListener('contextmenu',e=>{e.preventDefault();menu.style.left=(e.clientX-zone.getBoundingClientRect().left)+'px';menu.style.top=(e.clientY-zone.getBoundingClientRect().top)+'px';menu.style.display='block';});
+// 1 Кастомное контекстное меню
+const menu=$('menu');
+document.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  const mw=menu.offsetWidth,mh=menu.offsetHeight;
+  menu.style.display='block';
+  menu.style.left=Math.min(e.clientX,window.innerWidth-mw-8)+'px';
+  menu.style.top=Math.min(e.clientY,window.innerHeight-mh-8)+'px';
+});
 document.addEventListener('click',()=>menu.style.display='none');
+document.addEventListener('scroll',()=>menu.style.display='none',true);
 function ctxAct(t){$('ctxout').textContent=t;menu.style.display='none';}
-// 2 drag&drop
-const drag=$('drag'), drop=$('drop');
-drag.addEventListener('dragstart',()=>drop.classList.add('over'));
-drag.addEventListener('dragend',()=>drop.classList.remove('over'));
-drop.addEventListener('dragover',e=>e.preventDefault());
-drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');$('dropout').textContent='Объект перемещён в зону сброса ✓';});
-// 3 список задач
-let tasks=[{id:1,t:'Изучить события',done:false},{id:2,t:'Сделать drag&drop',done:true}];
-function tAdd(){const v=$('tinput').value.trim();if(!v)return;tasks.push({id:Date.now(),t:v,done:false});$('tinput').value='';tFilter();}
-function tFilter(){
-  const f=$('tfilter').value;
-  const list=f==='done'?tasks.filter(t=>t.done):f==='todo'?tasks.filter(t=>!t.done):tasks;
-  $('tlist').innerHTML=list.map(t=>'<div class="task'+(t.done?' done':'')+'"><span>'+esc(t.t)+'</span><button class="rbtn gray" onclick="tToggle('+t.id+')">'+(t.done?'↩':'✓')+'</button></div>').join('');
+
+// 2 Drag & drop перетаскивание квадрата (mousedown/mousemove/mouseup)
+const sq=$('sq'), arena=$('arena');
+let dragging=false,offX=0,offY=0,startX=0,startY=0;
+sq.addEventListener('mousedown',e=>{
+  e.preventDefault();
+  dragging=true;
+  sq.classList.add('drag');
+  const r=sq.getBoundingClientRect(),ar=arena.getBoundingClientRect();
+  offX=e.clientX-r.left; offY=e.clientY-r.top;
+  startX=r.left-ar.left; startY=r.top-ar.top;
+  $('dropout').textContent='Захвачен: квадрат перетаскивается…';
+  sq.setPointerCapture && sq.setPointerCapture(e.pointerId);
+});
+function moveSq(e){
+  if(!dragging)return;
+  const ar=arena.getBoundingClientRect();
+  let x=e.clientX-ar.left-offX, y=e.clientY-ar.top-offY;
+  x=Math.max(0,Math.min(x,ar.width-sq.offsetWidth));
+  y=Math.max(0,Math.min(y,ar.height-sq.offsetHeight));
+  sq.style.left=x+'px'; sq.style.top=y+'px';
+  if(e.buttons===0)endDrag();
 }
-function tToggle(id){const t=tasks.find(x=>x.id===id);t.done=!t.done;tFilter();}
+function endDrag(){
+  if(!dragging)return;
+  dragging=false;
+  sq.classList.remove('drag');
+  $('dropout').textContent='Отпущен в точке ('+Math.round(sq.offsetLeft)+', '+Math.round(sq.offsetTop)+') ✓';
+}
+document.addEventListener('mousemove',moveSq);
+document.addEventListener('mouseup',endDrag);
+sq.addEventListener('mouseleave',e=>{if(e.buttons!==0)return;endDrag();});
+
+// 3 Фильтр списка задач (событие input)
+let tasks=[{id:1,t:'Изучить события',done:false},{id:2,t:'Сделать drag&drop',done:true},{id:3,t:'Кастомное меню',done:false},{id:4,t:'Таймер активности',done:false}];
+let lastId=4;
+function tAdd(){const v=$('tinput').value.trim();if(!v)return;tasks.push({id:++lastId,t:v,done:false});$('tinput').value='';tRender();}
+function tToggle(id){const t=tasks.find(x=>x.id===id);t.done=!t.done;tRender();}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-// 4 активность
-let idle=0,last=Date.now();
-setInterval(()=>{const d=Math.floor((Date.now()-last)/1000);idle=d;$('idle').textContent=d;$('act').textContent=d>=3?'Неактивен':'Активен';},1000);
-['mousemove','mousedown','keydown','scroll'].forEach(ev=>window.addEventListener(ev,()=>last=Date.now()));
-function resetIdle(){last=Date.now();$('idle').textContent=0;$('act').textContent='Активен';}
-tFilter();
+function tRender(){
+  const q=$('tfilter').value.trim().toLowerCase();
+  const list=tasks.filter(t=>q?t.t.toLowerCase().includes(q):true);
+  $('tlist').innerHTML=list.map(t=>'<div class="task'+(t.done?' done':'')+'"><span>'+esc(t.t)+'</span><button class="rbtn gray" onclick="tToggle('+t.id+')">'+(t.done?'↩':'✓')+'</button></div>').join('')
+    ||'<div class="muted">Ничего не найдено</div>';
+}
+
+// 4 Таймер активности
+let last=Date.now();
+setInterval(()=>{
+  const d=Math.floor((Date.now()-last)/1000);
+  $('idle').textContent=d;
+  const act=$('act');
+  if(d>=30){act.textContent='Неактивен';act.classList.add('warn');$('actlog').textContent='Предупреждение: пользователь неактивен уже '+d+' сек (порог 30 сек).';}
+  else{act.textContent='Активен';act.classList.remove('warn');$('actlog').textContent='';}
+},1000);
+['mousemove','mousedown','mouseup','keydown','scroll'].forEach(ev=>window.addEventListener(ev,()=>last=Date.now()));
+function resetIdle(){last=Date.now();$('idle').textContent=0;$('act').textContent='Активен';$('act').classList.remove('warn');$('actlog').textContent='';}
+tRender();
 </script>
 </body></html>

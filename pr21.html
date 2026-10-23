@@ -51,22 +51,28 @@ input:focus{border-color:#1a73e8;outline:none}
 <div class="desc">Одно приложение, где работают все задания: новые услуги, статусы заявок, подача заявления, вход по СНИЛС, личный кабинет, система оповещений и виджет для встраивания.</div>
 
 <div class="grid">
-  <div class="card">
-    <h2>Вход</h2>
-    <div class="row">
-      <input id="login" value="user123" placeholder="Логин" style="flex:1">
-      <input id="password" type="password" value="password" placeholder="Пароль" style="flex:1">
-    </div>
-    <div class="row">
-      <button class="btn" onclick="login()">Войти через Госуслуги</button>
-      <button class="btn gray" onclick="loginSnils()">Войти по СНИЛС</button>
-      <input id="snils" value="123-456-789 00" placeholder="СНИЛС" style="flex:2">
-    </div>
-    <p class="muted" id="authstatus">не авторизован</p>
+<div class="card">
+      <h2>Вход</h2>
+      <div class="row">
+        <input id="login" value="user123" placeholder="Логин" style="flex:1">
+        <input id="password" type="password" value="password" placeholder="Пароль" style="flex:1">
+      </div>
+      <div class="row">
+        <button class="btn" onclick="login()">Войти через Госуслуги</button>
+      </div>
+      <div class="row" style="margin-top:4px">
+        <input id="snils" value="123-456-789 00" placeholder="СНИЛС" style="flex:1">
+        <button class="btn gray" onclick="loginSnils()">Войти по СНИЛС</button>
+      </div>
+      <p class="muted" id="authstatus">не авторизован</p>
 
-    <h2 style="margin-top:14px">Услуги</h2>
-    <div id="services"></div>
-    <div class="out" id="out"></div>
+      <h2 style="margin-top:14px">Услуги</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn green" onclick="submitApplication()">Подать заявление</button>
+        <span class="muted">Выберите услугу, затем нажмите кнопку</span>
+      </div>
+      <div id="services"></div>
+      <div class="out" id="out"></div>
   </div>
 
   <div>
@@ -89,13 +95,7 @@ input:focus{border-color:#1a73e8;outline:none}
 
 <div class="card">
   <h2>Виджет для встраивания (ПОС)</h2>
-  <div id="widget" style="background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px;font-size:13px">
-    <b>Платформа обратной связи</b>
-    <div class="row" style="margin-top:8px">
-      <input id="fb" placeholder="Текст обращения" style="flex:1">
-      <button class="btn green" onclick="sendFb()">Отправить</button>
-    </div>
-  </div>
+  <div id="widget" style="background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px;font-size:13px"></div>
 </div>
 </div>
 
@@ -126,16 +126,25 @@ let fbCount = 0;
 function out(html) { $('out').innerHTML = html; }
 function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
-function login() {
-  authorized = $('login').value === 'user123' && $('password').value === 'password' ||
-    $('snils').value.trim() === '123-456-789 00';
+function setAuthorized(status, msg) {
+  authorized = status;
   $('authstatus').className = 'muted ' + (authorized ? 'badge ok' : 'badge');
   $('authstatus').textContent = authorized ? 'авторизован' : 'не авторизован';
   if (authorized) renderCabinet();
-  else out('<span class="err" style="color:#ff6b6b">Неверный логин/пароль или СНИЛС (для демо: user123/password или 123-456-789 00)</span>');
+  else out('<span style="color:#ff6b6b">' + msg + '</span>');
 }
 
-function loginSnils() { login(); }
+function login() {
+  const okLogin = $('login').value === 'user123' && $('password').value === 'password';
+  setAuthorized(okLogin, 'Неверный логин/пароль (для демо: user123 / password)');
+  if (okLogin) out('<b>Вход выполнен</b>\nЛогин: ' + esc($('login').value) + '\nПодтверждённые данные получены из ЕСИА.');
+}
+
+function loginSnils() {
+  const okSnils = $('snils').value.trim() === '123-456-789 00';
+  setAuthorized(okSnils, 'Неверный СНИЛС (для демо: 123-456-789 00)');
+  if (okSnils) out('<b>Вход по СНИЛС выполнен</b>\nПользователь: ' + esc(userDB.fio) + '\nСНИЛС: ' + esc(userDB.snils));
+}
 
 function renderServices() {
   $('services').innerHTML = Object.entries(servicesDB).map(([id, s]) => {
@@ -194,16 +203,23 @@ function renderNotifs() {
 function markRead(i) { notifs[i].read = true; renderNotifs(); }
 function readAll() { notifs.forEach((n) => { n.read = true; }); renderNotifs(); }
 
-function sendFb() {
-  const text = $('fb').value.trim();
+function sendFb(text) {
   if (!text) return;
   fbCount++;
-  $('fb').value = '';
   const fb = document.createElement('div');
   fb.className = 'item';
   fb.innerHTML = '<span>ПОС-' + String(fbCount).padStart(4, '0') + '</span><span>' + esc(text) + '</span>';
   $('widget').appendChild(fb);
 }
+
+(function initPosWidget() {
+  const container = $('widget');
+  if (!container) return;
+  container.innerHTML = '<b>Платформа обратной связи</b>'
+    + '<p class="muted" style="margin:4px 0 8px">Виджет ПОС: готовый код, встраиваемый на сайт. Обращения уходят в ЦУР.</p>'
+    + '<div class="row"><input id="fb" placeholder="Текст обращения" style="flex:1">'
+    + '<button class="btn green" onclick="sendFb($(\'fb\').value); $(\'fb\').value=\'\'">Отправить</button></div>';
+})();
 
 renderServices();
 renderNotifs();

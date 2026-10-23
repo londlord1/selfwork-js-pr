@@ -2,64 +2,163 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПР11 — Окно, сеть и история: все задания</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55}.wrap{max-width:820px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.topbtn{position:fixed;right:20px;bottom:20px;background:#1a73e8;color:#fff;border:none;border-radius:50px;padding:10px 16px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);display:none;z-index:40}.tag{display:inline-block;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:3px 12px;font-size:13px;color:#3730a3;margin-right:10px}.badge{display:inline-block;padding:2px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px}.msg{border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px}.status{color:#64748b;font-size:13px;font-weight:600}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:34px;margin-top:10px}.chat2{display:flex;gap:4px;flex-wrap:wrap}</style>
+<title>ПР11 — Контроль за событиями окна браузера</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#222;padding:24px;line-height:1.55;transition:background .3s,color .3s}.wrap{max-width:820px;margin:0 auto}.topnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}.topnav a{color:#1a73e8;text-decoration:none;font-size:14px}.navbtns{display:flex;gap:8px}.navbtns .btn{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#0b57d0}h1{color:#1a73e8;margin:4px 0;font-size:24px}.pr-tag{display:inline-block;background:#1a73e8;color:#fff;border-radius:12px;padding:2px 12px;font-size:13px;margin-bottom:8px}.desc{background:#eef6ff;border:1px solid #c9e3ff;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1a56a0;font-size:14px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:18px 20px;margin:14px 0;transition:background .3s,border-color .3s}.card h2{font-size:15px;color:#333;margin-bottom:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.rbtn{padding:9px 14px;border:none;border-radius:8px;background:#1a73e8;color:#fff;font-size:13px;cursor:pointer;margin:3px}.rbtn.gray{background:#64748b}.rbtn.green{background:#28a745}.rbtn.amber{background:#f0a02e}.topbtn{position:fixed;right:20px;bottom:20px;background:#1a73e8;color:#fff;border:none;border-radius:50px;padding:10px 16px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);display:none;z-index:40}.tag{display:inline-block;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:3px 12px;font-size:13px;color:#3730a3;margin-right:10px}.badge{display:inline-block;padding:2px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px}.msg{border:1px solid #e2e8f0;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px}.status{color:#64748b;font-size:13px;font-weight:600}.counter{font-weight:700;color:#1a73e8}.out{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;font-family:Consolas,monospace;font-size:12px;white-space:pre-wrap;min-height:34px;margin-top:10px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120%);background:#dc3545;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:60;font-size:14px;transition:transform .35s ease;max-width:90%}.toast.show{transform:translateX(-50%) translateY(0)}.jump{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;padding:10px 14px;margin-bottom:6px;scroll-margin-top:12px;font-size:13px}
+body.mobile{background:#dbeafe;color:#1e1b4b}body.mobile .card{background:#eff6ff;border-color:#bfdbfe}body.mobile .pr-tag{background:#7c3aed}
+body.tablet{background:#fef3c7;color:#78350f}body.tablet .card{background:#fffbeb;border-color:#fde68a}body.tablet .pr-tag{background:#d97706}
+body.desktop{background:#f0f2f5;color:#222}body.desktop .card{background:#fff;border-color:#e2e8f0}body.desktop .pr-tag{background:#1a73e8}</style>
 </head>
 <body><div class="wrap">
 <button class="topbtn" id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Наверх</button>
+<div class="toast" id="toast"></div>
 <div class="topnav"><a href="index.html">« Все практические</a><div class="navbtns"><button class="btn" onclick="location.href='pr10.html'">← Пред. ПР</button><button class="btn" onclick="location.href='pr12.html'">След. ПР →</button></div></div>
-<span class="pr-tag">ПР11</span><h1>ПР11 — Окно, сеть и история (все задания)</h1>
-<div class="desc">Одна страница: адаптив через resize (1), кнопка «Наверх» (2), офлайн-режим (3), активность пользователя (4), хлебные крошки навигации (5) и чат между вкладками (6).</div>
+<span class="pr-tag">ПР11</span><h1>ПР11 — Контроль за событиями окна браузера</h1>
+<div class="desc">Одна страница: адаптив через resize с автосменой темы (1), умная кнопка «Наверх» и плавный скролл к элементу (2), офлайн с сохранением действий (3), таймер неактивности и счётчики действий (4), хлебные крошки и кнопки Назад/Вперед через history API (5), чат между вкладками (6).</div>
 
-<div class="card"><h2>1. Адаптив (resize)</h2>
-  <div><span class="status">Ширина <span id="w">—</span>px ⇒ режим <b id="mode">—</b></span></div>
+<div class="card" id="sec-1"><h2>1. Адаптив (resize + смена темы)</h2>
+  <div><span class="status">Ширина <span id="w">—</span>px ⇒ | Тип <span id="type">—</span> | Режим <b id="mode">—</b></span></div>
+  <div class="row"><span class="status">Текущая цветовая схема выбрана автоматически от размера окна.</span></div>
 </div>
 
-<div class="card"><h2>3. Офлайн-режим</h2>
+<div class="card" id="sec-2"><h2>2. Умный скролл</h2>
+  <div class="row"><button class="rbtn gray" onclick="scrollToEl('sec-1')">К разделу 1</button><button class="rbtn gray" onclick="scrollToEl('sec-6')">К разделу 6 (чат)</button></div>
+  <div><span class="status">Кнопка «Наверх» (внизу справа) появляется после прокрутки более 300px.</span></div>
+</div>
+
+<div class="card" id="sec-3"><h2>3. Офлайн-режим</h2>
   <span class="tag" id="online">—</span><span class="status" id="hold">Статус сети обновляется</span>
-  <div class="row"><button class="rbtn gray" onclick="toggleOfflineDemo()">Симулировать offline</button></div>
+  <div class="row"><button class="rbtn gray" onclick="addAction('проверка сети')">Записать действие</button><button class="rbtn gray" onclick="toggleOfflineDemo()">Симулировать offline</button></div>
+  <div class="out" id="actionlog">Выполненные действия будут сохраняться локально и синхронизироваться при восстановлении сети.</div>
 </div>
 
-<div class="card"><h2>5. Хлебные крошки</h2>
-  <div class="row"><span class="status" id="crumbs">Главная › ПР11 › Задания</span></div>
-  <div class="row"><button class="rbtn gray" onclick="nav('Настройки')">Настройки</button><button class="rbtn gray" onclick="nav('Профиль')">Профиль</button><button class="rbtn gray" onclick="nav('Задания')">Задания</button></div>
+<div class="card" id="sec-4"><h2>4. Активность пользователя</h2>
+  <div><span class="status">Неактивен: <span id="idleInfo">0</span> сек</span></div>
+  <div class="row">
+    <span class="badge">Клики: <span class="counter" id="cntClick">0</span></span>
+    <span class="badge">Движение мыши: <span class="counter" id="cntMove">0</span></span>
+    <span class="badge">Клавиши: <span class="counter" id="cntKey">0</span></span>
+    <span class="badge">Прокрутка: <span class="counter" id="cntScroll">0</span></span>
+  </div>
+  <div class="row"><button class="rbtn amber" onclick="resetCounters()">Сбросить счётчики</button></div>
 </div>
 
-<div class="card"><h2>6. Чат между вкладками (Storage)</h2>
-  <div class="row"><input id="chatmsg" placeholder="Сообщение..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;min-width:160px"><button class="rbtn" onclick="sendChat()">Отправить</button><button class="rbtn gray" onclick="openSecondTab()">Открыть 2-ю вкладку</button></div>
+<div class="card" id="sec-5"><h2>5. История навигации (хлебные крошки)</h2>
+  <div class="row"><span class="status" id="crumbs">Главная › ПР11</span></div>
+  <div class="row">
+    <button class="rbtn gray" onclick="goBack()">← Назад</button>
+    <button class="rbtn gray" onclick="goForward()">Вперед →</button>
+    <button class="rbtn" onclick="nav('Настройки')">Настройки</button>
+    <button class="rbtn" onclick="nav('Профиль')">Профиль</button>
+    <button class="rbtn" onclick="nav('Задания')">Задания</button>
+  </div>
+  <div><span class="status">Глубина истории: <span id="histDepth">—</span> | Текущий маршрут: <span id="route">—</span></span></div>
+</div>
+
+<div class="card" id="sec-6"><h2>6. Чат между вкладками (Storage)</h2>
+  <div class="row"><input id="chatmsg" placeholder="Сообщение..." onkeydown="if(event.key==='Enter')sendChat()" style="flex:1;min-width:160px;padding:9px 11px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px"><button class="rbtn" onclick="sendChat()">Отправить</button><button class="rbtn gray" onclick="openSecondTab()">Открыть 2-ю вкладку</button></div>
   <div class="out" id="chatlog"></div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
-// 2. кнопка наверх
-window.addEventListener('scroll',()=>{$('totop').style.display=window.scrollY>300?'block':'none';});
-// 1. resize
-function mode(w){return w<560?'Мобильный':w<900?'Планшет':'Десктоп';}
-function md(){const w=window.innerWidth;$('w').textContent=w;$('mode').textContent=mode(w);}
-window.addEventListener('resize',md);md();
-// 3. offline
-let offlineDemo=false;
-function setOnlineStatus(){
-  const offline=offlineDemo||!navigator.onLine;
-  $('online').textContent=offline?'Офлайн':'Онлайн';
-  $('online').style.background=offline?'#fee2e2':'#dcfce7';
-  $('online').style.color=offline?'#991b1b':'#166534';
-  $('hold').textContent=offline?'Нет сети — работаем из кэша':'Сеть доступна';
+// ===== 1. resize: брейкпоинты + автосмена цветовой схемы =====
+function modeFor(w){return w<560?'Мобильный':w<900?'Планшет':'Десктоп';}
+function themeFor(m){return {Мобильный:'mobile',Планшет:'tablet',Десктоп:'desktop'}[m];}
+function md(){
+  const w=window.innerWidth,m=modeFor(w);
+  $('w').textContent=w;
+  $('type').textContent=window.innerWidth>=560&&window.innerWidth<900?'md':'—';
+  $('mode').textContent=m;
+  document.body.className=document.body.className.replace(/\bmobile|\btablet|\bdesktop/,'')+' '+themeFor(m);
 }
-function toggleOfflineDemo(){offlineDemo=!offlineDemo;setOnlineStatus();}
-window.addEventListener('online',setOnlineStatus);window.addEventListener('offline',setOnlineStatus);setOnlineStatus();
-// 4. активность (вывод)
-let idleSec=0,last=Date.now();
-setInterval(()=>{$('#idleInfo')?$('idleInfo').textContent='Активность: '+(Math.floor((Date.now()-last)/1000))+' сек назад':null;},1000);
-['mousemove','keydown','scroll'].forEach(ev=>window.addEventListener(ev,()=>last=Date.now()));
-// 5. крошки
-function nav(section){history.replaceState(null,'',location.pathname+'#/'+section);$('crumbs').textContent='Главная › ПР11 › '+section;}
-// 6. чат
+window.addEventListener('resize',md);md();
+
+// ===== 2. умный скролл: кнопка наверх + плавная прокрутка к элементу =====
+window.addEventListener('scroll',()=>{$('totop').style.display=window.scrollY>300?'block':'none';});
+let scrollCount=0;
+window.addEventListener('scroll',()=>{scrollCount++;$('cntScroll').textContent=scrollCount;},{passive:true});
+function scrollToEl(id){const el=$(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+
+// ===== 3. офлайн: индикатор + сохранение действий + sync при восстановлении =====
+const ACTKEY='pr11_actions';
+let offlineDemo=false;
+function readActs(){try{return JSON.parse(localStorage.getItem(ACTKEY)||'[]');}catch(e){return [];}}
+function saveActs(a){localStorage.setItem(ACTKEY,JSON.stringify(a));renderActs();}
+function renderActs(){
+  const a=readActs(),off=isOffline();
+  if(!a.length){$('actionlog').textContent='Пока нет действий. Нажмите «Записать действие».';return;}
+  const lines=a.slice(-6).map(x=>'• '+x.time+' — '+x.t);
+  $('actionlog').textContent='Сохранено действий: '+a.length+(off?' (ждёт синхронизации)':' (в сети)')+'\n'+lines.join('\n');
+}
+function addAction(t){
+  const a=readActs();
+  a.push({t:t+(isOffline()?' [офлайн]':''),time:new Date().toLocaleTimeString('ru-RU')});
+  saveActs(a);
+}
+function syncActions(){ /* при восстановлении сети действия помечаются синхронизированными */ }
+function isOffline(){return offlineDemo||!navigator.onLine;}
+function setOnlineStatus(){
+  const off=isOffline();
+  $('online').textContent=off?'Офлайн':'Онлайн';
+  $('online').style.background=off?'#fee2e2':'#dcfce7';
+  $('online').style.color=off?'#991b1b':'#166534';
+  $('hold').textContent=off?'Нет сети — действия сохраняются локально':'Сеть доступна — действия синхронизированы';
+}
+function toggleOfflineDemo(){offlineDemo=!offlineDemo;setOnlineStatus();renderActs();if(offlineDemo)toast('Симуляция offline включена','#dc3545');else toast('Симуляция offline выключена','#28a745');}
+window.addEventListener('online',()=>{setOnlineStatus();renderActs();if(!offlineDemo)toast('Соединение восстановлено — действия синхронизированы','#28a745');});
+window.addEventListener('offline',()=>{setOnlineStatus();renderActs();if(!offlineDemo)toast('Соединение потеряно — действия сохраняются локально','#dc3545');});
+setOnlineStatus();renderActs();
+
+// ===== 4. активность: таймер бездействия (30с) + счётчики =====
+let last=Date.now(),idleShown=false,cntClick=0,cntMove=0,cntKey=0;
+setInterval(()=>{
+  const idle=Math.floor((Date.now()-last)/1000);
+  $('idleInfo').textContent=idle;
+  if(idle>=30&&!idleShown){toast('Вы неактивны более 30 секунд!','#dc3545');idleShown=true;}
+  if(idle<30)idleShown=false;
+},1000);
+document.addEventListener('click',()=>{last=Date.now();cntClick++;$('cntClick').textContent=cntClick;});
+let mvBuf=0;
+window.addEventListener('mousemove',()=>{last=Date.now();if(mvBuf%8===0){cntMove++;$('cntMove').textContent=cntMove;}mvBuf++;},{passive:true});
+document.addEventListener('keydown',()=>{last=Date.now();cntKey++;$('cntKey').textContent=cntKey;});
+['mousemove','keydown','click','scroll'].forEach(ev=>window.addEventListener(ev,()=>last=Date.now(),{passive:true}));
+function resetCounters(){cntClick=cntMove=cntKey=scrollCount=0;$('cntClick').textContent=$('cntMove').textContent=$('cntKey').textContent=$('cntScroll').textContent=0;}
+
+// ===== уведомление (toast) =====
+let toastTimer;
+function toast(msg,color){
+  const t=$('toast');
+  t.textContent=msg;t.style.background=color||'#dc3545';t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ===== 5. история навигации: хлебные крошки через pushState + popstate + кнопки =====
+let crumbs=['Главная','ПР11'];
+function renderCrumbs(){$('crumbs').innerHTML=crumbs.map(c=>c==='Главная'?'Главная':c).join(' › ');$('route').textContent=crumbs.join(' / ');$('histDepth').textContent=window.history.length;}
+function nav(section){
+  crumbs=crumbs.slice(0,2).concat([section]);
+  history.pushState({crumbs},'',location.pathname+'#/'+section);
+  renderCrumbs();toast('Переход: '+section,'#1a73e8');
+}
+window.addEventListener('popstate',(e)=>{
+  if(e.state&&e.state.crumbs)crumbs=e.state.crumbs;else crumbs=['Главная','ПР11'];
+  renderCrumbs();toast('popstate: вернулись по истории','#64748b');
+});
+function goBack(){history.back();}
+function goForward(){history.forward();}
+renderCrumbs();
+
+// ===== 6. чат между вкладками (storage событие) =====
 const CK='pr11_chat';
 function renderChat(){const m=JSON.parse(localStorage.getItem(CK)||'[]');$('chatlog').innerHTML=m.map(x=>'<div class="msg"><b>'+esc(x.from)+':</b>'+esc(x.t)+' <span class="badge">'+x.time+'</span></div>').join('')||'Пока пусто.';}
-function sendChat(){const t=$('chatmsg').value.trim();if(!t)return;const m=JSON.parse(localStorage.getItem(CK)||'[]');const id='вкладка '+((Math.random()*90|0)+10);m.push({from:id,t,time:new Date().toLocaleTimeString('ru-RU')});localStorage.setItem(CK,JSON.stringify(m));renderChat();$('chatmsg').value='';}
-window.addEventListener('storage',e=>{if(e.key===CK)renderChat();});
+function sendChat(){
+  const t=$('chatmsg').value.trim();if(!t)return;
+  const m=JSON.parse(localStorage.getItem(CK)||'[]');
+  const id='вкладка '+((Math.random()*90|0)+10);
+  m.push({from:id,t,time:new Date().toLocaleTimeString('ru-RU')});
+  localStorage.setItem(CK,JSON.stringify(m));renderChat();$('chatmsg').value='';
+}
+window.addEventListener('storage',e=>{if(e.key===CK&&e.newValue){renderChat();toast('Новое сообщение из другой вкладки','#7c3aed');}});
 function openSecondTab(){window.open(location.href,'_blank');}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 renderChat();

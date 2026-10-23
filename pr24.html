@@ -44,7 +44,7 @@ input:focus,select:focus{border-color:#1a73e8;outline:none}
 
 <div class="card">
   <div class="row">
-    <input id="search" placeholder="Поиск (реально времени)..." oninput="render()" style="flex:1">
+    <input id="search" placeholder="Поиск книг в реальном времени..." oninput="render()" style="flex:1">
     <select id="sort" onchange="render()">
       <option value="year-desc">Год: новые сначала</option>
       <option value="year-asc">Год: старые сначала</option>
@@ -94,7 +94,8 @@ function render() {
     '<div class="book-card"><div><span class="t">' + esc(b.title) + '</span><div class="m">' + esc(b.author) + ' · ' + b.year + ' · ★ ' + b.rating + '</div></div>'
     + '<button class="rbtn gray" onclick="openModal(' + b.id + ')">✏️ Редактировать</button></div>'
   ).join('');
-  out('Показано ' + list.length + ' из ' + books.length + ' · сортировка: ' + $('sort').value);
+  const sortLabel = $('sort').selectedOptions[0].textContent;
+  out('Показано ' + list.length + ' из ' + books.length + ' · сортировка: ' + sortLabel);
 }
 
 function openModal(id) {
@@ -115,6 +116,9 @@ function saveEdit() {
   render();
   out('Книга обновлена: ' + t + ' — ' + (a || b.author));
 }
+
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('modal').classList.contains('open')) closeModal(); });
+document.getElementById('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
 
 render();
 </script>

@@ -128,8 +128,7 @@ function getBotResponse(text) {
 }
 
 function addMessage(text, who) {
-  let counter = userMessages;
-  if (who === 'bot') counter = userMessages;
+  const counter = userMessages;
   const chat = $('chat');
   const line = document.createElement('div');
   line.className = 'msg ' + who;
@@ -155,7 +154,12 @@ function loadHistory() {
 function saveHistory() {
   const history = [];
   document.querySelectorAll('#chat .msg').forEach((el) => {
-    history.push({ text: el.lastChild.textContent || '', who: el.classList.contains('user') ? 'user' : 'bot' });
+    let text = '';
+    el.childNodes.forEach((node) => {
+      if (node.nodeType === 3) text += node.nodeValue || '';
+    });
+    text = text.replace(/\s*\(Сообщение #\d+\)\s*$/, '').trim();
+    history.push({ text: text, who: el.classList.contains('user') ? 'user' : 'bot' });
   });
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 }
